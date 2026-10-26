@@ -35,7 +35,7 @@ Office アドイン（[specification.md](./specification.md)、以下「アド�
 
 追加: 英語と日本語の画面（§6.3）。
 
-範囲外: Excel 以外のホスト（Word / PowerPoint）への COM 挿入、Mac、Excel Online、x86（32 ビット）。
+範囲外: Excel 以外のホスト（Word / PowerPoint）への COM 挿入、Mac、Excel Online、x86（32 ビット）、Microsoft Store を使えない環境への配布（§9.4）。
 
 ---
 
@@ -49,7 +49,7 @@ Office アドイン（[specification.md](./specification.md)、以下「アド�
 | 共通ロジック | アドインの TS を共通化してそのまま使う | 図の見た目・変換結果をアドインと一致させる。テストも共有できる |
 | Excel 連携 | COM。アクティブな Excel に接続する（§5.1） | Office.js はアドイン内でしか使えない |
 | 互換の仕組み | 図形の代替テキスト（タイトル `Mermaid Diagram`、説明に Mermaid コード）を両方で同じに扱う | アドインの唯一の永続データ（仕様書 §5）に合わせる |
-| 配布 | MSIX（x64 / Arm64 のバンドル）。自己署名証明書で署名し、ストアに提出するリリース用と、開発中のテストに使う開発用（Identity が別）の 2 種類を作る。作成・署名・提出には winapp CLI を使う（§9） | ストアが Microsoft の署名に置き換えるため、コード署名証明書は買わない |
+| 配布 | Microsoft Store のみ。MSIX（x64 / Arm64 のバンドル）。自己署名証明書で署名し、ストアに提出するリリース用と、開発中のテストに使う開発用（Identity が別）の 2 種類を作る。作成・署名・提出には winapp CLI を使う（§9） | ストアが Microsoft の署名に置き換えるため、コード署名証明書は買わない |
 | 画面の言語 | 英語と日本語（§6.3） | — |
 | リポジトリ | アドインと同じリポジトリに置く | 共通 TS を 1 か所で管理し、バージョンをそろえる |
 
@@ -92,8 +92,8 @@ Office アドイン（[specification.md](./specification.md)、以下「アド�
 
 ### 4.1 読み込み
 
-- `engine.html` / `engine.js` などをアプリの `web/` に置き、`SetVirtualHostNameToFolderMapping("app.textsvg.local", web, CoreWebView2HostResourceAccessKind.Deny)` で `https://app.textsvg.local/engine.html` として開く。
-- 外部への通信はしない。`NavigationStarting` で上記ホスト以外への遷移を、`NewWindowRequested` で新しいウィンドウを止める。CSP で `connect-src 'none'` にする。
+- `engine.html` / `engine.js` などをアプリの `web/` に置き、`SetVirtualHostNameToFolderMapping("app.textsvg.example", web, CoreWebView2HostResourceAccessKind.Deny)` で `https://app.textsvg.example/engine.html` として開く。ホスト名は WebView2 の推奨に従い `.example` にする（`.local` は名前解決で遅れることがある）。
+- 外部への通信はしない。`NavigationStarting` で上記ホスト以外への遷移を、`NewWindowRequested` で新しいウィンドウを止める。CSP は `default-src 'self'; connect-src 'none'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'` を基本にする（`svgToRaster` が data URL の SVG を `Image` で読み、mermaid がインラインスタイルを使うため）。
 - リリースビルドでは開発者ツール・既定のコンテキストメニュー・ズームを無効にする。
 - mermaid の初期化設定はアドインと同じ（仕様書 §4.1）。`render.ts` の `initMermaid` をそのまま使う。
 - WebView2 ランタイムがない場合（Windows 10 の一部）は、起動時に `CoreWebView2Environment.GetAvailableBrowserVersionString` で検出し、ランタイムの入手先を案内するダイアログを出して終了する。MSIX からはランタイムのインストーラを実行できないため。
@@ -114,23 +114,25 @@ C# → JS は `PostWebMessageAsJson`、JS → C# は `window.chrome.webview.post
 | method | params | result | 使う共通 TS |
 |---|---|---|---|
 | `init` | `locale`（`en` / `ja`） | — | メッセージの言語を決める（§6.3）。最初に 1 回呼ぶ |
-| `render` | `code` | 実寸 `width` / `height`（px、viewBox がなければ null）。プレビューに表示する | `renderMermaid`, `svgSize`。失敗時は `errorSourceLine` で `line` を付ける |
+| `render` | `code`, `seq` | `seq`、実寸 `width` / `height`（px、viewBox がなければ null）。プレビューに表示する | `renderMermaid`, `svgSize`。失敗時は `errorSourceLine` で `line` を付ける |
 | `clear` | — | — | プレビューをヒント表示に戻す |
-| `raster` | `format`（png / jpeg）, `scale` | `base64`, `width`, `height` | `svgToRaster` |
-| `svg` | `scale` | `svg` | `serializeSvg` |
-| `officeSvg` | — | `svg`, `width`, `height` | `toOfficeSvg` |
-| `shapeModel` | `code`, `scale` | `ShapeModel`（JSON） | `getFlowchartData`, `extractFlowchart`, `scaleModel` |
+| `raster` | `seq`, `format`（png / jpeg）, `scale` | `base64`, `width`, `height` | `svgToRaster` |
+| `svg` | `seq`, `scale` | `svg` | `serializeSvg` |
+| `officeSvg` | `seq` | `svg`, `width`, `height` | `toOfficeSvg` |
+| `shapeModel` | `seq`, `scale` | `ShapeModel`（JSON） | `getFlowchartData`（表示中の図のコード）, `extractFlowchart`, `scaleModel` |
 | `fromTable` | `table`（`TableData`）, `kind` | `code` | `tableToMermaid` |
 | `templates` | — | `{ id, name, code }[]` | `TEMPLATES` |
 
-- `raster` / `svg` / `officeSvg` / `shapeModel` は直前の `render` の SVG を対象にする。SVG がなければ `Please render first` のエラーを返す。
+- `raster` / `svg` / `officeSvg` / `shapeModel` はプレビューに表示中の図（SVG とそのコード）を対象にする。`seq` は C# 側が最後に成功を受け取った `render` の番号で、表示中の図の番号と違えば `Diagram changed. Try again.` のエラーを返す（入力中に挿入した場合などに、別の図を挿入しないため）。表示中の図がなければ `Please render first`。`shapeModel` はコードを引数に取らず、表示中の図のコードを使う（SVG とコードの食い違いを防ぐ）。
 - テンプレートと表からの生成もエンジンに置き、C# 側で二重に実装しない。
 - エラーは `code`（メッセージの種類）と、`init` で決めた言語の `message` を返す。mermaid 自身のエラー文は英語のまま（§6.3）。
 - 大きな画像の base64 はメッセージで送れる大きさ（Canvas 上限 4096 × 4096 の PNG で数 MB）に収まる。
 
 ### 4.3 競合制御
 
-アドインと同じく、`render` ごとに C# 側で要求 ID を採番し、最新でない応答は捨てる（仕様書 §4.2）。入力のたびに挿入・保存ボタンを無効にし、250ms のデバウンス後に `render` を送る。
+アドインと同じく、`render` ごとに C# 側で番号（`seq`）を採番し、最新でない応答は捨てる（仕様書 §4.2）。入力のたびに挿入・保存ボタンを無効にし、250ms のデバウンス後に `render` を送る。
+
+プレビューの DOM を書き換えるのは JS 側のため、C# 側で応答を捨てるだけでは足りない（mermaid の描画は非同期で、前後して終わると古い図が表示される）。`engine.ts` も受け取った最大の `seq` を覚え、描画が終わった時点でそれより古ければ DOM に反映せず、`stale` のエラーを返す。表示中の図の `seq` とコードは `engine.ts` が持つ。
 
 ---
 
@@ -140,25 +142,45 @@ C# → JS は `PostWebMessageAsJson`、JS → C# は `window.chrome.webview.post
 
 Excel が複数起動していても、利用者が最後に使っていた Excel を対象にする。`GetActiveObject` は最初に登録されたインスタンスしか返さないため使わず、ウィンドウから Excel を取得する。
 
-1. `EnumWindows` でトップレベルウィンドウを Z オーダー順（手前から）に調べ、表示中で最小化されていないクラス `XLMAIN` のウィンドウのうち最初のものを選ぶ。デスクトップ版のウィンドウが手前にあっても、その次に手前の Excel のウィンドウになる。
-2. その子の `XLDESK` → `EXCEL7` を探し、`AccessibleObjectFromWindow(hwnd, OBJID_NATIVEOM, IID_IDispatch)` で `Excel.Window` を得て、`.Application` を使う。
+1. `EnumWindows` でトップレベルウィンドウを Z オーダー順（手前から）に調べ、表示中で最小化されていないクラス `XLMAIN` のウィンドウのうち最初のものを選ぶ。デスクトップ版のウィンドウが手前にあっても、その次に手前の Excel のウィンドウになる。最小化されていないものがなければ、最小化された `XLMAIN` のうち最も手前のものを選ぶ。
+2. その子の `XLDESK` → `EXCEL7` を探し、`AccessibleObjectFromWindow(hwnd, OBJID_NATIVEOM, IID_IDispatch)` で `Excel.Window` を得る。
 3. `EXCEL7` がない（ブックを開いていない）ときは「ブックを開いてください」と表示し、挿入を無効にする。
 4. `XLMAIN` がひとつもないときは「Excel が見つかりません」と表示し、挿入・セルからの生成・図形一覧を無効にする。プレビューと保存は使える。Excel の起動はしない。
+5. `AccessibleObjectFromWindow` が失敗したときは「Excel に接続できません（Excel を管理者として実行している場合は、通常の権限で起動し直してください）」と表示し、4 と同じ扱いにする。管理者として動く Excel には UIPI のため接続できない。
+
+操作の対象は、2 で得た `Excel.Window`（以下「対象ウィンドウ」）とそのブック（`Window.Parent`）にする。シート・アクティブセル・選択は `Application.ActiveSheet` などではなく、対象ウィンドウの `ActiveSheet` / `ActiveCell` / `Selection` から取る。同じ Excel で複数のブックを開いていると、Excel が手前にない間は `Application.ActiveWorkbook` が対象ウィンドウのブックと一致するとは限らないため。
 
 | 対象を決め直す場面 | 動作 |
 |---|---|
-| デスクトップ版のウィンドウがアクティブになったとき | 1〜4 を行い、対象のブックが変わっていれば図形一覧を読み込み直し、差し替え先を `(No diagram selected)` に戻す |
-| 挿入・セルからの生成・図形一覧の読み込みの直前 | 1〜4 を行う。アクティブになったときと対象が変わっていれば同様に扱い、操作は新しい対象で行う（差し替えは中止して `Selected diagram no longer exists.` と同等のエラーにする） |
+| デスクトップ版のウィンドウがアクティブになったとき | 1〜5 を行い、対象のブックが変わっていれば図形一覧を読み込み直し、差し替え先を `(No diagram selected)` に戻す |
+| 挿入・セルからの生成・図形一覧の読み込みの直前 | 1〜5 を行う。アクティブになったときと対象が変わっていれば同様に扱い、操作は新しい対象で行う（差し替えは中止して `Selected diagram no longer exists.` と同等のエラーにする） |
 | ポーリング中（§5.4） | `GetForegroundWindow` が `XLMAIN` ならそのウィンドウを対象にする |
 
-- 状態表示に接続中のブック名（`ActiveWorkbook.Name`）を出す。
+- 状態表示に接続中のブック名（対象ウィンドウのブックの `Name`）を出す。
 - 接続後に Excel が終了した場合（`RPC_E_DISCONNECTED` 0x80010108 / `RPC_S_SERVER_UNAVAILABLE` 0x800706BA）は未接続に戻す。
+- 利用者が Excel を閉じたことの検知は §5.2 の「参照の持ち方」による。
 - 要検証: MSIX のパッケージ内のアプリ（full trust）から `AccessibleObjectFromWindow` と COM の呼び出しが通常どおり使えること。
 
 ### 5.2 COM の呼び出し
 
 - COM は WPF の UI スレッド（STA）から呼ぶ。セル編集中などに Excel が呼び出しを拒否する（`RPC_E_CALL_REJECTED` 0x80010001）ため、`IMessageFilter` を登録して数秒まで再試行し、それでも失敗したら「Excel が操作を受け付けません（セルの編集中など）」を表示する。
-- 取得した COM オブジェクトは使い終わったら解放し、利用者が Excel を閉じられなくなることを防ぐ（1 つの操作の中で取ったものをまとめて `Marshal.FinalReleaseComObject` するヘルパーを用意する）。
+- 再試行するのは利用者の操作（挿入・セルからの生成・図形一覧の読み込みなど）だけにする。ポーリング（§5.4）とイベントの処理中はフィルタが再試行せずにすぐ諦めるよう、呼び出し側でフラグを立てる。ポーリングのたびに UI スレッドが数秒止まることを防ぐため。
+
+**参照の持ち方**: 外部から COM の参照が残っていると、利用者が Excel のウィンドウを閉じても Excel は非表示のまま終了しない。そこで参照を 2 種類に分ける。
+
+| 種類 | 対象 | 解放 |
+|---|---|---|
+| 常時持つ参照 | `Application`、対象ウィンドウ、イベントの購読（§5.4） | 下の「解放する場面」で、イベントの購読を外してからまとめて解放する |
+| 操作ごとの参照 | 1 つの操作の中で取ったシート・図形・範囲など | 操作の終わりにまとめて `Marshal.FinalReleaseComObject` する（ヘルパーを用意する） |
+
+解放する場面:
+
+- 接続先が別の Excel に変わったとき（§5.1）。
+- 接続中の Excel の `XLMAIN` が消えたか非表示になったとき。デスクトップ版は 1 秒ごとに `IsWindow` / `IsWindowVisible` で調べる（Excel は外部から参照されたまま閉じられると、ウィンドウを非表示にして動き続けるため、非表示も閉じたものとみなす）。
+- `RPC_E_DISCONNECTED` などで Excel の終了が分かったとき。
+- デスクトップ版の終了時。
+
+解放後は未接続として扱い、次に対象を決め直すとき（§5.1）に接続し直す。
 - 相互運用は `Microsoft.Office.Interop.Excel`（PIA、`EmbedInteropTypes=true`）を使う。Office のバージョンに依存しないよう、使うのは Excel 2016 以降にあるメンバーだけにする。
 
 ### 5.3 識別情報（互換の要）
@@ -180,28 +202,29 @@ Excel が複数起動していても、利用者が最後に使っていた Exce
 
 要検証: アドインが挿入した SVG とデスクトップ版が `AddPicture` で入れた SVG が、それぞれもう一方でどの種類になるか。同じ図が両方の一覧に出ない場合は、アドインの `DIAGRAM_SHAPE_TYPES` に必要な種類を加える（§10）。
 
-**読み込み時の改行**: 代替テキストから読んだコードは、`\r\n` と `\r` を `\n` にそろえてから入力欄に入れる。Excel が代替テキストの改行を `\r` などに変えても、未保存の判定（仕様書 §4.3）やエラー行の特定がずれないようにするため。アドインにも同じ処理を加える（§10）。
+**改行**: 代替テキストに書き込むコードの改行は `\n` にする（AvalonEdit の改行は `\r\n` のことがあるため、書き込む前にそろえる。アドインと同じ）。代替テキストから読んだコードは、`\r\n` と `\r` を `\n` にそろえてから入力欄に入れる。Excel が代替テキストの改行を `\r` などに変えても、未保存の判定（仕様書 §4.3）やエラー行の特定がずれないようにするため。アドインにも読み込み時の処理を加える（§10）。
 
 ### 5.4 シート図形一覧とシート上での選択（仕様書 §4.3）
 
 - 対象・表示・選択状態の保持・読み込み失敗時の扱いはアドインと同じ。
 - 再読み込みのきっかけ: 起動時、ドロップダウンを開いたとき、挿入後、`Application.SheetActivate` と `Application.WorkbookActivate`（ブックの切り替え）、デスクトップ版のウィンドウがアクティブになったとき。
-- イベントは Excel 側のスレッドから届くため、`Dispatcher` で UI スレッドに移してから処理する。
+- イベントの購読は「常時持つ参照」として扱う（§5.2）。STA で購読した COM イベントは UI スレッドに届くので、スレッドの切り替えは要らない。ただしイベントの中で COM を呼んで Excel を待たせないよう、処理は `Dispatcher.BeginInvoke` で後回しにする。
+- イベントは Excel 全体から届くため、対象ウィンドウのブックのイベントだけを扱う。
 
-COM の `SheetSelectionChange` は図形の選択では発生せず、Office.js の `Shape.onActivated` に当たるものもない。そこで、デスクトップ版のウィンドウが非アクティブの間だけ、500ms ごとに `Application.Selection` を調べる。
+COM の `SheetSelectionChange` は図形の選択では発生せず、Office.js の `Shape.onActivated` に当たるものもない。そこで、デスクトップ版のウィンドウが非アクティブの間だけ、500ms ごとに対象ウィンドウの `Selection` を調べる。
 
 1. `Selection` が `Range` なら何もしない。
 2. 図形（`ShapeRange` を持つもの）なら、`ShapeRange(1)` の ID が一覧にあるかを調べる。グループ内の図形が選ばれているときは `ParentGroup` をたどる（アドインの制約 §8-6 より良くなる）。
 3. 前回の検知から変わったときだけ、アドインの「シート上で一覧の図形を選択した」と同じ処理（確認バー・読み込み）を行う。
 
-- ポーリングは Excel が操作を拒否したら何もせず次の回にする（エラーを表示しない）。
+- ポーリングは Excel が操作を拒否したら再試行せず（§5.2）、何もせず次の回にする（エラーを表示しない）。
 - 設定でオフにできるようにする（§7）。オフでも、ツールバーの「選択中の図を読み込む」で同じ処理を手動で行える。
 
 ### 5.5 挿入・差し替え（仕様書 §4.4）
 
 配置の規則・付与情報・エラーメッセージはアドインと同じ。全形式で、処理中は `Application.ScreenUpdating = false` にし、終わったら必ず元に戻す。
 
-**配置の取得**: 新規はアクティブセル（`Application.ActiveCell` の `Left` / `Top`）。差し替えは対象図形の `Left` / `Top` / `Name`。対象がなければ `Selected diagram no longer exists.`。
+**配置の取得**: 新規はアクティブセル（対象ウィンドウの `ActiveCell` の `Left` / `Top`）。差し替えは対象図形の `Left` / `Top` / `Name`。対象がなければ `Selected diagram no longer exists.`。
 
 **一時ファイル**: PNG / JPEG / SVG はファイルにしてから `AddPicture` で挿入する。MSIX で動くときは `AppData` への書き込みがパッケージ専用の場所に振り替えられ、Excel から見えないことがある。そのため一時ファイルは実際のパスが分かる `ApplicationData.Current.TemporaryFolder`（`%LOCALAPPDATA%\Packages\msmsrep.Text-to-SVGDiagramsforExcel_77t1an0ygyrva\TempState`。開発用は `…Dev_77t1an0ygyrva` になる）に置く。MSIX 外で動かす開発時は `Path.GetTempPath()` 配下を使う。挿入後に削除する。要検証: Excel がこのパスのファイルを読めること。
 
@@ -215,7 +238,7 @@ COM の `SheetSelectionChange` は図形の選択では発生せず、Office.js 
 
 1. エンジンの `svg`（または `officeSvg`）の文字列を一時ファイル（`.svg`）に書く。
 2. PNG と同じく `AddPicture` で挿入し、`LockAspectRatio = msoFalse` にしてから実寸 × 0.75 × k に合わせる（アドインと同じ理由）。
-3. SVG を挿入できない Excel（2016 の非サブスクリプション版など）では `AddPicture` が失敗する。その場合は `SVG insertion is not supported in this version of Excel. Use PNG or JPEG.` を表示する。
+3. SVG を挿入できない Excel（2016 の非サブスクリプション版など）では `AddPicture` が失敗する。`AddPicture` の失敗をすべて SVG 非対応とみなすと、保護されたシートなど別の原因でも誤ったメッセージになるため、挿入の前に `Application.Build`（と `Version`）で SVG に対応する版かを判定し、対応しない版なら `SVG insertion is not supported in this version of Excel. Use PNG or JPEG.` を表示する（アドインの `isSvgInsertSupported` に相当）。判定に使うビルド番号は要検証。対応する版での `AddPicture` の失敗は、ほかの形式と同じく `Insert error: ...` にする。
 
 `setSelectedDataAsync` と違い、新しい図形は戻り値で分かるため、図形 ID の差分で探す処理（アドインの `Could not identify the inserted shape.`）は不要。
 
@@ -236,7 +259,7 @@ COM の `SheetSelectionChange` は図形の選択では発生せず、Office.js 
 | テキスト（余白 0、自動調整なし、揃え） | `TextFrame2`（`MarginLeft` ほか、`AutoSize = msoAutoSizeNone`、`VerticalAnchor`、`TextRange.ParagraphFormat.Alignment`、`Font.Size` / `Font.Fill.ForeColor.RGB`） |
 | `addGroup(shapes)` | `Shapes.Range(object[] 名前).Group()`。名前の重複を避けるため、作成直後に一時的な一意の名前を付けてから `Range` に渡す |
 
-- 要検証: Office.js と COM で接続ポイント番号の始まり（0 か 1 か）が同じか。違えば C# 側で変換する。§4.9 の接続ポイントの方向の表（Can / Hexagon / Parallelogram）が COM でも同じかも確かめ、違いがアドイン側の誤りによるものならアドインを直す（§10）。
+- 接続ポイント番号: COM の `BeginConnect` / `EndConnect` の番号は 1〜`ConnectionSiteCount` と決まっている。`connectionSite` は 0 始まりの番号を返し、アドインはそれを Office.js にそのまま渡している。`ConnectionSite`（C#）も 0 始まりのまま移植し（共有フィクスチャも 0 始まり）、COM に渡すときに +1 する。要検証: Office.js の番号が 0 始まりで、同じ番号が COM の +1 した番号と同じ位置を指すこと。§4.9 の接続ポイントの方向の表（Can / Hexagon / Parallelogram）が COM でも同じかも確かめ、違いがアドイン側の誤りによるものならアドインを直す（§10）。
 - 線の太さは整数 pt に丸め、最小 1pt（アドインと同じ）。
 - 図形が 0 個なら `The diagram has no shapes.`。
 - 途中で失敗した場合は、それまでに作った図形を削除してから例外を伝える（アドインは `Excel.run` の途中失敗で何も確定しないため、同じ結果にする）。
@@ -249,13 +272,26 @@ COM の `SheetSelectionChange` は図形の選択では発生せず、Office.js 
 
 | アドイン | COM |
 |---|---|
-| `getSelectedRange().getUsedRangeOrNullObject(true)` | `Selection` が `Range` でなければ `Select a cell range on the sheet.`。`Intersect(Selection, ActiveSheet.UsedRange)` を取り、値のあるセルだけになるよう前後の空行・空列を除く |
-| `values` | `Range.Value2`（日付はシリアル値の double。Office.js と同じ） |
-| `text` | セルごとの `Range.Text`（まとめて取れないため列ごとに読む。速度は要検証） |
-| `numberFormat` | `Range.NumberFormat`（全セル同じなら単一の値が返るため、配列に展開する） |
+| `getSelectedRange().getUsedRangeOrNullObject(true)` | 下の「範囲の決め方」 |
+| `values` | `Range.Value2`（日付はシリアル値の double。Office.js と同じ）。下の「値の変換」で Office.js と同じ形にする |
+| `text` | セルごとの `Range.Text` |
+| `numberFormat` | セルごとの `Range.NumberFormat` |
 | — | `Workbook.Date1904` |
 
-値のあるセルがなければ `The selection is empty.`、500 行を超えれば `The selection has more than 500 rows.`（アドインと同じ）。読んだ値は `TableData`（`values` / `text` / `numberFormat` / `firstRow`）にしてエンジンの `fromTable` に渡す。`TableData` に省略可能な `date1904` を加え、`tableToMermaid` の `serialToIso` で使う。これでアドインの既知の制約 §8-5 の日付のずれがデスクトップ版では起きない。アドインは Office.js でブックの日付システムを取得できないため、従来どおり 1900 年日付システムとして扱う。
+**範囲の決め方**（Office.js の `getUsedRangeOrNullObject(true)` は値のあるセルだけで切り詰めるが、COM の `UsedRange` は書式だけのセルも含むため、同じ結果になるよう自分で求める）:
+
+1. 対象ウィンドウの `Selection` が `Range` でなければ `Select a cell range on the sheet.`。複数の範囲を選んでいる（`Areas.Count > 1`）ときも同じエラーにする（Office.js の `getSelectedRange` も複数範囲では失敗する。要検証）。
+2. 選択範囲の中で値のある最初と最後のセルを `Range.Find("*", LookIn: xlFormulas, SearchOrder: xlByRows / xlByColumns, SearchDirection: xlNext / xlPrevious)` で求め、その行・列で囲んだ範囲にする。見つからなければ `The selection is empty.`。列全体の選択（`A:C` など）でも `Value2` を 100 万行分読まずに済む。
+3. 行数が 500 を超えれば `The selection has more than 500 rows.`（アドインと同じ。値を読む前に調べる）。
+
+**値の変換**:
+
+- `Value2` は、範囲が 1 セルならスカラー、複数セルなら 1 始まりの `object[,]` を返す。どちらも 0 始まりの 2 次元配列にそろえる。
+- 空のセル（`null`）は `""` にする。
+- エラー値は COM では `int`（CVErr。`#N/A` は -2146826246 など）になるが、Office.js では `"#N/A"` などの文字列になる。エラー番号から文字列に変換して Office.js と同じにする。
+- `Text` と `NumberFormat` は、範囲内の値が混在すると配列ではなく `null` を返すため、セルごとに読む（最大 500 行 × 列数回の COM 呼び出し。速度は要検証）。
+
+読んだ値は `TableData`（`values` / `text` / `numberFormat` / `firstRow`）にしてエンジンの `fromTable` に渡す。`TableData` に省略可能な `date1904` を加え、`tableToMermaid` の `serialToIso` で使う。これでアドインの既知の制約 §8-5 の日付のずれがデスクトップ版では起きない。アドインは Office.js でブックの日付システムを取得できないため、従来どおり 1900 年日付システムとして扱う。
 
 ### 5.7 Excel 操作の制約
 
@@ -289,6 +325,7 @@ COM の `SheetSelectionChange` は図形の選択では発生せず、Office.js 
 - **エディタ**: AvalonEdit。等幅フォント、行番号表示。エラー行は `IBackgroundRenderer` で背景色を付ける（アドインの §4.11 の backdrop の代わり）。強調中に編集しても次の描画まで同じ行を強調する点はアドインと同じ。「Go to line N」で該当行を選択し、上から 1/3 の位置にスクロールする。
 - Mermaid のシンタックスハイライトは AvalonEdit の定義ファイル（xshd）で後から足す（ロードマップの小改善）。
 - **常に手前に表示**: 「View」メニューで切り替える（Excel と並べて使うため）。
+- **多重起動**: 1 つに限る。2 つ目を起動したときは、名前付き Mutex で検知し、既存のウィンドウを手前に出して終了する（Excel との接続・ポーリング・設定の保存が重ならないようにするため）。
 
 ### 6.1 状態の規則
 
@@ -337,7 +374,7 @@ Mermaid コードは保存しない（図形の代替テキストか `.mmd` に�
 
 ```
 src/
-  core/            共通 TS（Office.js と DOM 部品に依存しない）
+  core/            共通 TS（Office.js とタスクペインの画面要素に依存しない。描画・変換はブラウザの DOM API を使う）
     render.ts image.ts officeSvg.ts flowchartModel.ts svgUtil.ts
     errorLine.ts tableToMermaid.ts templates.ts messages.ts
     util.ts(PX_TO_PT, errorMessage)
@@ -372,7 +409,8 @@ test/fixtures/       TS と C# で共有するフィクスチャ
 | `engine.ts` | vitest。`chrome.webview` をフェイクにして、要求に対する応答とエラーの形を確かめる |
 | `messages.ts` / `Strings*.resx` | 英語と日本語でメッセージ ID の過不足がないこと |
 | `MainViewModel` | xUnit。`IEngineClient` と `IExcelGateway` をフェイクにして、アドインの `taskpane.test.ts` と同じ観点（未保存判定、確認バー、差し替え、サイズ）を確かめる |
-| `ExcelLocator` | xUnit。ウィンドウ列挙をフェイクにして、対象の選び方（§5.1）を確かめる |
+| `ExcelLocator` | xUnit。ウィンドウ列挙をフェイクにして、対象の選び方（§5.1。最小化だけのとき、接続できないときを含む）を確かめる |
+| 選択セルの値の変換（§5.6） | xUnit。スカラー・`object[,]`・空のセル・エラー値を Office.js と同じ形にすることを確かめる |
 | `ExcelGateway` | 実際の Excel が必要なため自動テストしない。手動の確認項目表（§10.2 の互換確認を含む）を用意し、開発用の MSIX で確認する |
 | `ConnectionSite` | 共有フィクスチャ（§5.5.4） |
 | `scripts.test.ts` | バージョンの反映先に csproj と `Package.appxmanifest` を加える |
@@ -386,6 +424,7 @@ test/fixtures/       TS と C# で共有するフィクスチャ
 | 項目 | 内容 |
 |---|---|
 | 形式 | x64 と Arm64 の MSIX をまとめた `.msixbundle`。.NET 10 ランタイムを含めた自己完結にする（ストアには .NET 5 以降のデスクトップ用フレームワークパッケージがないため） |
+| 大きさ | WPF はトリミングできないため、アーキテクチャごとに 100MB を超える見込み（ストアは利用者の端末に合うアーキテクチャだけを配る）。実際の大きさは段階 2 で確かめる |
 | 種類 | full trust のデスクトップアプリ（`EntryPoint="Windows.FullTrustApplication"`、制限付き機能 `runFullTrust`）。COM で Excel を操作するため |
 | 対象 OS | Windows 10 バージョン 2004（19041）以降、Windows 11（`TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0"`） |
 | 対応 Excel | Excel 2016 以降のデスクトップ版（SVG 系の形式は SVG を挿入できる版のみ）。Arm 版 Windows では Arm64 版・x64 版（エミュレーション）の Excel のどちらにも接続する（COM はプロセス外の呼び出しなので、アプリと Excel のアーキテクチャが違ってもよい。要検証） |
@@ -433,6 +472,8 @@ MSIX の作成・証明書・署名・ストア提出には winapp CLI（Windows
 
 ### 9.3 自己署名証明書とサイドロード
 
+サイドロードは開発者のテスト端末でだけ行い、`.msixbundle` を利用者には配布しない（配布はストアのみ。§9.4）。
+
 MSIX はマニフェストの Publisher と署名した証明書のサブジェクトが一致しないとインストールできない。そこで、ストアの Publisher（`CN=5E0CB4C9-E2E2-4B35-A7BB-09FE6EB44D12`）をサブジェクトにした自己署名証明書を 1 つ作り、リリース用と開発用の両方に使う。これでどちらもテスト端末にサイドロードでき、リリース用はそのままストアに提出できる。
 
 **証明書の作成**（開発者が 1 回だけ行う）:
@@ -457,6 +498,7 @@ MSIX はマニフェストの Publisher と署名した証明書のサブジェ�
 - Partner Center で予約済みの `Text-to-SVG Diagrams for Excel`（Store ID `9N78SZM66WM9`）に提出する。
 - `runFullTrust` は制限付き機能のため、提出時に用途（Excel を COM で操作する）を説明する。
 - 掲載情報（説明・スクリーンショット）は英語と日本語で用意する。プライバシーポリシーは紹介ページのプライバシーの節にする（§7）。
+- 配布はストアだけにする。Microsoft Store を止めている組織に向けた配布（Intune などの案内、サイドロード用バンドルの公開）は行わない（§12 #11）。
 - 紹介ページ（`site/index.html`）の導入方法に、アドインの入手方法（manifest.xml、Inno Setup のインストーラ）と並べてストアへのリンク（Microsoft Store のバッジ、`https://apps.microsoft.com/detail/9N78SZM66WM9`）を置く。
 
 ### 9.5 MSIX で動くときの注意
@@ -532,7 +574,8 @@ MSIX はマニフェストの Publisher と署名した証明書のサブジェ�
 | 4 | 要検証の結果 | 互換が崩れる場合は、原因のある側（アドインを含む）を直す（§10） |
 | 5 | 画面の言語 | 英語と日本語に対応する。アドインも日本語に対応する（§6.3、§10 #6） |
 | 6 | .NET | .NET 10 |
-| 7 | 配布形式 | MSIX。x64 と Arm64 のバンドル（§9.1） |
+| 7 | 配布形式 | Microsoft Store のみ。MSIX（x64 と Arm64 のバンドル。§9.1） |
 | 8 | パッケージの作成・署名・提出 | winapp CLI（§9.2） |
 | 9 | ストアの Identity | Partner Center の値（§9.1） |
 | 10 | アドインの Inno Setup のインストーラ | 今後も配布を続ける（§9.6） |
+| 11 | ストアを止めている組織向けの配布 | 対応しない。配布はストアだけにする（§9.4） |
