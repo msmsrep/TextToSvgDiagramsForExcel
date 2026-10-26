@@ -9,36 +9,20 @@
     <link rel="stylesheet" href="taskpane.css" />
   </head>
   <body>
-    <h1>Text-to-SVG Diagrams for Excel</h1>
-
-    <label class="field-label" for="sheet-diagram-select">Sheet diagram</label>
-    <select id="sheet-diagram-select" aria-label="Select Mermaid diagram in active sheet">
-      <option value="">(No diagram selected)</option>
-    </select>
+    <!-- New diagrams (templates, code from cells) and Insert as / Download
+         menus are on the ribbon's Diagrams tab (ribbon.ts). -->
+    <div class="diagram-row">
+      <label class="field-label" for="sheet-diagram-select">Diagram</label>
+      <select id="sheet-diagram-select" aria-label="Select Mermaid diagram in active sheet">
+        <option value="">(No diagram selected)</option>
+      </select>
+    </div>
     <div id="load-confirm" role="alert" hidden>
       <span id="load-confirm-text"></span>
       <div class="confirm-buttons">
         <button id="load-confirm-replace" class="action-btn">Replace</button>
         <button id="load-confirm-keep" class="secondary-btn">Keep</button>
       </div>
-    </div>
-
-    <label class="field-label" for="template-select">New from template</label>
-    <div class="select-group">
-      <!-- Options are filled from templates.ts. -->
-      <select id="template-select" aria-label="Template"></select>
-      <button id="template-btn" class="action-btn">Use</button>
-    </div>
-
-    <label class="field-label" for="table-kind-select">Code from selected cells</label>
-    <div class="select-group">
-      <select id="table-kind-select" aria-label="Diagram type to generate">
-        <option value="auto">Auto</option>
-        <option value="flowchart">Flowchart (parent | child | label)</option>
-        <option value="gantt">Gantt (task | start | end or days | section)</option>
-        <option value="pie">Pie (label | value)</option>
-      </select>
-      <button id="generate-btn" class="action-btn">Generate</button>
     </div>
 
     <div id="editor">
@@ -65,25 +49,29 @@ graph LR
       tabindex="0"
     ></div>
 
-    <div class="size-group">
-      <label class="field-label" for="size-select">Size</label>
-      <select id="size-select" aria-label="Output size">
-        <option value="0.5">50%</option>
-        <option value="0.75">75%</option>
-        <option value="1" selected>100%</option>
-        <option value="1.5">150%</option>
-        <option value="2">200%</option>
-        <option value="width">Width (pt)</option>
-      </select>
-      <input id="size-width" type="number" min="1" step="1" aria-label="Width in points" hidden />
-      <label class="check-label">
-        <input id="keep-size" type="checkbox" checked disabled />
-        Keep current size
-      </label>
-    </div>
+    <div id="preview"></div>
 
-    <div class="buttons">
-      <div class="insert-group">
+    <div id="error"></div>
+
+    <div class="output">
+      <div class="size-group">
+        <label class="field-label" for="size-select">Size</label>
+        <select id="size-select" aria-label="Output size">
+          <option value="0.5">50%</option>
+          <option value="0.75">75%</option>
+          <option value="1" selected>100%</option>
+          <option value="1.5">150%</option>
+          <option value="2">200%</option>
+          <option value="width">Width (pt)</option>
+        </select>
+        <input id="size-width" type="number" min="1" step="1" aria-label="Width in points" hidden />
+        <label class="check-label">
+          <input id="keep-size" type="checkbox" checked disabled />
+          Keep current size
+        </label>
+      </div>
+
+      <div class="buttons">
         <select id="format-select" aria-label="Output format">
           <option value="png">PNG</option>
           <option value="jpeg">JPEG</option>
@@ -92,13 +80,13 @@ graph LR
           <option value="shapes">Shapes (editable)</option>
         </select>
         <button id="insert-btn" class="action-btn" disabled>Insert to Excel</button>
+        <button id="download-btn" class="secondary-btn icon-btn" title="Download" aria-label="Download" disabled>
+          <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+            <path d="M8 2v8m-3.5-3.5L8 10l3.5-3.5M3 13h10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
       </div>
-      <button id="download-btn" class="action-btn" disabled>Download</button>
     </div>
-
-    <div id="error"></div>
-
-    <div id="preview"></div>
 
     <script src="taskpane.js"></script>
   </body>

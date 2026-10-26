@@ -2,7 +2,7 @@
 
 本書は現行実装（`src/taskpane/*.ts`, `src/taskpane/taskpane.html`, `src/taskpane/taskpane.css`, `manifest.xml`, `build.js`, `Installer/TextToSvgDiagramsForExcel.iss`）から起こした仕様書である。記述は実装の挙動を正とする。主要な挙動は `test/` の自動テストで検証している（§6.4）。
 
-- 対象バージョン: 1.4.0（`package.json` / マニフェスト `1.4.0.0`）
+- 対象バージョン: 1.5.0（`package.json` / マニフェスト `1.5.0.0`）
 - 作成日: 2026-10-21
 - 更新日: 2026-10-23
 
@@ -26,7 +26,7 @@ Mermaid 記法のテキストからダイアグラムを生成し、Excel のア
 | ホスト | Excel（`Workbook`）のみ |
 | フォームファクタ | デスクトップ（`DesktopFormFactor`）のみ |
 | 権限 | `ReadWriteDocument` |
-| 要件セット（マニフェスト） | `ExcelApi 1.9` |
+| 要件セット（マニフェスト） | `ExcelApi 1.9`、`SharedRuntime 1.1`（リボンのコマンドがタスクペインのページで動くため。§2） |
 | 要件セット（実行時判定） | `ImageCoercion 1.2`（SVG / SVG (for shape conversion) の挿入時のみ。§4.4） |
 | 主要ライブラリ | mermaid `^11.0.0`（バンドル同梱）、Office.js（Microsoft CDN から読み込み） |
 
@@ -38,36 +38,50 @@ ImageCoercion 1.2 をマニフェストに宣言しないのは、非対応環�
 
 | 項目 | 内容 |
 |---|---|
-| リボン | [ホーム] タブにグループ「Text-to-SVG Diagrams」（ボタン「Open Text-to-SVG」）を追加 |
-| ボタン | 「Open Text-to-SVG」（`OpenPaneButton`）。押下でタスクペイン `MermaidPane` を表示 |
+| リボン | 専用タブ「Diagrams」（`TabDiagrams`）を追加（§2.1） |
+| 共有ランタイム | `Runtimes` で `taskpane.html` を `lifetime="long"` のランタイムとし、`FunctionFile` も同じページにする。リボンのコマンドはタスクペインと同じページ・同じ状態で動く |
 | タスクペイン URL | 開発: `https://localhost:3000/taskpane.html` / 本番: `https://msmsrep.github.io/TextToSvgDiagramsForExcel/dist/taskpane.html` |
 | アドイン ID | `4f7e8c1b-2a3d-4e5f-9071-a2b3c4d5e6f7` |
+
+### 2.1 Diagrams タブ（`manifest.xml` / `ribbon.ts`）
+
+| グループ | コントロール | 内容 |
+|---|---|---|
+| Editor | ボタン「Editor」（`OpenPaneButton`） | タスクペイン `MermaidPane` を表示 |
+| New | メニュー「Template」 | 項目は `templates.ts` のテンプレートと同じ順・同じ名前。選んだひな形を入力欄に入れる（§4.13） |
+| New | メニュー「From cells」 | `Auto` / `Flowchart` / `Gantt` / `Pie`。選択セルからコードを生成する（§4.10） |
+| Output | メニュー「Insert as」 | 形式選択（§3 #7）と同じ 5 形式。選んだ形式で挿入する（§4.4） |
+| Output | メニュー「Download」 | `Shapes (editable)` を除く 4 形式。選んだ形式でダウンロードする（§4.5） |
+
+各メニュー項目は `ExecuteFunction` で、関数名は `template<Id>` / `cells<Kind>` / `insert<Format>` / `download<Format>`（例: `templateEr`、`insertSvgOffice`）。`Office.onReady` 後に `Office.actions.associate` で登録する（`Office.actions` がない環境では登録しない）。
+
+コマンドは、まず `Office.addin.showAsTaskpane()` でタスクペインを表示し（失敗しても続行）、次に処理を行い、最後に `event.completed()` を呼ぶ。結果やエラーはタスクペインに表示する。
+
+- 「Insert as」「Download」は形式選択をその形式に変えてから、ペインのボタンと同じ処理を行う。サイズ選択・差し替え先（シート図形選択）もペインの状態に従う。
+- 入力後まだ描画していないコード（デバウンス待ち・描画中）がある場合は、先に描画してから挿入・ダウンロードする。描画エラーになった場合はそのエラーを表示したまま中止する。
 
 ---
 
 ## 3. 画面仕様（タスクペイン）
 
-タスクペインの高さいっぱい（`100dvh`）に、上から順に以下の要素を縦に配置する。プレビューが残りの高さを占める。
+タスクペインの高さいっぱい（`100dvh`）に、上から順に以下の要素を縦に配置する。
 
 | # | 要素 | ID | 内容 |
 |---|---|---|---|
-| 1 | タイトル | — | 「Text-to-SVG Diagrams for Excel」 |
-| 2 | シート図形選択 | `sheet-diagram-select` | ラベル「Sheet diagram」。先頭は `(No diagram selected)`（値は空）。以降にアクティブシート上の Mermaid 図形を図形名で列挙 |
-| 2a | 読み込み確認 | `load-confirm` | 未保存のコードを置き換える前に表示する確認バー（§4.3）。通常は非表示。メッセージ（`load-confirm-text`）と「Replace」（`load-confirm-replace`）「Keep」（`load-confirm-keep`）ボタン |
-| 2b | テンプレート選択 | `template-select` | ラベル「New from template」。`Flowchart`（既定）/ `Sequence` / `Class` / `State` / `Entity relationship` / `Gantt` / `Pie` / `Mindmap` / `Timeline`。選択肢は `templates.ts` から作る |
-| 2c | テンプレートボタン | `template-btn` | 「Use」。選んだテンプレートを入力欄に入れる（§4.13） |
-| 3 | 生成する図の種類 | `table-kind-select` | ラベル「Code from selected cells」。`Auto`（既定）/ `Flowchart` / `Gantt` / `Pie`。各選択肢に列の並びを併記 |
-| 4 | 生成ボタン | `generate-btn` | 「Generate」。選択セルから Mermaid コードを生成する（§4.10） |
-| 5 | Mermaid 入力欄 | `mermaid-input` | 等幅フォントの textarea（初期高さ 100px、スペルチェック無効）。初期値はサンプルのフローチャート（§3.1）。背面の `input-backdrop` でエラー行を強調する（§4.11） |
-| 6 | スプリッタ | `splitter` | 入力欄とプレビューの境界。ドラッグで入力欄の高さを変更（§4.7） |
-| 6a | サイズ選択 | `size-select` | ラベル「Size」。`50%` / `75%` / `100%`（既定）/ `150%` / `200%` / `Width (pt)`（値 `width`）（§4.12） |
-| 6b | 幅の入力 | `size-width` | 幅（pt）の数値欄。`Width (pt)` のときだけ表示 |
-| 6c | サイズ維持 | `keep-size` | チェックボックス「Keep current size」（既定でオン）。図を差し替えるときだけ有効 |
+| 1 | シート図形選択 | `sheet-diagram-select` | ラベル「Diagram」（同じ行に並べる）。先頭は `(No diagram selected)`（値は空）。以降にアクティブシート上の Mermaid 図形を図形名で列挙 |
+| 1a | 読み込み確認 | `load-confirm` | 未保存のコードを置き換える前に表示する確認バー（§4.3）。通常は非表示。メッセージ（`load-confirm-text`）と「Replace」（`load-confirm-replace`）「Keep」（`load-confirm-keep`）ボタン |
+| 2 | Mermaid 入力欄 | `mermaid-input` | 等幅フォントの textarea（初期高さ 100px、スペルチェック無効）。初期値はサンプルのフローチャート（§3.1）。背面の `input-backdrop` でエラー行を強調する（§4.11） |
+| 3 | スプリッタ | `splitter` | 入力欄とプレビューの境界。ドラッグで入力欄の高さを変更（§4.7） |
+| 4 | プレビュー | `preview` | レンダリング結果の SVG を表示（最小高さ 120px、はみ出しはスクロール）。残りの高さを占める。入力が空のときは「Type Mermaid code, or start from Diagrams > Template on the ribbon」を表示 |
+| 5 | エラー表示 | `error` | エラーメッセージを赤字で表示。描画エラーの行が分かるときは「Go to line N」リンクを付ける（§4.11） |
+| 6 | サイズ選択 | `size-select` | ラベル「Size」。`50%` / `75%` / `100%`（既定）/ `150%` / `200%` / `Width (pt)`（値 `width`）（§4.12） |
+| 6a | 幅の入力 | `size-width` | 幅（pt）の数値欄。`Width (pt)` のときだけ表示 |
+| 6b | サイズ維持 | `keep-size` | チェックボックス「Keep current size」（既定でオン）。図を差し替えるときだけ有効 |
 | 7 | 形式選択 | `format-select` | `PNG`（既定）/ `JPEG` / `SVG` / `SVG (for shape conversion)`（値 `svg-office`）/ `Shapes (editable)`（値 `shapes`） |
 | 8 | 挿入ボタン | `insert-btn` | 「Insert to Excel」。初期状態は無効 |
-| 9 | ダウンロードボタン | `download-btn` | 「Download」。初期状態は無効。形式が `Shapes (editable)` の間も無効 |
-| 10 | エラー表示 | `error` | エラーメッセージを赤字で表示。描画エラーの行が分かるときは「Go to line N」リンクを付ける（§4.11） |
-| 11 | プレビュー | `preview` | レンダリング結果の SVG を表示（最小高さ 120px、はみ出しはスクロール）。入力が空のときは「Type Mermaid code」を表示 |
+| 9 | ダウンロードボタン | `download-btn` | ダウンロードのアイコンだけのボタン（ツールチップ・ラベル「Download」）。初期状態は無効。形式が `Shapes (editable)` の間も無効 |
+
+#6〜#9 は区切り線の下にまとめ、ペインの最下部に置く（#7〜#9 は 1 行）。テンプレートと選択セルからの生成はリボンにある（§2.1）。
 
 形式選択とサイズ選択は挿入とダウンロードの両方に適用される。形式を変更したときもボタンとサイズ指定の有効・無効を更新する。
 
@@ -130,7 +144,7 @@ graph LR
 - **読み込み失敗時**: エラーは表示せず、一覧を空にする。
 - **シート上での選択の監視**: 一覧を読み込むたびに、一覧の各図形に `Shape.onActivated`（ExcelApi 1.9）を登録し直す（前回の登録は外す。重ならないよう順に処理する）。登録に失敗してもエラーは表示しない（ドロップダウンからの読み込みは使える）。
 - **図の読み込み**: ドロップダウンで図を選んだとき、またはシート上で一覧の図形を選択したときに行う。
-  1. 入力欄に未保存のコードがあれば、確認バー（§3 #2a）に `Load "<図形名>"? The code in the editor has unsaved changes and will be replaced.` を表示し、ドロップダウンは元の選択のままにする。「Replace」で読み込み、「Keep」でバーを閉じる（入力欄・選択は変えない）。確認中に別の図を選ぶと、確認の対象をその図に切り替える。
+  1. 入力欄に未保存のコードがあれば、確認バー（§3 #1a）に `Load "<図形名>"? The code in the editor has unsaved changes and will be replaced.` を表示し、ドロップダウンは元の選択のままにする。「Replace」で読み込み、「Keep」でバーを閉じる（入力欄・選択は変えない）。確認中に別の図を選ぶと、確認の対象をその図に切り替える。
   2. 読み込みでは、ドロップダウンをその図にし、代替テキスト（説明）を入力欄に設定して即座にプレビューを描画する。以降の挿入はその図の差し替えになる（§4.4）。
 - **未保存のコード**: 入力欄（トリム後）が、最後に読み込んだ図のコード・最後に挿入したコード・起動時の初期値のどれとも違う状態。ただし空のとき、または読み込む図のコードと同じときは確認しない。選択セルから生成したコード（§4.10）は未保存として扱う。
 - **編集中の図の選択**: ドロップダウンで選択中の図をシート上で選んだときは何もしない（編集内容を保つ。表示中の確認バーは閉じる）。
@@ -180,7 +194,7 @@ graph LR
 
 ### 4.5 ダウンロード
 
-ダウンロードボタン押下時、選択形式でファイルを生成し、`<a download>` のクリックで保存させる。プレビューに SVG がない場合は `Please render first` を表示する。
+ダウンロードボタン押下時（またはリボンの「Download」。§2.1）、選択形式でファイルを生成し、`<a download>` のクリックで保存させる。プレビューに SVG がない場合は `Please render first` を表示する。
 
 | 形式 | ファイル名 | 生成方法 |
 |---|---|---|
@@ -279,7 +293,7 @@ Excel の「図形に変換」で文字・矢印・色がずれないよう、�
 
 ### 4.10 選択セルからのコード生成（`excelTable.ts` / `tableToMermaid.ts`）
 
-[Generate] で、選択したセル範囲の表から Mermaid コードを作り、入力欄を置き換えてすぐに描画する（デバウンス待ちの描画は取り消す）。生成したコードは新しい図として扱い、シート図形選択を `(No diagram selected)` に戻す（挿入しても既存の図を差し替えない）。失敗時は `Generate error: <メッセージ>` を表示し、入力欄は変えない。
+リボンの「From cells」で選んだ種類（§2.1）で、選択したセル範囲の表から Mermaid コードを作り、入力欄を置き換えてすぐに描画する（デバウンス待ちの描画は取り消す）。生成したコードは新しい図として扱い、シート図形選択を `(No diagram selected)` に戻す（挿入しても既存の図を差し替えない）。失敗時は `Generate error: <メッセージ>` を表示し、入力欄は変えない。
 
 **読み込み**（`readSelection`）:
 
@@ -353,7 +367,7 @@ mermaid が報告する行は、mermaid が前処理した後のコードの行�
 
 ### 4.13 テンプレート挿入（`templates.ts`）
 
-[Use] で、テンプレート選択で選んだ種類のひな形を入力欄に入れ、すぐに描画する。扱いは §4.10 の生成コードと同じで、待ち中の描画を取り消し、読み込み確認を閉じ、シート図形選択を `(No diagram selected)` に戻す（挿入しても既存の図を差し替えない）。入力欄に未保存のコードがあっても確認せずに置き換える。テンプレートのコードは未保存のコードとして扱うため、その後シート上の図を読み込むときは確認する（§4.3）。
+リボンの「Template」で選んだ種類（§2.1）のひな形を入力欄に入れ、すぐに描画する。扱いは §4.10 の生成コードと同じで、待ち中の描画を取り消し、読み込み確認を閉じ、シート図形選択を `(No diagram selected)` に戻す（挿入しても既存の図を差し替えない）。入力欄に未保存のコードがあっても確認せずに置き換える。テンプレートのコードは未保存のコードとして扱うため、その後シート上の図を読み込むときは確認する（§4.3）。
 
 テンプレートは数行の最小構成で、Flowchart は入力欄の初期値（§3.1）と同じ内容を `graph TD` で書いたもの。
 
@@ -424,6 +438,7 @@ Vitest（jsdom 環境）で `test/*.test.ts` を実行する。設定は `vitest
 | `excelTable.test.ts` | §4.10 の選択範囲の読み込み | 同上 |
 | `tableToMermaid.test.ts` | §4.10 のコード生成 | そのまま実行 |
 | `templates.test.ts` | §4.13 のテンプレート定義 | そのまま実行 |
+| `ribbon.test.ts` | §2.1 のコマンドとマニフェストの対応（関数名・メニュー項目・形式） | `manifest.xml` / `taskpane.html` を読んで照合 |
 | `officeSvg.test.ts` | §4.8 | SVG の座標・計測 API をスタブ（`test/fakes/svgGeometry.ts`） |
 | `flowchartModel.test.ts` | §4.9 の図形モデル作成、§4.12 の拡大縮小 | 同上 |
 | `svgUtil.test.ts` | 行列・色の変換 | そのまま実行 |
@@ -432,7 +447,7 @@ Vitest（jsdom 環境）で `test/*.test.ts` を実行する。設定は `vitest
 | `splitter.test.ts` | §4.7 | 要素の `offsetHeight` をスタブ |
 | `errorLine.test.ts` | §4.11 の行の特定 | そのまま実行 |
 | `lineHighlight.test.ts` | §4.11 の強調表示 | 要素の `clientWidth` / `clientHeight` / `offsetTop` をスタブ |
-| `taskpane.test.ts` | §3〜§4.5 / §4.10〜§4.13 の UI 動作 | `taskpane.html` を読み込み、Excel 操作・描画・画像化をモック |
+| `taskpane.test.ts` | §2.1 のコマンド実行、§3〜§4.5 / §4.10〜§4.13 の UI 動作 | `taskpane.html` を読み込み、Excel 操作・描画・画像化をモック。`Office.actions.associate` で登録されたコマンドを直接呼ぶ |
 | `scripts.test.ts` | §6.1 のバージョン反映、§6.2 | 一時ディレクトリにコピーしたプロジェクトで実行（Node 環境） |
 
 mermaid の実際の描画（jsdom は SVG のレイアウトを持たない）、`watch` / `serve` モード、Excel 上での動作は自動テストの対象外。jsdom は `<svg>` 内の `<style>` を適用しないため、§4.8 / §4.9 のテストではスタイルを `<svg>` の外に置く。
@@ -495,3 +510,4 @@ mermaid の実際の描画（jsdom は SVG のレイアウトを持たない）�
    - 図はアクティブセルに挿入されるため、表を選択したまま挿入すると図が表に重なる。
    - フローチャートでは見出し行を判定しないため、見出しを含めて選択するとそれもノードになる。
 6. **シート上での図の選択**（§4.3）: `Shapes (editable)` の図（グループ）は、グループ自体が選ばれたときに読み込まれる。グループ内の図形だけを選んだときにイベントが発生するかは Excel の挙動による。一覧の読み込み後に挿入された図形は、次の再読み込みまで監視されない。
+7. **リボン**（§2.1）: 共有ランタイム（SharedRuntime 1.1）に対応しない Excel ではアドインを読み込めない。リボンのボタンはすべて同じアイコンを使っている。メニューは manifest に書いた固定の項目で、シート上の図の一覧のように変わるものはタスクペインに置いている。
