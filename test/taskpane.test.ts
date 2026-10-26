@@ -73,10 +73,6 @@ const insertBtn = () => $<HTMLButtonElement>("insert-btn");
 const downloadBtn = () => $<HTMLButtonElement>("download-btn");
 const diagramSelect = () => $<HTMLSelectElement>("sheet-diagram-select");
 const formatSelect = () => $<HTMLSelectElement>("format-select");
-const tableKindSelect = () => $<HTMLSelectElement>("table-kind-select");
-const generateBtn = () => $<HTMLButtonElement>("generate-btn");
-const templateSelect = () => $<HTMLSelectElement>("template-select");
-const templateBtn = () => $<HTMLButtonElement>("template-btn");
 const loadConfirm = () => $<HTMLDivElement>("load-confirm");
 const loadConfirmText = () => $<HTMLSpanElement>("load-confirm-text").textContent;
 const replaceBtn = () => $<HTMLButtonElement>("load-confirm-replace");
@@ -114,6 +110,20 @@ async function selectShape(id: string) {
   await flush();
 }
 
+/** Ribbon command handlers registered through Office.actions.associate, by name. */
+let commands: Map<string, (event: { completed: () => void }) => Promise<void>>;
+let showAsTaskpane: ReturnType<typeof vi.fn>;
+
+/** Runs a ribbon command as Excel would and returns its event. */
+async function runCommand(name: string) {
+  const handler = commands.get(name);
+  if (!handler) throw new Error(`No command ${name}`);
+  const event = { completed: vi.fn() };
+  await handler(event);
+  await flush();
+  return event;
+}
+
 function activateSheet() {
   (m.onSheetActivated.mock.calls[0][0] as () => void)();
 }
@@ -131,7 +141,11 @@ async function click(button: HTMLButtonElement) {
 /** Loads taskpane.html and runs taskpane.ts as if Office had just become ready. */
 async function start() {
   document.documentElement.innerHTML = HTML.replace(/^[\s\S]*?<html[^>]*>|<\/html>[\s\S]*$/g, "");
-  vi.stubGlobal("Office", { onReady: (cb: () => void) => cb() });
+  vi.stubGlobal("Office", {
+    onReady: (cb: () => void) => cb(),
+    actions: { associate: (name: string, handler: never) => commands.set(name, handler) },
+    addin: { showAsTaskpane },
+  });
   vi.resetModules();
   await import("../src/taskpane/taskpane");
   await flush();
@@ -158,6 +172,8 @@ beforeEach(() => {
   m.extractFlowchart.mockReturnValue(SHAPE_MODEL);
 
   downloads = [];
+  commands = new Map();
+  showAsTaskpane = vi.fn().mockResolvedValue(undefined);
   vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (this: HTMLAnchorElement) {
     downloads.push({ href: this.href, download: this.download });
   });
@@ -231,7 +247,7 @@ describe("preview", () => {
     await vi.advanceTimersByTimeAsync(250);
 
     expect(m.renderMermaid).not.toHaveBeenCalled();
-    expect(preview().textContent).toBe("Type Mermaid code");
+    expect(preview().textContent).toBe("Type Mermaid code, or start from Diagrams > Template on the ribbon");
     expect(insertBtn().disabled).toBe(true);
     expect(downloadBtn().disabled).toBe(true);
   });
@@ -368,7 +384,7 @@ describe("preview", () => {
     first.resolve(SVG);
     await flush();
 
-    expect(preview().textContent).toBe("Type Mermaid code");
+    expect(preview().textContent).toBe("Type Mermaid code, or start from Diagrams > Template on the ribbon");
     expect(insertBtn().disabled).toBe(true);
   });
 });
@@ -590,7 +606,7 @@ describe("selecting a diagram on the sheet", () => {
     m.readSelection.mockResolvedValue({
       values: [["A", "B"]], text: [["A", "B"]], numberFormat: [["General", "General"]], firstRow: 1,
     });
-    await click(generateBtn());
+    await runCommand("cellsAuto");
     await selectShape("id-1");
     expect(loadConfirm().hidden).toBe(false);
   });
@@ -625,7 +641,7 @@ describe("selecting a diagram on the sheet", () => {
   });
 });
 
-describe("template", () => {
+describe("template (ribbon)", () => {
   const SEQUENCE = TEMPLATES.find((t) => t.id === "sequence")!;
 
   beforeEach(async () => {
@@ -633,16 +649,9 @@ describe("template", () => {
     await start();
   });
 
-  it("lists every template", () => {
-    expect(Array.from(templateSelect().options, (o) => [o.value, o.textContent])).toEqual(
-      TEMPLATES.map((t) => [t.id, t.label]),
-    );
-  });
-
   it("puts the chosen template in the input and renders it immediately", async () => {
     m.renderMermaid.mockClear();
-    templateSelect().value = "sequence";
-    await click(templateBtn());
+    await runCommand("templateSequence");
 
     expect(input().value).toBe(SEQUENCE.code);
     expect(m.renderMermaid).toHaveBeenCalledOnce();
@@ -653,8 +662,7 @@ describe("template", () => {
   it("clears the sheet diagram selection so the code is inserted as a new diagram", async () => {
     selectDiagram("id-1");
     await flush();
-    templateSelect().value = "sequence";
-    await click(templateBtn());
+    await runCommand("templateSequence");
 
     expect(diagramSelect().value).toBe("");
     await click(insertBtn());
@@ -662,21 +670,21 @@ describe("template", () => {
   });
 
   it("asks before replacing the template code", async () => {
-    await click(templateBtn());
+    await runCommand("templateFlowchart");
     await selectShape("id-1");
     expect(loadConfirm().hidden).toBe(false);
   });
 
   it("cancels a pending render of typed code", async () => {
     type("typed");
-    await click(templateBtn());
+    await runCommand("templateFlowchart");
     m.renderMermaid.mockClear();
     await vi.advanceTimersByTimeAsync(250);
     expect(m.renderMermaid).not.toHaveBeenCalled();
   });
 });
 
-describe("code from selected cells", () => {
+describe("code from selected cells (ribbon)", () => {
   const TABLE = { values: [["A", "B"]], text: [["A", "B"]], numberFormat: [["General", "General"]], firstRow: 1 };
   const CODE = 'graph TD\n    n1["A"] --> n2["B"]';
 
@@ -688,7 +696,7 @@ describe("code from selected cells", () => {
 
   it("puts the generated code in the input and renders it immediately", async () => {
     m.renderMermaid.mockClear();
-    await click(generateBtn());
+    await runCommand("cellsAuto");
 
     expect(input().value).toBe(CODE);
     expect(m.renderMermaid).toHaveBeenCalledOnce();
@@ -698,15 +706,14 @@ describe("code from selected cells", () => {
 
   it("generates the chosen diagram type", async () => {
     m.readSelection.mockResolvedValue({ ...TABLE, values: [["Item", "Value"], ["A", 3]] });
-    tableKindSelect().value = "pie";
-    await click(generateBtn());
+    await runCommand("cellsPie");
     expect(input().value).toBe('pie\n    "A" : 3');
   });
 
   it("clears the sheet diagram selection so the code is inserted as a new diagram", async () => {
     selectDiagram("id-1");
     await flush();
-    await click(generateBtn());
+    await runCommand("cellsAuto");
 
     expect(diagramSelect().value).toBe("");
     await click(insertBtn());
@@ -715,7 +722,7 @@ describe("code from selected cells", () => {
 
   it("cancels a pending render of typed code", async () => {
     type("typed");
-    await click(generateBtn());
+    await runCommand("cellsAuto");
     m.renderMermaid.mockClear();
     await vi.advanceTimersByTimeAsync(250);
     expect(m.renderMermaid).not.toHaveBeenCalled();
@@ -724,7 +731,7 @@ describe("code from selected cells", () => {
   it("reports read failures and leaves the input alone", async () => {
     m.readSelection.mockRejectedValue(new Error("Select a cell range on the sheet."));
     type("mine");
-    await click(generateBtn());
+    await runCommand("cellsAuto");
 
     expect(errorText()).toBe("Generate error: Select a cell range on the sheet.");
     expect(input().value).toBe("mine");
@@ -1110,5 +1117,81 @@ describe("output size", () => {
     sizeWidth().value = "100";
     await click(insertBtn());
     expect(errorText()).toBe("Insert error: The diagram's size is unknown.");
+  });
+});
+describe("ribbon commands", () => {
+  beforeEach(async () => {
+    m.listDiagrams.mockResolvedValue(DIAGRAMS);
+    await start();
+  });
+
+  it("shows the task pane before running and then completes", async () => {
+    const event = await runCommand("templateSequence");
+
+    expect(showAsTaskpane).toHaveBeenCalledOnce();
+    expect(showAsTaskpane.mock.invocationCallOrder[0]).toBeLessThan(
+      m.renderMermaid.mock.invocationCallOrder.at(-1)!,
+    );
+    expect(event.completed).toHaveBeenCalledOnce();
+  });
+
+  it("still runs when the task pane cannot be shown", async () => {
+    showAsTaskpane.mockRejectedValue(new Error("no pane"));
+    const event = await runCommand("templateSequence");
+
+    expect(input().value).toBe(TEMPLATES.find((t) => t.id === "sequence")!.code);
+    expect(event.completed).toHaveBeenCalledOnce();
+  });
+
+  it("inserts in the chosen format and shows it in the format select", async () => {
+    await runCommand("insertSvg");
+
+    expect(formatSelect().value).toBe("svg");
+    expect(m.insertSvgShape).toHaveBeenCalledOnce();
+    expect(m.insertImageShape).not.toHaveBeenCalled();
+  });
+
+  it("replaces the diagram being edited", async () => {
+    selectDiagram("id-1");
+    await flush();
+    await runCommand("insertPng");
+    expect(m.insertImageShape).toHaveBeenCalledWith(RASTER, "graph TD\nX-->Y", "id-1");
+  });
+
+  it("renders typed code before inserting it", async () => {
+    type("graph TD\nnew");
+    await runCommand("insertPng");
+
+    expect(m.renderMermaid).toHaveBeenLastCalledWith("graph TD\nnew");
+    expect(m.insertImageShape).toHaveBeenCalledWith(RASTER, "graph TD\nnew", undefined);
+  });
+
+  it("keeps the render error instead of inserting", async () => {
+    m.renderMermaid.mockRejectedValue(new Error("Parse error"));
+    type("bad");
+    await runCommand("insertPng");
+
+    expect(errorText()).toBe("Render error: Parse error");
+    expect(m.insertImageShape).not.toHaveBeenCalled();
+  });
+
+  it("downloads in the chosen format", async () => {
+    await runCommand("downloadJpeg");
+
+    expect(formatSelect().value).toBe("jpeg");
+    expect(downloads).toEqual([{ href: "data:image/jpeg;base64,B64", download: "diagram.jpg" }]);
+  });
+});
+
+describe("without a shared runtime", () => {
+  it("starts without registering ribbon commands", async () => {
+    document.documentElement.innerHTML = HTML.replace(/^[\s\S]*?<html[^>]*>|<\/html>[\s\S]*$/g, "");
+    vi.stubGlobal("Office", { onReady: (cb: () => void) => cb() });
+    vi.resetModules();
+    await import("../src/taskpane/taskpane");
+    await flush();
+
+    expect(preview().querySelector("svg")).not.toBeNull();
+    expect(commands.size).toBe(0);
   });
 });

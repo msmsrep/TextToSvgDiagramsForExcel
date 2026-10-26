@@ -23,6 +23,7 @@
   <Requirements>
     <Sets DefaultMinVersion="1.9">
       <Set Name="ExcelApi" MinVersion="1.9"/>
+      <Set Name="SharedRuntime" MinVersion="1.1"/>
     </Sets>
   </Requirements>
 
@@ -35,16 +36,21 @@
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
     <Hosts>
       <Host xsi:type="Workbook">
+        <!-- The ribbon commands run in the task pane's page, so they can drive the editor. -->
+        <Runtimes>
+          <Runtime resid="Taskpane.Url" lifetime="long"/>
+        </Runtimes>
         <DesktopFormFactor>
           <GetStarted>
             <Title resid="GetStarted.Title"/>
             <Description resid="GetStarted.Description"/>
             <LearnMoreUrl resid="GetStarted.LearnMoreUrl"/>
           </GetStarted>
+          <FunctionFile resid="Taskpane.Url"/>
           <ExtensionPoint xsi:type="PrimaryCommandSurface">
-            <OfficeTab id="TabHome">
-              <Group id="MermaidGroup">
-                <Label resid="Group.Label"/>
+            <CustomTab id="TabDiagrams">
+              <Group id="EditorGroup">
+                <Label resid="Group.Editor.Label"/>
                 <Icon>
                   <bt:Image size="16" resid="Icon.16x16"/>
                   <bt:Image size="32" resid="Icon.32x32"/>
@@ -69,7 +75,306 @@
                   </Action>
                 </Control>
               </Group>
-            </OfficeTab>
+              <Group id="NewGroup">
+                <Label resid="Group.New.Label"/>
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16x16"/>
+                  <bt:Image size="32" resid="Icon.32x32"/>
+                  <bt:Image size="64" resid="Icon.64x64"/>
+                  <bt:Image size="80" resid="Icon.80x80"/>
+                </Icon>
+                <Control xsi:type="Menu" id="TemplateMenu">
+                  <Label resid="Template.Label"/>
+                  <Supertip>
+                    <Title resid="Template.Label"/>
+                    <Description resid="Template.Description"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="64" resid="Icon.64x64"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Items>
+                    <Item id="Templateflowchart">
+                      <Label resid="Template.flowchart.Label"/>
+                      <Supertip>
+                        <Title resid="Template.flowchart.Label"/>
+                        <Description resid="Template.flowchart.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>templateFlowchart</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Templatesequence">
+                      <Label resid="Template.sequence.Label"/>
+                      <Supertip>
+                        <Title resid="Template.sequence.Label"/>
+                        <Description resid="Template.sequence.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>templateSequence</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Templateclass">
+                      <Label resid="Template.class.Label"/>
+                      <Supertip>
+                        <Title resid="Template.class.Label"/>
+                        <Description resid="Template.class.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>templateClass</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Templatestate">
+                      <Label resid="Template.state.Label"/>
+                      <Supertip>
+                        <Title resid="Template.state.Label"/>
+                        <Description resid="Template.state.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>templateState</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Templateer">
+                      <Label resid="Template.er.Label"/>
+                      <Supertip>
+                        <Title resid="Template.er.Label"/>
+                        <Description resid="Template.er.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>templateEr</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Templategantt">
+                      <Label resid="Template.gantt.Label"/>
+                      <Supertip>
+                        <Title resid="Template.gantt.Label"/>
+                        <Description resid="Template.gantt.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>templateGantt</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Templatepie">
+                      <Label resid="Template.pie.Label"/>
+                      <Supertip>
+                        <Title resid="Template.pie.Label"/>
+                        <Description resid="Template.pie.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>templatePie</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Templatemindmap">
+                      <Label resid="Template.mindmap.Label"/>
+                      <Supertip>
+                        <Title resid="Template.mindmap.Label"/>
+                        <Description resid="Template.mindmap.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>templateMindmap</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Templatetimeline">
+                      <Label resid="Template.timeline.Label"/>
+                      <Supertip>
+                        <Title resid="Template.timeline.Label"/>
+                        <Description resid="Template.timeline.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>templateTimeline</FunctionName>
+                      </Action>
+                    </Item>
+                  </Items>
+                </Control>
+                <Control xsi:type="Menu" id="CellsMenu">
+                  <Label resid="Cells.Label"/>
+                  <Supertip>
+                    <Title resid="Cells.Label"/>
+                    <Description resid="Cells.Description"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="64" resid="Icon.64x64"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Items>
+                    <Item id="Cellsauto">
+                      <Label resid="Cells.auto.Label"/>
+                      <Supertip>
+                        <Title resid="Cells.auto.Label"/>
+                        <Description resid="Cells.auto.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>cellsAuto</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Cellsflowchart">
+                      <Label resid="Cells.flowchart.Label"/>
+                      <Supertip>
+                        <Title resid="Cells.flowchart.Label"/>
+                        <Description resid="Cells.flowchart.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>cellsFlowchart</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Cellsgantt">
+                      <Label resid="Cells.gantt.Label"/>
+                      <Supertip>
+                        <Title resid="Cells.gantt.Label"/>
+                        <Description resid="Cells.gantt.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>cellsGantt</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Cellspie">
+                      <Label resid="Cells.pie.Label"/>
+                      <Supertip>
+                        <Title resid="Cells.pie.Label"/>
+                        <Description resid="Cells.pie.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>cellsPie</FunctionName>
+                      </Action>
+                    </Item>
+                  </Items>
+                </Control>
+              </Group>
+              <Group id="OutputGroup">
+                <Label resid="Group.Output.Label"/>
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16x16"/>
+                  <bt:Image size="32" resid="Icon.32x32"/>
+                  <bt:Image size="64" resid="Icon.64x64"/>
+                  <bt:Image size="80" resid="Icon.80x80"/>
+                </Icon>
+                <Control xsi:type="Menu" id="InsertMenu">
+                  <Label resid="Insert.Label"/>
+                  <Supertip>
+                    <Title resid="Insert.Label"/>
+                    <Description resid="Insert.Description"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="64" resid="Icon.64x64"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Items>
+                    <Item id="Insertpng">
+                      <Label resid="Insert.png.Label"/>
+                      <Supertip>
+                        <Title resid="Insert.png.Label"/>
+                        <Description resid="Insert.png.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>insertPng</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Insertjpeg">
+                      <Label resid="Insert.jpeg.Label"/>
+                      <Supertip>
+                        <Title resid="Insert.jpeg.Label"/>
+                        <Description resid="Insert.jpeg.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>insertJpeg</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Insertsvg">
+                      <Label resid="Insert.svg.Label"/>
+                      <Supertip>
+                        <Title resid="Insert.svg.Label"/>
+                        <Description resid="Insert.svg.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>insertSvg</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="InsertsvgOffice">
+                      <Label resid="Insert.svgOffice.Label"/>
+                      <Supertip>
+                        <Title resid="Insert.svgOffice.Label"/>
+                        <Description resid="Insert.svgOffice.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>insertSvgOffice</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Insertshapes">
+                      <Label resid="Insert.shapes.Label"/>
+                      <Supertip>
+                        <Title resid="Insert.shapes.Label"/>
+                        <Description resid="Insert.shapes.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>insertShapes</FunctionName>
+                      </Action>
+                    </Item>
+                  </Items>
+                </Control>
+                <Control xsi:type="Menu" id="DownloadMenu">
+                  <Label resid="Download.Label"/>
+                  <Supertip>
+                    <Title resid="Download.Label"/>
+                    <Description resid="Download.Description"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="64" resid="Icon.64x64"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Items>
+                    <Item id="Downloadpng">
+                      <Label resid="Download.png.Label"/>
+                      <Supertip>
+                        <Title resid="Download.png.Label"/>
+                        <Description resid="Download.png.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>downloadPng</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Downloadjpeg">
+                      <Label resid="Download.jpeg.Label"/>
+                      <Supertip>
+                        <Title resid="Download.jpeg.Label"/>
+                        <Description resid="Download.jpeg.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>downloadJpeg</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="Downloadsvg">
+                      <Label resid="Download.svg.Label"/>
+                      <Supertip>
+                        <Title resid="Download.svg.Label"/>
+                        <Description resid="Download.svg.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>downloadSvg</FunctionName>
+                      </Action>
+                    </Item>
+                    <Item id="DownloadsvgOffice">
+                      <Label resid="Download.svgOffice.Label"/>
+                      <Supertip>
+                        <Title resid="Download.svgOffice.Label"/>
+                        <Description resid="Download.svgOffice.Description"/>
+                      </Supertip>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>downloadSvgOffice</FunctionName>
+                      </Action>
+                    </Item>
+                  </Items>
+                </Control>
+              </Group>
+              <Label resid="Tab.Label"/>
+            </CustomTab>
           </ExtensionPoint>
         </DesktopFormFactor>
       </Host>
@@ -89,11 +394,66 @@
       <bt:ShortStrings>
         <bt:String id="GetStarted.Title" DefaultValue="Getting Started with Text-to-SVG Diagrams for Excel"/>
         <bt:String id="GetStarted.Description" DefaultValue="Create diagrams using Mermaid syntax and insert them into Excel"/>
-        <bt:String id="Group.Label" DefaultValue="Text-to-SVG Diagrams"/>
-        <bt:String id="OpenPane.Label" DefaultValue="Open Text-to-SVG"/>
+        <bt:String id="OpenPane.Label" DefaultValue="Editor"/>
+        <bt:String id="Group.Editor.Label" DefaultValue="Editor"/>
+        <bt:String id="Template.flowchart.Label" DefaultValue="Flowchart"/>
+        <bt:String id="Template.sequence.Label" DefaultValue="Sequence"/>
+        <bt:String id="Template.class.Label" DefaultValue="Class"/>
+        <bt:String id="Template.state.Label" DefaultValue="State"/>
+        <bt:String id="Template.er.Label" DefaultValue="Entity relationship"/>
+        <bt:String id="Template.gantt.Label" DefaultValue="Gantt"/>
+        <bt:String id="Template.pie.Label" DefaultValue="Pie"/>
+        <bt:String id="Template.mindmap.Label" DefaultValue="Mindmap"/>
+        <bt:String id="Template.timeline.Label" DefaultValue="Timeline"/>
+        <bt:String id="Template.Label" DefaultValue="Template"/>
+        <bt:String id="Cells.auto.Label" DefaultValue="Auto"/>
+        <bt:String id="Cells.flowchart.Label" DefaultValue="Flowchart"/>
+        <bt:String id="Cells.gantt.Label" DefaultValue="Gantt"/>
+        <bt:String id="Cells.pie.Label" DefaultValue="Pie"/>
+        <bt:String id="Cells.Label" DefaultValue="From cells"/>
+        <bt:String id="Group.New.Label" DefaultValue="New"/>
+        <bt:String id="Insert.png.Label" DefaultValue="PNG"/>
+        <bt:String id="Insert.jpeg.Label" DefaultValue="JPEG"/>
+        <bt:String id="Insert.svg.Label" DefaultValue="SVG"/>
+        <bt:String id="Insert.svgOffice.Label" DefaultValue="SVG (for shape conversion)"/>
+        <bt:String id="Insert.shapes.Label" DefaultValue="Shapes (editable)"/>
+        <bt:String id="Insert.Label" DefaultValue="Insert as"/>
+        <bt:String id="Download.png.Label" DefaultValue="PNG"/>
+        <bt:String id="Download.jpeg.Label" DefaultValue="JPEG"/>
+        <bt:String id="Download.svg.Label" DefaultValue="SVG"/>
+        <bt:String id="Download.svgOffice.Label" DefaultValue="SVG (for shape conversion)"/>
+        <bt:String id="Download.Label" DefaultValue="Download"/>
+        <bt:String id="Group.Output.Label" DefaultValue="Output"/>
+        <bt:String id="Tab.Label" DefaultValue="Diagrams"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="OpenPane.Description" DefaultValue="Draw diagrams using Mermaid syntax and insert them as images into Excel sheets"/>
+        <bt:String id="OpenPane.Description" DefaultValue="Open the pane to write Mermaid code, preview the diagram and insert it into the sheet"/>
+        <bt:String id="Template.flowchart.Description" DefaultValue="Put a Flowchart example in the editor"/>
+        <bt:String id="Template.sequence.Description" DefaultValue="Put a Sequence example in the editor"/>
+        <bt:String id="Template.class.Description" DefaultValue="Put a Class example in the editor"/>
+        <bt:String id="Template.state.Description" DefaultValue="Put a State example in the editor"/>
+        <bt:String id="Template.er.Description" DefaultValue="Put a Entity relationship example in the editor"/>
+        <bt:String id="Template.gantt.Description" DefaultValue="Put a Gantt example in the editor"/>
+        <bt:String id="Template.pie.Description" DefaultValue="Put a Pie example in the editor"/>
+        <bt:String id="Template.mindmap.Description" DefaultValue="Put a Mindmap example in the editor"/>
+        <bt:String id="Template.timeline.Description" DefaultValue="Put a Timeline example in the editor"/>
+        <bt:String id="Template.Description" DefaultValue="Start a new diagram from a short example of the chosen type"/>
+        <bt:String id="Cells.auto.Description" DefaultValue="Picks the diagram type from the selected table"/>
+        <bt:String id="Cells.flowchart.Description" DefaultValue="Columns: parent | child | label"/>
+        <bt:String id="Cells.gantt.Description" DefaultValue="Columns: task | start | end or days | section"/>
+        <bt:String id="Cells.pie.Description" DefaultValue="Columns: label | value"/>
+        <bt:String id="Cells.Description" DefaultValue="Make Mermaid code from the table in the selected cells"/>
+        <bt:String id="Insert.png.Description" DefaultValue="Insert the diagram as PNG"/>
+        <bt:String id="Insert.jpeg.Description" DefaultValue="Insert the diagram as JPEG"/>
+        <bt:String id="Insert.svg.Description" DefaultValue="Insert the diagram as SVG"/>
+        <bt:String id="Insert.svgOffice.Description" DefaultValue="Insert the diagram as SVG (for shape conversion)"/>
+        <bt:String id="Insert.shapes.Description" DefaultValue="Insert the diagram as Shapes (editable)"/>
+        <bt:String id="Insert.Description" DefaultValue="Insert the diagram into the sheet, replacing the diagram being edited"/>
+        <bt:String id="Download.png.Description" DefaultValue="Download the diagram as PNG"/>
+        <bt:String id="Download.jpeg.Description" DefaultValue="Download the diagram as JPEG"/>
+        <bt:String id="Download.svg.Description" DefaultValue="Download the diagram as SVG"/>
+        <bt:String id="Download.svgOffice.Description" DefaultValue="Download the diagram as SVG (for shape conversion)"/>
+        <bt:String id="Download.Description" DefaultValue="Save the diagram as a file"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>

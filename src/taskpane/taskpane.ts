@@ -16,13 +16,15 @@ import { type ImageFormat, serializeSvg, svgSize, svgToDataUrl, svgToRaster } fr
 import { initLineHighlight } from "./lineHighlight";
 import { toOfficeSvg } from "./officeSvg";
 import { getFlowchartData, initMermaid, renderMermaid } from "./render";
+import { registerRibbonCommands } from "./ribbon";
 import { initSplitter } from "./splitter";
 import { type TableKind, tableToMermaid } from "./tableToMermaid";
 import { TEMPLATES } from "./templates";
 import { byId, errorMessage, PX_TO_PT } from "./util";
 
 const RENDER_DEBOUNCE_MS = 250;
-const PREVIEW_HINT_HTML = '<span class="hint">Type Mermaid code</span>';
+const PREVIEW_HINT_HTML =
+  '<span class="hint">Type Mermaid code, or start from Diagrams &gt; Template on the ribbon</span>';
 const FILE_EXTENSIONS: Record<ImageFormat, string> = {
   png: "png",
   jpeg: "jpg",
@@ -50,10 +52,6 @@ Office.onReady(() => {
   const sizeSelect = byId<HTMLSelectElement>("size-select");
   const sizeWidth = byId<HTMLInputElement>("size-width");
   const keepSize = byId<HTMLInputElement>("keep-size");
-  const tableKindSelect = byId<HTMLSelectElement>("table-kind-select");
-  const generateBtn = byId<HTMLButtonElement>("generate-btn");
-  const templateSelect = byId<HTMLSelectElement>("template-select");
-  const templateBtn = byId<HTMLButtonElement>("template-btn");
   const loadConfirm = byId<HTMLDivElement>("load-confirm");
   const loadConfirmText = byId<HTMLSpanElement>("load-confirm-text");
   const loadConfirmReplace = byId<HTMLButtonElement>("load-confirm-replace");
@@ -318,115 +316,127 @@ Office.onReady(() => {
     await renderPreview();
   }
 
-  for (const template of TEMPLATES) {
-    const option = document.createElement("option");
-    option.value = template.id;
-    option.textContent = template.label;
-    templateSelect.appendChild(option);
-  }
-
-  templateBtn.addEventListener("click", async () => {
-    const template = TEMPLATES.find((t) => t.id === templateSelect.value);
+  async function useTemplate(id: string) {
+    const template = TEMPLATES.find((t) => t.id === id);
     if (template) {
       errDiv.textContent = "";
       await startNewDiagram(template.code);
     }
-  });
+  }
 
-  generateBtn.addEventListener("click", async () => {
+  async function generateFromCells(kind: TableKind) {
     errDiv.textContent = "";
     let code: string;
     try {
-      code = tableToMermaid(await readSelection(), tableKindSelect.value as TableKind);
+      code = tableToMermaid(await readSelection(), kind);
     } catch (e) {
       errDiv.textContent = `Generate error: ${errorMessage(e)}`;
       return;
     }
     await startNewDiagram(code);
-  });
+  }
 
   // ── Insert / Download ──────────────────────────────────────────────────────
-  /** Runs a button's action on the rendered SVG and reports any failure. */
-  function bindSvgAction(
-    button: HTMLButtonElement,
-    errorPrefix: string,
-    action: (svgEl: SVGSVGElement) => Promise<void>,
-  ) {
-    button.addEventListener("click", async () => {
+  /**
+   * Runs an action on the rendered SVG and reports any failure. Code typed
+   * since the last render (or still rendering) is rendered first.
+   */
+  async function withRenderedSvg(errorPrefix: string, action: (svgEl: SVGSVGElement) => Promise<void>) {
+    if (actionsEnabled) {
       errDiv.textContent = "";
-      const svgEl = preview.querySelector<SVGSVGElement>("svg");
-      if (!svgEl) {
-        errDiv.textContent = "Please render first";
-        return;
+    } else {
+      window.clearTimeout(renderDebounceTimer);
+      await renderPreview();
+    }
+    const svgEl = preview.querySelector<SVGSVGElement>("svg");
+    if (!svgEl) {
+      // Keep a render error, which tells more than this.
+      errDiv.textContent ||= "Please render first";
+      return;
+    }
+    try {
+      await action(svgEl);
+    } catch (e) {
+      errDiv.textContent = `${errorPrefix}: ${errorMessage(e)}`;
+    }
+  }
+
+  /** Shows the format used from the ribbon, so Size and the buttons follow it. */
+  function setFormat(format: OutputFormat) {
+    formatSelect.value = format;
+    setActionsEnabled(actionsEnabled);
+    updateSizeControls();
+  }
+
+  function download(format: OutputFormat) {
+    setFormat(format);
+    return withRenderedSvg("Download error", async (svgEl) => {
+      if (format === "shapes") {
+        throw new Error("Shapes cannot be downloaded.");
       }
-      try {
-        await action(svgEl);
-      } catch (e) {
-        errDiv.textContent = `${errorPrefix}: ${errorMessage(e)}`;
+      const scale = chosenScale(svgEl);
+      let dataUrl: string;
+      if (format === "svg") {
+        dataUrl = svgToDataUrl(serializeSvg(svgEl, scale));
+      } else if (format === "svg-office") {
+        dataUrl = svgToDataUrl(toOfficeSvg(svgEl));
+      } else {
+        dataUrl = `data:image/${format};base64,` + (await svgToRaster(svgEl, format, scale)).base64;
       }
+
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = `diagram.${FILE_EXTENSIONS[format === "svg-office" ? "svg" : format]}`;
+      a.click();
     });
   }
 
-  bindSvgAction(downloadBtn, "Download error", async (svgEl) => {
-    const format = selectedFormat();
-    if (format === "shapes") {
-      throw new Error("Shapes cannot be downloaded.");
-    }
-    const scale = chosenScale(svgEl);
-    let dataUrl: string;
-    if (format === "svg") {
-      dataUrl = svgToDataUrl(serializeSvg(svgEl, scale));
-    } else if (format === "svg-office") {
-      dataUrl = svgToDataUrl(toOfficeSvg(svgEl));
-    } else {
-      dataUrl = `data:image/${format};base64,` + (await svgToRaster(svgEl, format, scale)).base64;
-    }
+  function insert(format: OutputFormat) {
+    setFormat(format);
+    return withRenderedSvg("Insert error", async (svgEl) => {
+      const mermaidCode = input.value.trim();
+      const replaceId = currentDiagramId || undefined;
+      let insertedShapeId: string;
 
-    const a = document.createElement("a");
-    a.href = dataUrl;
-    a.download = `diagram.${FILE_EXTENSIONS[format === "svg-office" ? "svg" : format]}`;
-    a.click();
-  });
-
-  bindSvgAction(insertBtn, "Insert error", async (svgEl) => {
-    const format = selectedFormat();
-    const mermaidCode = input.value.trim();
-    const replaceId = currentDiagramId || undefined;
-    let insertedShapeId: string;
-
-    if (format === "shapes") {
-      const data = await getFlowchartData(mermaidCode);
-      if (!data) {
-        throw new Error("Shapes format supports flowcharts only.");
-      }
-      const scale = await insertScale(svgEl, replaceId);
-      insertedShapeId = await insertNativeShapes(
-        scaleModel(extractFlowchart(svgEl, data), scale),
-        mermaidCode,
-        replaceId,
-      );
-    } else if (format === "svg" || format === "svg-office") {
-      if (!isSvgInsertSupported()) {
-        throw new Error(
-          "SVG insertion is not supported in this version of Excel. Use PNG or JPEG.",
+      if (format === "shapes") {
+        const data = await getFlowchartData(mermaidCode);
+        if (!data) {
+          throw new Error("Shapes format supports flowcharts only.");
+        }
+        const scale = await insertScale(svgEl, replaceId);
+        insertedShapeId = await insertNativeShapes(
+          scaleModel(extractFlowchart(svgEl, data), scale),
+          mermaidCode,
+          replaceId,
         );
+      } else if (format === "svg" || format === "svg-office") {
+        if (!isSvgInsertSupported()) {
+          throw new Error(
+            "SVG insertion is not supported in this version of Excel. Use PNG or JPEG.",
+          );
+        }
+        const scale = await insertScale(svgEl, replaceId);
+        const svg = format === "svg" ? serializeSvg(svgEl) : toOfficeSvg(svgEl);
+        const { width, height } = svgSize(svgEl);
+        insertedShapeId = await insertSvgShape(
+          { svg, width: width * scale, height: height * scale },
+          mermaidCode,
+          replaceId,
+        );
+      } else {
+        const image = await svgToRaster(svgEl, format, await insertScale(svgEl, replaceId));
+        insertedShapeId = await insertImageShape(image, mermaidCode, replaceId);
       }
-      const scale = await insertScale(svgEl, replaceId);
-      const svg = format === "svg" ? serializeSvg(svgEl) : toOfficeSvg(svgEl);
-      const { width, height } = svgSize(svgEl);
-      insertedShapeId = await insertSvgShape(
-        { svg, width: width * scale, height: height * scale },
-        mermaidCode,
-        replaceId,
-      );
-    } else {
-      const image = await svgToRaster(svgEl, format, await insertScale(svgEl, replaceId));
-      insertedShapeId = await insertImageShape(image, mermaidCode, replaceId);
-    }
 
-    savedCode = mermaidCode;
-    await refreshDiagramOptions(insertedShapeId);
-  });
+      savedCode = mermaidCode;
+      await refreshDiagramOptions(insertedShapeId);
+    });
+  }
+
+  downloadBtn.addEventListener("click", () => void download(selectedFormat()));
+  insertBtn.addEventListener("click", () => void insert(selectedFormat()));
+
+  registerRibbonCommands({ useTemplate, generateFromCells, insert, download });
 
   // Render initial Mermaid code when the task pane opens.
   updateSizeControls();

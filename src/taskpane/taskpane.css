@@ -5,12 +5,7 @@
   --color-border: #c7c7c7;
   --color-error: #a4262c;
   --color-disabled: #a8a8a8;
-  --color-insert: #107c10;
-  --color-insert-hover: #0b5e0b;
-  --color-download: #5c2d91;
-  --color-download-hover: #451f6e;
-  --color-generate: #0078d4;
-  --color-generate-hover: #106ebe;
+  --color-accent-hover: #106ebe;
 }
 
 *,
@@ -34,12 +29,6 @@ body {
   overflow-y: auto;
 }
 
-h1 {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-accent);
-}
-
 .field-label {
   font-size: 12px;
   font-weight: 600;
@@ -60,10 +49,19 @@ textarea:focus {
   border-color: var(--color-accent);
 }
 
+/* ── Diagram being edited ── */
+.diagram-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
 #sheet-diagram-select {
-  width: 100%;
-  padding: 6px 8px;
+  flex: 1;
+  min-width: 0;
+  padding: 4px 6px;
   background: #fff;
+  text-overflow: ellipsis;
 }
 
 /* ── Editor: the textarea over a backdrop that highlights the error line ── */
@@ -134,7 +132,17 @@ textarea {
   outline: none;
 }
 
-/* ── Output size ── */
+/* ── Output: size, format, insert and download, kept at the bottom ── */
+.output {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  padding-top: 8px;
+  border-top: 1px solid #e1e1e1;
+}
+
+
 .size-group {
   display: flex;
   flex-wrap: wrap;
@@ -176,12 +184,9 @@ textarea {
 }
 
 /* ── Buttons ── */
-/* In a narrow pane, Download wraps below rather than squeezing the select. */
 .buttons {
   display: flex;
-  flex-wrap: wrap;
   gap: 8px;
-  flex-shrink: 0;
 }
 
 button {
@@ -196,72 +201,53 @@ button {
 }
 
 .action-btn {
-  background: var(--btn-bg);
+  background: var(--color-accent);
   color: #fff;
 }
 .action-btn:hover {
-  background: var(--btn-hover);
+  background: var(--color-accent-hover);
 }
 .action-btn:disabled {
   background: var(--color-disabled);
   cursor: not-allowed;
 }
-#insert-btn {
-  --btn-bg: var(--color-insert);
-  --btn-hover: var(--color-insert-hover);
+
+.secondary-btn {
+  background: #fff;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
 }
-#download-btn {
-  --btn-bg: var(--color-download);
-  --btn-hover: var(--color-download-hover);
+.secondary-btn:hover {
+  background: #f3f2f1;
+}
+.secondary-btn:disabled {
+  background: #fff;
+  color: var(--color-disabled);
+  cursor: not-allowed;
 }
 
-/* Format select and insert button are joined into one control. */
-.insert-group {
-  display: flex;
-  flex: 1 1 200px;
-  min-width: 0;
-}
 /* Long labels like "SVG (for shape conversion)" are cut off with an ellipsis
    instead of widening the select and squeezing the buttons. */
 #format-select {
   flex: 0 1 auto;
-  min-width: 6em;
-  max-width: 55%;
+  min-width: 5em;
+  max-width: 45%;
   padding: 4px 6px;
-  border-right: none;
-  border-radius: 4px 0 0 4px;
-  background: #f3f2f1;
-  font-weight: 600;
+  background: #fff;
   text-overflow: ellipsis;
   cursor: pointer;
 }
 #insert-btn {
   flex: 1;
-  border-radius: 0 4px 4px 0;
-}
-#download-btn {
-  flex: 1 0 auto;
-}
-
-/* Template / diagram type select and its button, joined like the insert group. */
-.select-group {
-  display: flex;
-  flex-shrink: 0;
   min-width: 0;
-}
-.select-group select {
-  flex: 1 1 auto;
-  min-width: 0;
-  padding: 4px 6px;
-  border-right: none;
-  border-radius: 4px 0 0 4px;
-  background: #fff;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
-.select-group .action-btn {
-  --btn-bg: var(--color-generate);
-  --btn-hover: var(--color-generate-hover);
-  border-radius: 0 4px 4px 0;
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
 }
 
 /* ── Confirmation before loading a diagram over edited code ── */
@@ -288,18 +274,6 @@ button {
 .confirm-buttons {
   display: flex;
   gap: 8px;
-}
-#load-confirm-replace {
-  --btn-bg: var(--color-generate);
-  --btn-hover: var(--color-generate-hover);
-}
-.secondary-btn {
-  background: #fff;
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
-}
-.secondary-btn:hover {
-  background: #f3f2f1;
 }
 
 #error {
