@@ -1,6 +1,7 @@
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { connectionSite, extractFlowchart, type ShapeModel, scaleModel } from "../src/taskpane/flowchartModel";
-import type { FlowchartData } from "../src/taskpane/render";
+import { connectionSite, extractFlowchart, type ShapeModel, scaleModel } from "../src/core/flowchartModel";
+import type { FlowchartData } from "../src/core/render";
+import connectionSiteFixture from "./fixtures/connectionSite.json";
 import { stubSvgGeometry } from "./fakes/svgGeometry";
 
 const points = (...p: Array<[number, number]>) => btoa(JSON.stringify(p.map(([x, y]) => ({ x, y }))));
@@ -233,39 +234,9 @@ describe("extractFlowchart", () => {
 });
 
 describe("connectionSite", () => {
-  const box = { left: 0, top: 0, width: 200, height: 20 };
-
-  it.each([
-    [{ x: 100, y: 0 }, 0],
-    [{ x: 0, y: 10 }, 1],
-    [{ x: 100, y: 20 }, 2],
-    [{ x: 200, y: 10 }, 3],
-    // Near the right end of a wide box: the angle is taken in box-relative units.
-    [{ x: 200, y: 3 }, 3],
-  ])("picks the nearest of four sites counterclockwise from the top for %o", (point, site) => {
-    expect(connectionSite(box, point, 4)).toBe(site);
-  });
-
-  it("uses Excel's measured site directions for hexagons", () => {
-    // Sites: 0 right, 1 upper left, 2 lower left, 3 left, 4 upper right, 5 lower right.
-    expect(connectionSite(box, { x: 100, y: 0 }, 6, "Hexagon")).toBe(4);
-    expect(connectionSite(box, { x: 0, y: 10 }, 6, "Hexagon")).toBe(3);
-    expect(connectionSite(box, { x: 200, y: 10 }, 6, "Hexagon")).toBe(0);
-  });
-
-  it("skips the excluded site", () => {
-    expect(connectionSite(box, { x: 100, y: 20 }, 4, undefined, 2)).toBe(1);
-    expect(connectionSite(box, { x: 150, y: 20 }, 4, undefined, 2)).toBe(3);
-  });
-
-  it("falls back to even spacing when the measured table does not match the site count", () => {
-    expect(connectionSite(box, { x: 0, y: 10 }, 4, "Hexagon")).toBe(1);
-  });
-
-  it("supports other site counts", () => {
-    const square = { left: 0, top: 0, width: 20, height: 20 };
-    expect(connectionSite(square, { x: 0, y: 0 }, 8)).toBe(1);
-    expect(connectionSite(square, { x: 20, y: 0 }, 8)).toBe(7);
+  // The same cases run against the desktop app's C# port (ConnectionSite.cs).
+  it.each(connectionSiteFixture.cases)("$name", (c) => {
+    expect(connectionSite(c.box, c.point, c.siteCount, c.type, c.exclude)).toBe(c.expected);
   });
 });
 

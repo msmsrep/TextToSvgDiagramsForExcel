@@ -1,5 +1,5 @@
-import type { TableKind } from "./tableToMermaid";
-import { TEMPLATES } from "./templates";
+import type { TableKind } from "../core/tableToMermaid";
+import { TEMPLATES } from "../core/templates";
 
 /** Formats offered by the ribbon's Insert as menu, as the format select's values. */
 export const INSERT_FORMATS = ["png", "jpeg", "svg", "svg-office", "shapes"] as const;

@@ -7,7 +7,7 @@ const mermaid = vi.hoisted(() => ({
 }));
 vi.mock("mermaid", () => ({ default: mermaid }));
 
-import { getFlowchartData, initMermaid, renderMermaid } from "../src/taskpane/render";
+import { getFlowchartData, initMermaid, renderMermaid } from "../src/core/render";
 
 beforeEach(() => {
   mermaid.initialize.mockReset();

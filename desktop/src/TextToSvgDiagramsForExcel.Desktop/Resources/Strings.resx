@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppTitle" xml:space="preserve">
+    <value>Text-to-SVG Diagrams for Excel</value>
+  </data>
+  <data name="Menu_File" xml:space="preserve">
+    <value>_File</value>
+  </data>
+  <data name="Menu_OpenMmd" xml:space="preserve">
+    <value>_Open .mmd...</value>
+  </data>
+  <data name="Menu_SaveMmd" xml:space="preserve">
+    <value>_Save code as .mmd...</value>
+  </data>
+  <data name="Menu_Exit" xml:space="preserve">
+    <value>E_xit</value>
+  </data>
+  <data name="Menu_New" xml:space="preserve">
+    <value>_New</value>
+  </data>
+  <data name="Menu_Template" xml:space="preserve">
+    <value>_Template</value>
+  </data>
+  <data name="Menu_FromCells" xml:space="preserve">
+    <value>From _cells</value>
+  </data>
+  <data name="Menu_Output" xml:space="preserve">
+    <value>_Output</value>
+  </data>
+  <data name="Menu_InsertAs" xml:space="preserve">
+    <value>_Insert as</value>
+  </data>
+  <data name="Menu_SaveAs" xml:space="preserve">
+    <value>_Save as</value>
+  </data>
+  <data name="Menu_Copy" xml:space="preserve">
+    <value>_Copy image</value>
+  </data>
+  <data name="Menu_LoadSelected" xml:space="preserve">
+    <value>_Load selected diagram</value>
+  </data>
+  <data name="Menu_View" xml:space="preserve">
+    <value>_View</value>
+  </data>
+  <data name="Menu_AlwaysOnTop" xml:space="preserve">
+    <value>Always on _top</value>
+  </data>
+  <data name="Menu_AutoDetect" xml:space="preserve">
+    <value>_Detect diagrams selected on the sheet</value>
+  </data>
+  <data name="Menu_Language" xml:space="preserve">
+    <value>_Language</value>
+  </data>
+  <data name="Lang_System" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="LanguageRestart" xml:space="preserve">
+    <value>The language changes after you restart the app.</value>
+  </data>
+  <data name="Label_Diagram" xml:space="preserve">
+    <value>Diagram</value>
+  </data>
+  <data name="Label_Size" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="Label_Format" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="NoDiagramSelected" xml:space="preserve">
+    <value>(No diagram selected)</value>
+  </data>
+  <data name="Tooltip_Refresh" xml:space="preserve">
+    <value>Reload the diagrams on the sheet</value>
+  </data>
+  <data name="Tooltip_LoadSelected" xml:space="preserve">
+    <value>Load the diagram selected on the sheet</value>
+  </data>
+  <data name="Tooltip_Save" xml:space="preserve">
+    <value>Save as a file</value>
+  </data>
+  <data name="Tooltip_Copy" xml:space="preserve">
+    <value>Copy the image</value>
+  </data>
+  <data name="Button_Insert" xml:space="preserve">
+    <value>Insert to Excel</value>
+  </data>
+  <data name="Button_Replace" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="Button_Keep" xml:space="preserve">
+    <value>Keep</value>
+  </data>
+  <data name="KeepCurrentSize" xml:space="preserve">
+    <value>Keep current size</value>
+  </data>
+  <data name="SizeWidth" xml:space="preserve">
+    <value>Width (pt)</value>
+  </data>
+  <data name="FormatSvgOffice" xml:space="preserve">
+    <value>SVG (for shape conversion)</value>
+  </data>
+  <data name="FormatShapes" xml:space="preserve">
+    <value>Shapes (editable)</value>
+  </data>
+  <data name="TableAuto" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="GoToLine" xml:space="preserve">
+    <value>Go to line {0}</value>
+  </data>
+  <data name="LoadConfirm" xml:space="preserve">
+    <value>Load "{0}"? The code in the editor has unsaved changes and will be replaced.</value>
+  </data>
+  <data name="ExcelConnected" xml:space="preserve">
+    <value>Excel: {0}</value>
+  </data>
+  <data name="ExcelNotFound" xml:space="preserve">
+    <value>Excel not found</value>
+  </data>
+  <data name="ExcelNoWorkbook" xml:space="preserve">
+    <value>Open a workbook in Excel</value>
+  </data>
+  <data name="ExcelCannotConnect" xml:space="preserve">
+    <value>Cannot connect to Excel (if Excel runs as administrator, start it again normally)</value>
+  </data>
+  <data name="ExcelBusy" xml:space="preserve">
+    <value>Excel is not accepting operations (for example, while a cell is being edited).</value>
+  </data>
+  <data name="RenderError" xml:space="preserve">
+    <value>Render error: {0}</value>
+  </data>
+  <data name="InsertError" xml:space="preserve">
+    <value>Insert error: {0}</value>
+  </data>
+  <data name="SaveError" xml:space="preserve">
+    <value>Save error: {0}</value>
+  </data>
+  <data name="CopyError" xml:space="preserve">
+    <value>Copy error: {0}</value>
+  </data>
+  <data name="GenerateError" xml:space="preserve">
+    <value>Generate error: {0}</value>
+  </data>
+  <data name="PleaseRenderFirst" xml:space="preserve">
+    <value>Please render first</value>
+  </data>
+  <data name="SizeUnknown" xml:space="preserve">
+    <value>The diagram's size is unknown.</value>
+  </data>
+  <data name="EnterWidth" xml:space="preserve">
+    <value>Enter a width greater than 0.</value>
+  </data>
+  <data name="DiagramNoLongerExists" xml:space="preserve">
+    <value>Selected diagram no longer exists.</value>
+  </data>
+  <data name="DiagramHasNoShapes" xml:space="preserve">
+    <value>The diagram has no shapes.</value>
+  </data>
+  <data name="SvgNotSupported" xml:space="preserve">
+    <value>SVG insertion is not supported in this version of Excel. Use PNG or JPEG.</value>
+  </data>
+  <data name="ShapesCannotBeSaved" xml:space="preserve">
+    <value>Shapes cannot be saved as a file.</value>
+  </data>
+  <data name="SelectCellRange" xml:space="preserve">
+    <value>Select a cell range on the sheet.</value>
+  </data>
+  <data name="SelectionEmpty" xml:space="preserve">
+    <value>The selection is empty.</value>
+  </data>
+  <data name="SelectionTooManyRows" xml:space="preserve">
+    <value>The selection has more than {0} rows.</value>
+  </data>
+  <data name="SelectDiagramOnSheet" xml:space="preserve">
+    <value>Select a diagram on the sheet.</value>
+  </data>
+  <data name="MmdFilter" xml:space="preserve">
+    <value>Mermaid files (*.mmd;*.mermaid)|*.mmd;*.mermaid|Text files (*.txt)|*.txt|All files (*.*)|*.*</value>
+  </data>
+  <data name="Filter_png" xml:space="preserve">
+    <value>PNG image (*.png)|*.png</value>
+  </data>
+  <data name="Filter_jpg" xml:space="preserve">
+    <value>JPEG image (*.jpg)|*.jpg</value>
+  </data>
+  <data name="Filter_svg" xml:space="preserve">
+    <value>SVG image (*.svg)|*.svg</value>
+  </data>
+  <data name="FileError" xml:space="preserve">
+    <value>The file could not be opened: {0}</value>
+  </data>
+  <data name="WebView2MissingTitle" xml:space="preserve">
+    <value>WebView2 Runtime required</value>
+  </data>
+  <data name="WebView2Missing" xml:space="preserve">
+    <value>This app needs the Microsoft Edge WebView2 Runtime to draw diagrams.
+
+Install it from https://go.microsoft.com/fwlink/p/?LinkId=2124703 and start the app again.
+
+Open the download page now?</value>
+  </data>
+  <data name="EngineFailed" xml:space="preserve">
+    <value>The drawing engine could not start: {0}</value>
+  </data>
+</root>

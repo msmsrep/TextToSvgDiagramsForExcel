@@ -7,6 +7,8 @@ const path = require("path");
 
 const ROOT = __dirname;
 const DIST = path.join(ROOT, "dist");
+// The desktop app (WPF) loads the engine from its web/ folder.
+const ENGINE_OUT = path.join(ROOT, "desktop/src/TextToSvgDiagramsForExcel.Desktop/web");
 const PORT = 3000;
 
 const DEV_BASE_URL = "https://localhost:3000";
@@ -49,6 +51,16 @@ const BUNDLE = {
   format: "iife",
   target: "es2017",
   sourcemap: true,
+};
+
+/** @type {import('esbuild').BuildOptions} */
+const ENGINE_BUNDLE = {
+  ...BUNDLE,
+  entryPoints: [path.join(ROOT, "src/engine/engine.ts")],
+  outfile: path.join(ENGINE_OUT, "engine.js"),
+  // The engine runs in WebView2 (Chromium), so newer syntax is fine.
+  target: "es2020",
+  sourcemap: false,
 };
 
 // ── 各モード ──────────────────────────────────────────────────────────────────
@@ -102,23 +114,37 @@ async function serve() {
   );
 }
 
+/** デスクトップ版の描画エンジン（WebView2 で読むページ）をビルドする */
+async function buildEngine() {
+  fs.mkdirSync(ENGINE_OUT, { recursive: true });
+  for (const f of ["engine.html", "engine.css"]) {
+    fs.copyFileSync(path.join(ROOT, "src/engine", f), path.join(ENGINE_OUT, f));
+  }
+  await esbuild.build(ENGINE_BUNDLE);
+  console.log("  engine build 完了 → desktop/src/TextToSvgDiagramsForExcel.Desktop/web/");
+}
+
 /** @type {Record<string, () => Promise<void>>} */
 const MODES = {
   build: () => buildOnce(PROD_BASE_URL),
   dev: () => buildOnce(DEV_BASE_URL),
   watch,
   serve,
+  engine: buildEngine,
 };
 
 // ── エントリポイント ───────────────────────────────────────────────────────────
-const [, , mode = "build"] = process.argv; // node build.js [build|dev|watch|serve]
+const [, , mode = "build"] = process.argv; // node build.js [build|dev|watch|serve|engine]
 
 (async () => {
   const run = MODES[mode];
   if (!run) {
     throw new Error(`Unknown mode: ${mode} (${Object.keys(MODES).join("|")})`);
   }
-  copyStatics();
+  // The engine does not use the add-in's dist/.
+  if (mode !== "engine") {
+    copyStatics();
+  }
   await run();
 })().catch((e) => {
   console.error(e);

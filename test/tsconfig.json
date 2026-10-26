@@ -2,6 +2,7 @@
     "extends": "../tsconfig.json",
     "compilerOptions": {
         // Tests run on Node, so they may use newer library APIs than the task pane.
+        "resolveJsonModule": true,
         "lib": [
             "ES2022",
             "DOM"

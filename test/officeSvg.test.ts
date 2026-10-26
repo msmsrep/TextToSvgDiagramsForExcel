@@ -1,5 +1,5 @@
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { toOfficeSvg } from "../src/taskpane/officeSvg";
+import { toOfficeSvg } from "../src/core/officeSvg";
 import { stubSvgGeometry } from "./fakes/svgGeometry";
 
 // Mermaid puts the <style> inside the <svg>, but jsdom only applies it outside.

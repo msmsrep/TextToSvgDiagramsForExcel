@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { DOWNLOAD_FORMATS, INSERT_FORMATS, ribbonCommands } from "../src/taskpane/ribbon";
-import { TEMPLATES } from "../src/taskpane/templates";
+import { TEMPLATES } from "../src/core/templates";
 
 const MANIFEST = readFileSync(join(__dirname, "../manifest.xml"), "utf8");
 

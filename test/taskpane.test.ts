@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { DiagramItem } from "../src/taskpane/excelShapes";
-import { TEMPLATES } from "../src/taskpane/templates";
+import { TEMPLATES } from "../src/core/templates";
 
 const m = vi.hoisted(() => ({
   listDiagrams: vi.fn(),
@@ -33,18 +33,18 @@ vi.mock("../src/taskpane/excelShapes", () => ({
   getDiagramWidth: m.getDiagramWidth,
 }));
 vi.mock("../src/taskpane/excelTable", () => ({ readSelection: m.readSelection }));
-vi.mock("../src/taskpane/render", () => ({
+vi.mock("../src/core/render", () => ({
   initMermaid: m.initMermaid,
   renderMermaid: m.renderMermaid,
   getFlowchartData: m.getFlowchartData,
 }));
-vi.mock("../src/taskpane/officeSvg", () => ({ toOfficeSvg: m.toOfficeSvg }));
-vi.mock("../src/taskpane/flowchartModel", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("../src/taskpane/flowchartModel")>()),
+vi.mock("../src/core/officeSvg", () => ({ toOfficeSvg: m.toOfficeSvg }));
+vi.mock("../src/core/flowchartModel", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../src/core/flowchartModel")>()),
   extractFlowchart: m.extractFlowchart,
 }));
-vi.mock("../src/taskpane/image", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("../src/taskpane/image")>()),
+vi.mock("../src/core/image", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../src/core/image")>()),
   svgToRaster: m.svgToRaster,
 }));
 
