@@ -15,6 +15,7 @@ This is an unofficial tool and is not affiliated with the Mermaid project. It wa
 - **Real-time preview** — The diagram is rendered automatically in the task pane as you type Mermaid syntax. On a syntax error, the offending line is highlighted in the editor and [Go to line N] jumps to it
 - **Insert into Excel** — Insert the previewed image at the active cell with one click
 - **Re-editing** — The Mermaid code is stored in the inserted image's alt text; select the diagram on the sheet (or pick it from [Sheet diagram]) to load it back, then edit and replace it. If the editor has unsaved code, you are asked before it is replaced
+- **Templates** — Pick a diagram type in [New from template] and click [Use] to start from a short example (flowchart, sequence, class, state, ER, Gantt, pie, mindmap, timeline)
 - **Code from selected cells** — Select a table and click [Generate] to get flowchart (`parent | child | label`), Gantt (`task | start | end or days | section`) or pie chart (`label | value`) code
 - **PNG / JPEG / SVG output** — Choose your output format and download the image directly
 - **Output size** — Set the size as a scale (50–200%) or a width in points. When replacing a diagram, *Keep current size* (on by default) keeps its width on the sheet
@@ -44,6 +45,7 @@ TextToSvgDiagramsForExcel/
     excelShapes.ts         ← Excel shape insert / replace / list
     excelTable.ts          ← Reads the selected cells
     tableToMermaid.ts      ← Table → Mermaid code
+    templates.ts           ← Starting code for each diagram type
     splitter.ts            ← Editor / preview splitter
     errorLine.ts           ← Maps a render error to the editor line
     lineHighlight.ts       ← Highlights a line of the editor

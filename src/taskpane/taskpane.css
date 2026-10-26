@@ -243,13 +243,13 @@ button {
   flex: 1 0 auto;
 }
 
-/* Diagram type select and generate button, joined like the insert group. */
-.table-group {
+/* Template / diagram type select and its button, joined like the insert group. */
+.select-group {
   display: flex;
   flex-shrink: 0;
   min-width: 0;
 }
-#table-kind-select {
+.select-group select {
   flex: 1 1 auto;
   min-width: 0;
   padding: 4px 6px;
@@ -258,7 +258,7 @@ button {
   background: #fff;
   text-overflow: ellipsis;
 }
-#generate-btn {
+.select-group .action-btn {
   --btn-bg: var(--color-generate);
   --btn-hover: var(--color-generate-hover);
   border-radius: 0 4px 4px 0;

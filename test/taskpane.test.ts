@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { DiagramItem } from "../src/taskpane/excelShapes";
+import { TEMPLATES } from "../src/taskpane/templates";
 
 const m = vi.hoisted(() => ({
   listDiagrams: vi.fn(),
@@ -74,6 +75,8 @@ const diagramSelect = () => $<HTMLSelectElement>("sheet-diagram-select");
 const formatSelect = () => $<HTMLSelectElement>("format-select");
 const tableKindSelect = () => $<HTMLSelectElement>("table-kind-select");
 const generateBtn = () => $<HTMLButtonElement>("generate-btn");
+const templateSelect = () => $<HTMLSelectElement>("template-select");
+const templateBtn = () => $<HTMLButtonElement>("template-btn");
 const loadConfirm = () => $<HTMLDivElement>("load-confirm");
 const loadConfirmText = () => $<HTMLSpanElement>("load-confirm-text").textContent;
 const replaceBtn = () => $<HTMLButtonElement>("load-confirm-replace");
@@ -619,6 +622,57 @@ describe("selecting a diagram on the sheet", () => {
     await start();
     expect(optionLabels()).toHaveLength(3);
     expect(errorText()).toBe("");
+  });
+});
+
+describe("template", () => {
+  const SEQUENCE = TEMPLATES.find((t) => t.id === "sequence")!;
+
+  beforeEach(async () => {
+    m.listDiagrams.mockResolvedValue(DIAGRAMS);
+    await start();
+  });
+
+  it("lists every template", () => {
+    expect(Array.from(templateSelect().options, (o) => [o.value, o.textContent])).toEqual(
+      TEMPLATES.map((t) => [t.id, t.label]),
+    );
+  });
+
+  it("puts the chosen template in the input and renders it immediately", async () => {
+    m.renderMermaid.mockClear();
+    templateSelect().value = "sequence";
+    await click(templateBtn());
+
+    expect(input().value).toBe(SEQUENCE.code);
+    expect(m.renderMermaid).toHaveBeenCalledOnce();
+    expect(m.renderMermaid).toHaveBeenCalledWith(SEQUENCE.code);
+    expect(insertBtn().disabled).toBe(false);
+  });
+
+  it("clears the sheet diagram selection so the code is inserted as a new diagram", async () => {
+    selectDiagram("id-1");
+    await flush();
+    templateSelect().value = "sequence";
+    await click(templateBtn());
+
+    expect(diagramSelect().value).toBe("");
+    await click(insertBtn());
+    expect(m.insertImageShape).toHaveBeenCalledWith(RASTER, SEQUENCE.code, undefined);
+  });
+
+  it("asks before replacing the template code", async () => {
+    await click(templateBtn());
+    await selectShape("id-1");
+    expect(loadConfirm().hidden).toBe(false);
+  });
+
+  it("cancels a pending render of typed code", async () => {
+    type("typed");
+    await click(templateBtn());
+    m.renderMermaid.mockClear();
+    await vi.advanceTimersByTimeAsync(250);
+    expect(m.renderMermaid).not.toHaveBeenCalled();
   });
 });
 

@@ -2,7 +2,7 @@
 
 本書は現行実装（`src/taskpane/*.ts`, `src/taskpane/taskpane.html`, `src/taskpane/taskpane.css`, `manifest.xml`, `build.js`, `Installer/TextToSvgDiagramsForExcel.iss`）から起こした仕様書である。記述は実装の挙動を正とする。主要な挙動は `test/` の自動テストで検証している（§6.4）。
 
-- 対象バージョン: 1.3.0（`package.json` / マニフェスト `1.3.0.0`）
+- 対象バージョン: 1.4.0（`package.json` / マニフェスト `1.4.0.0`）
 - 作成日: 2026-10-21
 - 更新日: 2026-10-23
 
@@ -17,6 +17,7 @@ Mermaid 記法のテキストからダイアグラムを生成し、Excel のア
 - 選択したセル範囲の表から Mermaid コード（フローチャート / ガントチャート / 円グラフ）を生成できる（§4.10）。
 - 描画エラーの行を入力欄で強調し、その行へ移動できる（§4.11）。
 - 出力の大きさを倍率または幅で指定でき、差し替え時は元の図の幅を保てる（§4.12）。
+- 図の種類ごとのひな形を入力欄に挿入できる（§4.13）。
 
 ### 1.1 動作環境
 
@@ -53,6 +54,8 @@ ImageCoercion 1.2 をマニフェストに宣言しないのは、非対応環�
 | 1 | タイトル | — | 「Text-to-SVG Diagrams for Excel」 |
 | 2 | シート図形選択 | `sheet-diagram-select` | ラベル「Sheet diagram」。先頭は `(No diagram selected)`（値は空）。以降にアクティブシート上の Mermaid 図形を図形名で列挙 |
 | 2a | 読み込み確認 | `load-confirm` | 未保存のコードを置き換える前に表示する確認バー（§4.3）。通常は非表示。メッセージ（`load-confirm-text`）と「Replace」（`load-confirm-replace`）「Keep」（`load-confirm-keep`）ボタン |
+| 2b | テンプレート選択 | `template-select` | ラベル「New from template」。`Flowchart`（既定）/ `Sequence` / `Class` / `State` / `Entity relationship` / `Gantt` / `Pie` / `Mindmap` / `Timeline`。選択肢は `templates.ts` から作る |
+| 2c | テンプレートボタン | `template-btn` | 「Use」。選んだテンプレートを入力欄に入れる（§4.13） |
 | 3 | 生成する図の種類 | `table-kind-select` | ラベル「Code from selected cells」。`Auto`（既定）/ `Flowchart` / `Gantt` / `Pie`。各選択肢に列の並びを併記 |
 | 4 | 生成ボタン | `generate-btn` | 「Generate」。選択セルから Mermaid コードを生成する（§4.10） |
 | 5 | Mermaid 入力欄 | `mermaid-input` | 等幅フォントの textarea（初期高さ 100px、スペルチェック無効）。初期値はサンプルのフローチャート（§3.1）。背面の `input-backdrop` でエラー行を強調する（§4.11） |
@@ -348,6 +351,12 @@ mermaid が報告する行は、mermaid が前処理した後のコードの行�
 - 「Keep current size」は、シート図形選択で図を選んでいる（差し替えになる）ときだけ有効にする。差し替える図形の幅は挿入の直前に読み込む。既に存在しなければ `Selected diagram no longer exists.` エラー。
 - **Shapes (editable)**: 図形モデル（§4.9）の位置・大きさ・接続点・フォントサイズ・線の太さを k 倍する（小数第 2 位に丸める）。線の太さは挿入時に §4.9 のとおり整数に丸める。
 
+### 4.13 テンプレート挿入（`templates.ts`）
+
+[Use] で、テンプレート選択で選んだ種類のひな形を入力欄に入れ、すぐに描画する。扱いは §4.10 の生成コードと同じで、待ち中の描画を取り消し、読み込み確認を閉じ、シート図形選択を `(No diagram selected)` に戻す（挿入しても既存の図を差し替えない）。入力欄に未保存のコードがあっても確認せずに置き換える。テンプレートのコードは未保存のコードとして扱うため、その後シート上の図を読み込むときは確認する（§4.3）。
+
+テンプレートは数行の最小構成で、Flowchart は入力欄の初期値（§3.1）と同じ内容を `graph TD` で書いたもの。
+
 ---
 
 ## 5. データ仕様
@@ -414,6 +423,7 @@ Vitest（jsdom 環境）で `test/*.test.ts` を実行する。設定は `vitest
 | `excelShapes.test.ts` | §4.3（選択の監視を含む）/ §4.4 / §4.9 の Excel 操作 | `Excel` / `Office` グローバルをフェイク（`test/fakes/office.ts`）に差し替え |
 | `excelTable.test.ts` | §4.10 の選択範囲の読み込み | 同上 |
 | `tableToMermaid.test.ts` | §4.10 のコード生成 | そのまま実行 |
+| `templates.test.ts` | §4.13 のテンプレート定義 | そのまま実行 |
 | `officeSvg.test.ts` | §4.8 | SVG の座標・計測 API をスタブ（`test/fakes/svgGeometry.ts`） |
 | `flowchartModel.test.ts` | §4.9 の図形モデル作成、§4.12 の拡大縮小 | 同上 |
 | `svgUtil.test.ts` | 行列・色の変換 | そのまま実行 |
@@ -422,7 +432,7 @@ Vitest（jsdom 環境）で `test/*.test.ts` を実行する。設定は `vitest
 | `splitter.test.ts` | §4.7 | 要素の `offsetHeight` をスタブ |
 | `errorLine.test.ts` | §4.11 の行の特定 | そのまま実行 |
 | `lineHighlight.test.ts` | §4.11 の強調表示 | 要素の `clientWidth` / `clientHeight` / `offsetTop` をスタブ |
-| `taskpane.test.ts` | §3〜§4.5 / §4.10〜§4.12 の UI 動作 | `taskpane.html` を読み込み、Excel 操作・描画・画像化をモック |
+| `taskpane.test.ts` | §3〜§4.5 / §4.10〜§4.13 の UI 動作 | `taskpane.html` を読み込み、Excel 操作・描画・画像化をモック |
 | `scripts.test.ts` | §6.1 のバージョン反映、§6.2 | 一時ディレクトリにコピーしたプロジェクトで実行（Node 環境） |
 
 mermaid の実際の描画（jsdom は SVG のレイアウトを持たない）、`watch` / `serve` モード、Excel 上での動作は自動テストの対象外。jsdom は `<svg>` 内の `<style>` を適用しないため、§4.8 / §4.9 のテストではスタイルを `<svg>` の外に置く。

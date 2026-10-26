@@ -18,6 +18,7 @@ import { toOfficeSvg } from "./officeSvg";
 import { getFlowchartData, initMermaid, renderMermaid } from "./render";
 import { initSplitter } from "./splitter";
 import { type TableKind, tableToMermaid } from "./tableToMermaid";
+import { TEMPLATES } from "./templates";
 import { byId, errorMessage, PX_TO_PT } from "./util";
 
 const RENDER_DEBOUNCE_MS = 250;
@@ -51,6 +52,8 @@ Office.onReady(() => {
   const keepSize = byId<HTMLInputElement>("keep-size");
   const tableKindSelect = byId<HTMLSelectElement>("table-kind-select");
   const generateBtn = byId<HTMLButtonElement>("generate-btn");
+  const templateSelect = byId<HTMLSelectElement>("template-select");
+  const templateBtn = byId<HTMLButtonElement>("template-btn");
   const loadConfirm = byId<HTMLDivElement>("load-confirm");
   const loadConfirmText = byId<HTMLSpanElement>("load-confirm-text");
   const loadConfirmReplace = byId<HTMLButtonElement>("load-confirm-replace");
@@ -304,7 +307,32 @@ Office.onReady(() => {
 
   initSplitter(splitter, input, preview);
 
-  // ── Code from selected cells ───────────────────────────────────────────────
+  // ── New code (template / selected cells) ───────────────────────────────────
+  /** Puts new code in the editor and renders it right away. */
+  async function startNewDiagram(code: string) {
+    input.value = code;
+    // The new code is a new diagram, so don't replace the selected one.
+    hideLoadConfirm();
+    setCurrentDiagram("");
+    window.clearTimeout(renderDebounceTimer);
+    await renderPreview();
+  }
+
+  for (const template of TEMPLATES) {
+    const option = document.createElement("option");
+    option.value = template.id;
+    option.textContent = template.label;
+    templateSelect.appendChild(option);
+  }
+
+  templateBtn.addEventListener("click", async () => {
+    const template = TEMPLATES.find((t) => t.id === templateSelect.value);
+    if (template) {
+      errDiv.textContent = "";
+      await startNewDiagram(template.code);
+    }
+  });
+
   generateBtn.addEventListener("click", async () => {
     errDiv.textContent = "";
     let code: string;
@@ -314,12 +342,7 @@ Office.onReady(() => {
       errDiv.textContent = `Generate error: ${errorMessage(e)}`;
       return;
     }
-    input.value = code;
-    // The generated code is a new diagram, so don't replace the selected one.
-    hideLoadConfirm();
-    setCurrentDiagram("");
-    window.clearTimeout(renderDebounceTimer);
-    await renderPreview();
+    await startNewDiagram(code);
   });
 
   // ── Insert / Download ──────────────────────────────────────────────────────

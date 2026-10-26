@@ -23,8 +23,15 @@
       </div>
     </div>
 
+    <label class="field-label" for="template-select">New from template</label>
+    <div class="select-group">
+      <!-- Options are filled from templates.ts. -->
+      <select id="template-select" aria-label="Template"></select>
+      <button id="template-btn" class="action-btn">Use</button>
+    </div>
+
     <label class="field-label" for="table-kind-select">Code from selected cells</label>
-    <div class="table-group">
+    <div class="select-group">
       <select id="table-kind-select" aria-label="Diagram type to generate">
         <option value="auto">Auto</option>
         <option value="flowchart">Flowchart (parent | child | label)</option>
