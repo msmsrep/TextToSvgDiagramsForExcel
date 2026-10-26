@@ -40,9 +40,12 @@ afterEach(() => {
   }
 });
 
+const CSPROJ = "desktop/src/TextToSvgDiagramsForExcel.Desktop/TextToSvgDiagramsForExcel.Desktop.csproj";
+const APPX = "desktop/package/Package.appxmanifest";
+
 describe("scripts/sync-version.js", () => {
   function versionFixture(version: string) {
-    const dir = fixture(["scripts/sync-version.js", "manifest.xml", "Installer/TextToSvgDiagramsForExcel.iss"]);
+    const dir = fixture(["scripts/sync-version.js", "manifest.xml", "Installer/TextToSvgDiagramsForExcel.iss", CSPROJ, APPX]);
     fs.writeFileSync(path.join(dir, "package.json"), JSON.stringify({ version }));
     return dir;
   }
@@ -63,6 +66,20 @@ describe("scripts/sync-version.js", () => {
     expect(iss).toBe(before.iss.replace(/#define MyAppVersion "[^"]*"/, '#define MyAppVersion "2.3.4.0"'));
   });
 
+  it("writes the version to the desktop app's project and MSIX manifest", () => {
+    const dir = versionFixture("2.3.4");
+    const before = { csproj: read(dir, CSPROJ), appx: read(dir, APPX) };
+
+    const result = run(dir, "scripts/sync-version.js");
+    expect(result.status, result.stderr).toBe(0);
+
+    // The project uses three parts; MSIX needs four with the last one 0.
+    expect(read(dir, CSPROJ)).toBe(before.csproj.replace(/<Version>[^<]*<\/Version>/, "<Version>2.3.4</Version>"));
+    const appx = read(dir, APPX);
+    expect(appx).toMatch(/<Identity\s[^>]*Version="2\.3\.4\.0"/);
+    expect(appx.replace('Version="2.3.4.0"', "")).toBe(before.appx.replace(/(<Identity\s[^>]*)Version="[^"]*"/, "$1"));
+  });
+
   it("fails when the version is not found in a target file", () => {
     const dir = versionFixture("2.3.4");
     fs.writeFileSync(path.join(dir, "Installer/TextToSvgDiagramsForExcel.iss"), "; no version here\n");
@@ -77,7 +94,7 @@ describe("build.js", () => {
   const BUILD_TIMEOUT = 120_000;
 
   function buildFixture() {
-    const dir = fixture(["build.js", "manifest.xml", "assets", "src/taskpane"]);
+    const dir = fixture(["build.js", "manifest.xml", "assets", "src/taskpane", "src/core"]);
     // Resolve esbuild and the bundled packages from the repo.
     fs.symlinkSync(path.join(REPO, "node_modules"), path.join(dir, "node_modules"), "junction");
     return dir;
@@ -132,7 +149,7 @@ describe("build.js", () => {
     const result = run(dir, "build.js", "nope");
 
     expect(result.status).toBe(1);
-    expect(result.stderr).toContain("Unknown mode: nope (build|dev|watch|serve)");
+    expect(result.stderr).toContain("Unknown mode: nope (build|dev|watch|serve|engine)");
     expect(fs.existsSync(path.join(dir, "dist"))).toBe(false);
   });
 });

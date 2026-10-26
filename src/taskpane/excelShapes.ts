@@ -1,6 +1,6 @@
-import { type Box, connectionSite, type Fill, type Label, type Line, type ShapeModel } from "./flowchartModel";
-import type { RasterImage, SvgImage } from "./image";
-import { PX_TO_PT } from "./util";
+import { type Box, connectionSite, type Fill, type Label, type Line, type ShapeModel } from "../core/flowchartModel";
+import type { RasterImage, SvgImage } from "../core/image";
+import { PX_TO_PT } from "../core/util";
 
 // Marks images inserted by this add-in; the Mermaid code goes in the description.
 const ALT_TEXT_TITLE = "Mermaid Diagram";
@@ -32,7 +32,8 @@ export async function listDiagrams(): Promise<DiagramItem[]> {
       .map((shape) => ({
         id: shape.id,
         name: shape.name,
-        altTextDescription: shape.altTextDescription ?? "",
+        // Excel may store line breaks as \r; the editor and the saved-code check use \n.
+        altTextDescription: (shape.altTextDescription ?? "").replace(/\r\n?/g, "\n"),
       }));
   });
 }

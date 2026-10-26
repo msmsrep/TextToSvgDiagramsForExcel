@@ -1,3 +1,5 @@
+import { t } from "./messages";
+
 // Raster output is rendered at this multiple of the SVG size for sharper images.
 const RASTER_SCALE = 2;
 // Upper bound on canvas area; larger diagrams are rendered at a lower scale.
@@ -47,7 +49,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error("Failed to load SVG image."));
+    img.onerror = () => reject(new Error(t("svgLoadFailed")));
     img.src = src;
   });
 }

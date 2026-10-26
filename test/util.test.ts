@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { byId, errorMessage } from "../src/taskpane/util";
+import { byId } from "../src/taskpane/dom";
+import { errorMessage } from "../src/core/util";
 
 describe("byId", () => {
   afterEach(() => {

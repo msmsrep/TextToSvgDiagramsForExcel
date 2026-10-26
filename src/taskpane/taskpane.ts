@@ -9,18 +9,19 @@ import {
   onSheetActivated,
   watchDiagramSelection,
 } from "./excelShapes";
-import { errorSourceLine } from "./errorLine";
+import { errorSourceLine } from "../core/errorLine";
 import { readSelection } from "./excelTable";
-import { extractFlowchart, scaleModel } from "./flowchartModel";
-import { type ImageFormat, serializeSvg, svgSize, svgToDataUrl, svgToRaster } from "./image";
+import { extractFlowchart, scaleModel } from "../core/flowchartModel";
+import { type ImageFormat, serializeSvg, svgSize, svgToDataUrl, svgToRaster } from "../core/image";
 import { initLineHighlight } from "./lineHighlight";
-import { toOfficeSvg } from "./officeSvg";
-import { getFlowchartData, initMermaid, renderMermaid } from "./render";
+import { toOfficeSvg } from "../core/officeSvg";
+import { getFlowchartData, initMermaid, renderMermaid } from "../core/render";
 import { registerRibbonCommands } from "./ribbon";
 import { initSplitter } from "./splitter";
-import { type TableKind, tableToMermaid } from "./tableToMermaid";
-import { TEMPLATES } from "./templates";
-import { byId, errorMessage, PX_TO_PT } from "./util";
+import { type TableKind, tableToMermaid } from "../core/tableToMermaid";
+import { TEMPLATES } from "../core/templates";
+import { errorMessage, PX_TO_PT } from "../core/util";
+import { byId } from "./dom";
 
 const RENDER_DEBOUNCE_MS = 250;
 const PREVIEW_HINT_HTML =

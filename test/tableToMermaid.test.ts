@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { type TableData, type TableKind, tableToMermaid } from "../src/taskpane/tableToMermaid";
+import { type TableData, type TableKind, tableToMermaid } from "../src/core/tableToMermaid";
 
 /** A date cell: a serial number shown with a date format. */
 type DateCell = { serial: number; format?: string };

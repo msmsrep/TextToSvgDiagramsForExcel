@@ -1,4 +1,4 @@
-import type { TableData } from "./tableToMermaid";
+import type { TableData } from "../core/tableToMermaid";
 
 // Keeps whole-sheet selections and huge tables from producing unreadable diagrams.
 export const MAX_TABLE_ROWS = 500;

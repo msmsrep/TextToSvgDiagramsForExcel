@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { apply, invert, isDashed, multiply, parseColor, rotate, scale, translate } from "../src/taskpane/svgUtil";
+import { apply, invert, isDashed, multiply, parseColor, rotate, scale, translate } from "../src/core/svgUtil";
 
 describe("parseColor", () => {
   it.each([

@@ -1,3 +1,5 @@
+import { t } from "./messages";
+
 /** A selected cell range as read from Excel (see excelTable.ts). */
 export type TableData = {
   /** Cell values: strings, numbers and booleans; "" for empty cells. */
@@ -7,6 +9,8 @@ export type TableData = {
   numberFormat: string[][];
   /** Worksheet row number (1-based) of the first row, for error messages. */
   firstRow: number;
+  /** True when the workbook uses the 1904 date system (the add-in cannot tell, so omits it). */
+  date1904?: boolean;
 };
 
 export type TableKind = "auto" | "flowchart" | "gantt" | "pie";
@@ -31,11 +35,11 @@ const MS_PER_DAY = 86_400_000;
  */
 export function tableToMermaid(table: TableData, kind: TableKind): string {
   if ((table.values[0]?.length ?? 0) < 2) {
-    throw new Error("Select at least two columns.");
+    throw new Error(t("tableTwoColumns"));
   }
   const rows = parseRows(table);
   if (rows.length === 0) {
-    throw new Error("The selection is empty.");
+    throw new Error(t("tableEmpty"));
   }
 
   switch (kind === "auto" ? detectKind(rows) : kind) {
@@ -51,7 +55,9 @@ export function tableToMermaid(table: TableData, kind: TableKind): string {
 function parseRows(table: TableData): Row[] {
   const rows: Row[] = [];
   table.values.forEach((values, i) => {
-    const cells = values.map((v, j) => toCell(v, table.text[i]?.[j] ?? "", table.numberFormat[i]?.[j] ?? ""));
+    const cells = values.map((v, j) =>
+      toCell(v, table.text[i]?.[j] ?? "", table.numberFormat[i]?.[j] ?? "", table.date1904 === true),
+    );
     if (cells.some((c) => c.kind !== "empty")) {
       rows.push({ number: table.firstRow + i, cells });
     }
@@ -59,10 +65,10 @@ function parseRows(table: TableData): Row[] {
   return rows;
 }
 
-function toCell(value: unknown, text: string, format: string): Cell {
+function toCell(value: unknown, text: string, format: string, date1904: boolean): Cell {
   if (typeof value === "number") {
     if (isDateFormat(format)) {
-      return { kind: "date", text: serialToIso(value) };
+      return { kind: "date", text: serialToIso(value, date1904) };
     }
     // Text is "####" when the column is too narrow to show the number.
     return { kind: "number", text: /^#+$/.test(text) || !text ? String(value) : text.trim(), value };
@@ -84,9 +90,13 @@ function isDateFormat(format: string): boolean {
   return /[ymd]/i.test(format.replace(/"[^"]*"|\\.|\[[^\]]*\]/g, ""));
 }
 
-/** Converts a serial date in Excel's 1900 date system to YYYY-MM-DD. */
-function serialToIso(serial: number): string {
+/** Converts a serial date in Excel's 1900 (or 1904) date system to YYYY-MM-DD. */
+function serialToIso(serial: number, date1904: boolean): string {
   const days = Math.floor(serial);
+  if (date1904) {
+    // Serial 0 is 1904-01-01.
+    return new Date(Date.UTC(1904, 0, 1) + days * MS_PER_DAY).toISOString().slice(0, 10);
+  }
   // Serial 1 is 1900-01-01, and serial 60 is the nonexistent 1900-02-29 that
   // Excel keeps for Lotus 1-2-3 compatibility.
   const epoch = Date.UTC(1899, 11, days < 60 ? 31 : 30);
@@ -130,7 +140,7 @@ function cell(row: Row, column: number): Cell {
 function dataRows(rows: Row[], expected: Cell["kind"]): Row[] {
   const data = cell(rows[0], 1).kind === expected ? rows : rows.slice(1);
   if (data.length === 0) {
-    throw new Error("The selection has no data rows.");
+    throw new Error(t("tableNoDataRows"));
   }
   return data;
 }
@@ -175,10 +185,10 @@ function gantt(rows: Row[]): string {
   for (const row of dataRows(rows, "date")) {
     const [task, start, end, sec] = [0, 1, 2, 3].map((i) => cell(row, i));
     if (!task.text) {
-      throw new Error(`Row ${row.number}: the task name is empty.`);
+      throw new Error(t("tableTaskEmpty", { row: row.number }));
     }
     if (start.kind !== "date") {
-      throw new Error(`Row ${row.number}: the start must be a date.`);
+      throw new Error(t("tableStartNotDate", { row: row.number }));
     }
     let finish: string;
     if (end.kind === "date") {
@@ -186,7 +196,7 @@ function gantt(rows: Row[]): string {
     } else if (end.kind === "number" && end.value > 0) {
       finish = `${end.value}d`;
     } else {
-      throw new Error(`Row ${row.number}: the end must be a date or a number of days.`);
+      throw new Error(t("tableEndInvalid", { row: row.number }));
     }
     if (sec.text && sec.text !== section) {
       section = sec.text;
@@ -203,7 +213,7 @@ function pie(rows: Row[]): string {
   for (const row of dataRows(rows, "number")) {
     const [label, value] = [0, 1].map((i) => cell(row, i));
     if (value.kind !== "number") {
-      throw new Error(`Row ${row.number}: the value must be a number.`);
+      throw new Error(t("tableValueNotNumber", { row: row.number }));
     }
     // Pie labels cannot contain double quotes.
     lines.push(`    "${oneLine(label.text).replace(/"/g, "'")}" : ${value.value}`);

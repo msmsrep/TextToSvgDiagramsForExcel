@@ -1,6 +1,6 @@
 # Text-to-SVG Diagrams for Excel 仕様書
 
-本書は現行実装（`src/taskpane/*.ts`, `src/taskpane/taskpane.html`, `src/taskpane/taskpane.css`, `manifest.xml`, `build.js`, `Installer/TextToSvgDiagramsForExcel.iss`）から起こした仕様書である。記述は実装の挙動を正とする。主要な挙動は `test/` の自動テストで検証している（§6.4）。
+本書は現行実装（`src/core/*.ts`（デスクトップ版と共通のコード）, `src/taskpane/*.ts`, `src/taskpane/taskpane.html`, `src/taskpane/taskpane.css`, `manifest.xml`, `build.js`, `Installer/TextToSvgDiagramsForExcel.iss`）から起こした仕様書である。記述は実装の挙動を正とする。主要な挙動は `test/` の自動テストで検証している（§6.4）。
 
 - 対象バージョン: 1.5.0（`package.json` / マニフェスト `1.5.0.0`）
 - 作成日: 2026-10-21
@@ -135,6 +135,7 @@ graph LR
 
 - **対象**: アクティブシートの図形のうち、`type` が `Image` / `Group` / `GeometricShape` のいずれかで、`altTextTitle === "Mermaid Diagram"` のもの。`Group` と `GeometricShape` は `Shapes (editable)` で挿入した図（§4.9）。
 - **表示**: 図形名（`shape.name`）。値は図形 ID。
+- **コード**: 代替テキスト（説明）の改行（`\r\n` / `\r`）は `\n` にそろえて読む。Excel が改行を変えても未保存の判定（下記）やエラー行の特定がずれないようにするため。
 - **読み込みタイミング**:
   - タスクペイン起動時
   - ドロップダウンにフォーカスしたとき
@@ -398,12 +399,13 @@ Cookie、localStorage、外部送信は使用しない。
 |---|---|---|
 | `npm run build` | `node build.js` | 本番ビルド。マニフェストの URL を本番 URL に置換して `dist/` に出力 |
 | `npm run build:dev` | `node build.js dev` | 開発ビルド。マニフェストの URL は `https://localhost:3000` |
+| `npm run build:engine` | `node build.js engine` | デスクトップ版の描画エンジン（`src/engine`）を `desktop/src/TextToSvgDiagramsForExcel.Desktop/web/` にビルド（[desktop-design.md](./desktop-design.md) §8） |
 | `npm run watch` | `node build.js watch` | ファイル監視ビルド（インラインソースマップ、開発 URL） |
 | `npm run dev-server` | `node build.js serve` | esbuild の HTTPS サーバ（ポート 3000）で `dist/` を配信 |
 | `npm run typecheck` | `tsc && tsc -p test` | ソースとテストの型チェック |
 | `npm test` | `vitest run` | テスト実行（§6.4） |
 | `npm run test:watch` | `vitest` | テストの監視実行 |
-| `npm version <patch\|minor\|major>` | — | `package.json` を更新し、`scripts/sync-version.js` でマニフェストと `.iss` のバージョン（4 桁）に反映 |
+| `npm version <patch\|minor\|major>` | — | `package.json` を更新し、`scripts/sync-version.js` でマニフェストと `.iss` のバージョン（4 桁）、デスクトップ版の csproj（3 桁）と `Package.appxmanifest`（4 桁）に反映 |
 | `npm start` | `office-addin-debugging start manifest.xml` | Office へのサイドロード＋デバッグ起動 |
 | `npm stop` | `office-addin-debugging stop manifest.xml` | デバッグ停止 |
 
@@ -419,7 +421,8 @@ Cookie、localStorage、外部送信は使用しない。
 
 3. esbuild で `src/taskpane/taskpane.ts` を `dist/taskpane.js` にバンドルする（IIFE、ターゲット ES2017、ソースマップあり）。
 4. `serve` では `office-addin-dev-certs` の証明書で esbuild の HTTPS サーバを起動する。証明書が無い場合はエラーメッセージを出して終了する。
-5. 未知のモードを指定した場合はエラー終了する。
+5. `engine` モードでは `dist/` を作らず、`src/engine/engine.html`・`engine.css` をコピーし、`src/engine/engine.ts` を `engine.js`（IIFE、ES2020、mermaid を含む）にバンドルする。
+6. 未知のモードを指定した場合はエラー終了する。
 
 ### 6.3 配布
 
@@ -433,14 +436,16 @@ Vitest（jsdom 環境）で `test/*.test.ts` を実行する。設定は `vitest
 
 | テスト | 対象 | 方法 |
 |---|---|---|
-| `util.test.ts` | `util.ts` | そのまま実行 |
+| `util.test.ts` | `core/util.ts`、`taskpane/dom.ts` | そのまま実行 |
+| `messages.test.ts` | `core/messages.ts`（英語と日本語のメッセージ ID の過不足） | そのまま実行 |
+| `engine.test.ts` | デスクトップ版の描画エンジン（`src/engine/engine.ts`） | 描画・画像化をモック |
 | `excelShapes.test.ts` | §4.3（選択の監視を含む）/ §4.4 / §4.9 の Excel 操作 | `Excel` / `Office` グローバルをフェイク（`test/fakes/office.ts`）に差し替え |
 | `excelTable.test.ts` | §4.10 の選択範囲の読み込み | 同上 |
 | `tableToMermaid.test.ts` | §4.10 のコード生成 | そのまま実行 |
 | `templates.test.ts` | §4.13 のテンプレート定義 | そのまま実行 |
 | `ribbon.test.ts` | §2.1 のコマンドとマニフェストの対応（関数名・メニュー項目・形式） | `manifest.xml` / `taskpane.html` を読んで照合 |
 | `officeSvg.test.ts` | §4.8 | SVG の座標・計測 API をスタブ（`test/fakes/svgGeometry.ts`） |
-| `flowchartModel.test.ts` | §4.9 の図形モデル作成、§4.12 の拡大縮小 | 同上 |
+| `flowchartModel.test.ts` | §4.9 の図形モデル作成、§4.12 の拡大縮小 | 同上。接続位置は `test/fixtures/connectionSite.json`（デスクトップ版の C# と共有）で検証 |
 | `svgUtil.test.ts` | 行列・色の変換 | そのまま実行 |
 | `image.test.ts` | §4.6 | `Image` と Canvas をモック |
 | `render.test.ts` | §4.1 / §4.2 / §4.4 の mermaid 呼び出し | `mermaid` をモック |

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { TEMPLATES } from "../src/taskpane/templates";
+import { TEMPLATES } from "../src/core/templates";
 
 describe("TEMPLATES", () => {
   it("has unique ids and labels", () => {

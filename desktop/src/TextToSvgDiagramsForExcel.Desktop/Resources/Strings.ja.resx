@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppTitle" xml:space="preserve">
+    <value>Text-to-SVG Diagrams for Excel</value>
+  </data>
+  <data name="Menu_File" xml:space="preserve">
+    <value>ファイル(_F)</value>
+  </data>
+  <data name="Menu_OpenMmd" xml:space="preserve">
+    <value>.mmd を開く(_O)...</value>
+  </data>
+  <data name="Menu_SaveMmd" xml:space="preserve">
+    <value>コードを .mmd で保存(_S)...</value>
+  </data>
+  <data name="Menu_Exit" xml:space="preserve">
+    <value>終了(_X)</value>
+  </data>
+  <data name="Menu_New" xml:space="preserve">
+    <value>新規(_N)</value>
+  </data>
+  <data name="Menu_Template" xml:space="preserve">
+    <value>テンプレート(_T)</value>
+  </data>
+  <data name="Menu_FromCells" xml:space="preserve">
+    <value>セルから(_C)</value>
+  </data>
+  <data name="Menu_Output" xml:space="preserve">
+    <value>出力(_O)</value>
+  </data>
+  <data name="Menu_InsertAs" xml:space="preserve">
+    <value>形式を指定して挿入(_I)</value>
+  </data>
+  <data name="Menu_SaveAs" xml:space="preserve">
+    <value>形式を指定して保存(_S)</value>
+  </data>
+  <data name="Menu_Copy" xml:space="preserve">
+    <value>画像をコピー(_C)</value>
+  </data>
+  <data name="Menu_LoadSelected" xml:space="preserve">
+    <value>選択中の図を読み込む(_L)</value>
+  </data>
+  <data name="Menu_View" xml:space="preserve">
+    <value>表示(_V)</value>
+  </data>
+  <data name="Menu_AlwaysOnTop" xml:space="preserve">
+    <value>常に手前に表示(_T)</value>
+  </data>
+  <data name="Menu_AutoDetect" xml:space="preserve">
+    <value>シートで選択した図を読み込む(_D)</value>
+  </data>
+  <data name="Menu_Language" xml:space="preserve">
+    <value>言語(_L)</value>
+  </data>
+  <data name="Lang_System" xml:space="preserve">
+    <value>システム</value>
+  </data>
+  <data name="LanguageRestart" xml:space="preserve">
+    <value>言語はアプリを再起動すると切り替わります。</value>
+  </data>
+  <data name="Label_Diagram" xml:space="preserve">
+    <value>図</value>
+  </data>
+  <data name="Label_Size" xml:space="preserve">
+    <value>サイズ</value>
+  </data>
+  <data name="Label_Format" xml:space="preserve">
+    <value>形式</value>
+  </data>
+  <data name="NoDiagramSelected" xml:space="preserve">
+    <value>(図を選択していません)</value>
+  </data>
+  <data name="Tooltip_Refresh" xml:space="preserve">
+    <value>シートの図を読み込み直す</value>
+  </data>
+  <data name="Tooltip_LoadSelected" xml:space="preserve">
+    <value>シートで選択中の図を読み込む</value>
+  </data>
+  <data name="Tooltip_Save" xml:space="preserve">
+    <value>ファイルに保存</value>
+  </data>
+  <data name="Tooltip_Copy" xml:space="preserve">
+    <value>画像をコピー</value>
+  </data>
+  <data name="Button_Insert" xml:space="preserve">
+    <value>Excel に挿入</value>
+  </data>
+  <data name="Button_Replace" xml:space="preserve">
+    <value>置き換える</value>
+  </data>
+  <data name="Button_Keep" xml:space="preserve">
+    <value>残す</value>
+  </data>
+  <data name="KeepCurrentSize" xml:space="preserve">
+    <value>今の大きさを保つ</value>
+  </data>
+  <data name="SizeWidth" xml:space="preserve">
+    <value>幅 (pt)</value>
+  </data>
+  <data name="FormatSvgOffice" xml:space="preserve">
+    <value>SVG (図形変換用)</value>
+  </data>
+  <data name="FormatShapes" xml:space="preserve">
+    <value>図形 (編集可能)</value>
+  </data>
+  <data name="TableAuto" xml:space="preserve">
+    <value>自動</value>
+  </data>
+  <data name="GoToLine" xml:space="preserve">
+    <value>{0} 行目へ移動</value>
+  </data>
+  <data name="LoadConfirm" xml:space="preserve">
+    <value>「{0}」を読み込みますか? 入力欄のコードには保存していない変更があり、置き換えられます。</value>
+  </data>
+  <data name="ExcelConnected" xml:space="preserve">
+    <value>Excel: {0}</value>
+  </data>
+  <data name="ExcelNotFound" xml:space="preserve">
+    <value>Excel が見つかりません</value>
+  </data>
+  <data name="ExcelNoWorkbook" xml:space="preserve">
+    <value>Excel でブックを開いてください</value>
+  </data>
+  <data name="ExcelCannotConnect" xml:space="preserve">
+    <value>Excel に接続できません (Excel を管理者として実行している場合は、通常の権限で起動し直してください)</value>
+  </data>
+  <data name="ExcelBusy" xml:space="preserve">
+    <value>Excel が操作を受け付けません (セルの編集中など)。</value>
+  </data>
+  <data name="RenderError" xml:space="preserve">
+    <value>描画エラー: {0}</value>
+  </data>
+  <data name="InsertError" xml:space="preserve">
+    <value>挿入エラー: {0}</value>
+  </data>
+  <data name="SaveError" xml:space="preserve">
+    <value>保存エラー: {0}</value>
+  </data>
+  <data name="CopyError" xml:space="preserve">
+    <value>コピーエラー: {0}</value>
+  </data>
+  <data name="GenerateError" xml:space="preserve">
+    <value>生成エラー: {0}</value>
+  </data>
+  <data name="PleaseRenderFirst" xml:space="preserve">
+    <value>先に図を描画してください</value>
+  </data>
+  <data name="SizeUnknown" xml:space="preserve">
+    <value>図の大きさが分かりません。</value>
+  </data>
+  <data name="EnterWidth" xml:space="preserve">
+    <value>0 より大きい幅を入力してください。</value>
+  </data>
+  <data name="DiagramNoLongerExists" xml:space="preserve">
+    <value>選択した図はもうありません。</value>
+  </data>
+  <data name="DiagramHasNoShapes" xml:space="preserve">
+    <value>図に図形がありません。</value>
+  </data>
+  <data name="SvgNotSupported" xml:space="preserve">
+    <value>この Excel では SVG を挿入できません。PNG か JPEG を使ってください。</value>
+  </data>
+  <data name="ShapesCannotBeSaved" xml:space="preserve">
+    <value>図形はファイルに保存できません。</value>
+  </data>
+  <data name="SelectCellRange" xml:space="preserve">
+    <value>シートでセル範囲を選択してください。</value>
+  </data>
+  <data name="SelectionEmpty" xml:space="preserve">
+    <value>選択範囲が空です。</value>
+  </data>
+  <data name="SelectionTooManyRows" xml:space="preserve">
+    <value>選択範囲が {0} 行を超えています。</value>
+  </data>
+  <data name="SelectDiagramOnSheet" xml:space="preserve">
+    <value>シートで図を選択してください。</value>
+  </data>
+  <data name="MmdFilter" xml:space="preserve">
+    <value>Mermaid ファイル (*.mmd;*.mermaid)|*.mmd;*.mermaid|テキスト ファイル (*.txt)|*.txt|すべてのファイル (*.*)|*.*</value>
+  </data>
+  <data name="Filter_png" xml:space="preserve">
+    <value>PNG 画像 (*.png)|*.png</value>
+  </data>
+  <data name="Filter_jpg" xml:space="preserve">
+    <value>JPEG 画像 (*.jpg)|*.jpg</value>
+  </data>
+  <data name="Filter_svg" xml:space="preserve">
+    <value>SVG 画像 (*.svg)|*.svg</value>
+  </data>
+  <data name="FileError" xml:space="preserve">
+    <value>ファイルを開けませんでした: {0}</value>
+  </data>
+  <data name="WebView2MissingTitle" xml:space="preserve">
+    <value>WebView2 ランタイムが必要です</value>
+  </data>
+  <data name="WebView2Missing" xml:space="preserve">
+    <value>図の描画に Microsoft Edge WebView2 ランタイムが必要です。
+
+https://go.microsoft.com/fwlink/p/?LinkId=2124703 からインストールし、アプリを起動し直してください。
+
+ダウンロード ページを開きますか?</value>
+  </data>
+  <data name="EngineFailed" xml:space="preserve">
+    <value>描画エンジンを起動できませんでした: {0}</value>
+  </data>
+</root>

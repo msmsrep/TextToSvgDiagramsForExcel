@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { errorSourceLine } from "../src/taskpane/errorLine";
+import { errorSourceLine } from "../src/core/errorLine";
 
 const jison = (line: number) => `Parse error on line ${line}:\n...A-->\n-----^\nExpecting 'NODE_STRING', got 'LINK'`;
 

@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <!-- Windows 10 2004 (19041) for the WinRT APIs (ApplicationData, Package). -->
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>TextToSvgDiagramsForExcel.Desktop</RootNamespace>
+    <AssemblyName>TextToSvgDiagramsForExcel</AssemblyName>
+    <Product>Text-to-SVG Diagrams for Excel</Product>
+    <Company>msmsrep</Company>
+    <!-- Synced from package.json by scripts/sync-version.js. -->
+    <Version>1.5.0</Version>
+    <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+    <SelfContained>true</SelfContained>
+    <SatelliteResourceLanguages>en;ja</SatelliteResourceLanguages>
+    <!-- Set to true to build without Node.js (web/ must already exist). -->
+    <SkipEngineBuild Condition="'$(SkipEngineBuild)' == ''">false</SkipEngineBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4258.31" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="TextToSvgDiagramsForExcel.Desktop.Tests" />
+    <Resource Include="Assets\icon.ico" />
+  </ItemGroup>
+
+  <!-- Builds the rendering engine (src/engine) into web/ with esbuild. -->
+  <Target Name="BuildEngine" BeforeTargets="BeforeBuild" Condition="'$(SkipEngineBuild)' != 'true'">
+    <Exec Command="npm run build:engine" WorkingDirectory="$(MSBuildThisFileDirectory)..\..\.." />
+  </Target>
+
+  <!-- web/ is generated, so its files are added after the engine build. -->
+  <Target Name="IncludeEngineFiles" AfterTargets="BuildEngine" BeforeTargets="AssignTargetPaths">
+    <ItemGroup>
+      <Content Include="web\**" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+    <Error Condition="!Exists('web\engine.js')" Text="web\engine.js is missing. Run 'npm run build:engine' in the repository root." />
+  </Target>
+
+</Project>

@@ -9,7 +9,7 @@ import {
   onSheetActivated,
   watchDiagramSelection,
 } from "../src/taskpane/excelShapes";
-import type { ShapeModel, ShapeNode } from "../src/taskpane/flowchartModel";
+import type { ShapeModel, ShapeNode } from "../src/core/flowchartModel";
 import { createFakeOffice, type FakeOffice, type ShapeState } from "./fakes/office";
 
 const TITLE = "Mermaid Diagram";
@@ -45,6 +45,11 @@ describe("listDiagrams", () => {
   it("returns an empty description when the shape has none", async () => {
     setup({ name: "D", altTextTitle: TITLE, altTextDescription: undefined as unknown as string });
     expect(await listDiagrams()).toEqual([{ id: "shape-1", name: "D", altTextDescription: "" }]);
+  });
+
+  it("converts \\r\\n and \\r line breaks in the code to \\n", async () => {
+    setup({ name: "D", altTextTitle: TITLE, altTextDescription: "graph TD\r\nA-->B\rB-->C" });
+    expect(await listDiagrams()).toEqual([{ id: "shape-1", name: "D", altTextDescription: "graph TD\nA-->B\nB-->C" }]);
   });
 
   it("returns an empty list when the sheet has no diagrams", async () => {

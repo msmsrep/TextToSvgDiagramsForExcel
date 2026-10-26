@@ -5,12 +5,13 @@
   "scripts": {
     "build": "node build.js",
     "build:dev": "node build.js dev",
+    "build:engine": "node build.js engine",
     "watch": "node build.js watch",
     "dev-server": "node build.js serve",
     "typecheck": "tsc && tsc -p test",
     "test": "vitest run",
     "test:watch": "vitest",
-    "version": "node scripts/sync-version.js && git add manifest.xml Installer/TextToSvgDiagramsForExcel.iss",
+    "version": "node scripts/sync-version.js && git add manifest.xml Installer/TextToSvgDiagramsForExcel.iss desktop/src/TextToSvgDiagramsForExcel.Desktop/TextToSvgDiagramsForExcel.Desktop.csproj desktop/package/Package.appxmanifest",
     "start": "office-addin-debugging start manifest.xml",
     "stop": "office-addin-debugging stop manifest.xml"
   },

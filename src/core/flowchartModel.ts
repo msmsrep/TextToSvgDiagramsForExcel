@@ -2,8 +2,22 @@ import type { FlowchartData } from "./render";
 import { apply, isDashed, parseColor, type Point, rootTransform } from "./svgUtil";
 import { PX_TO_PT } from "./util";
 
-type GeometricShapeName = `${Excel.GeometricShapeType}`;
-type ArrowheadName = `${Excel.ArrowheadStyle}`;
+/** Excel geometric shape types used for flowchart nodes (Excel.GeometricShapeType). */
+export type GeometricShapeName =
+  | "Rectangle"
+  | "RoundRectangle"
+  | "FlowChartTerminator"
+  | "FlowChartPredefinedProcess"
+  | "Can"
+  | "Ellipse"
+  | "Diamond"
+  | "Hexagon"
+  | "Parallelogram"
+  | "Trapezoid"
+  | "FlowChartManualOperation"
+  | "FlowChartDocument";
+/** Excel arrowhead styles used for edges (Excel.ArrowheadStyle). */
+export type ArrowheadName = "None" | "Triangle" | "Oval" | "Diamond";
 
 export type Box = { left: number; top: number; width: number; height: number };
 /** Solid fill; transparency is 0 (opaque) to 1. Null means no fill. */
