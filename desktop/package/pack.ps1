@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Builds the desktop app's signed .msixbundle (x64 + Arm64) with winapp CLI (design §9.2).
+  Builds the desktop app's signed .msixbundle (x64 + Arm64) with winapp CLI (design section 9.2).
 
 .PARAMETER Variant
   Release: the Store package (Identity msmsrep.Text-to-SVGDiagramsforExcel, Release build).
@@ -37,15 +37,24 @@ $Project = Join-Path $Root 'desktop\src\TextToSvgDiagramsForExcel.Desktop\TextTo
 $Out = Join-Path $Root "desktop\out\$Variant"
 
 function Invoke-Checked([string]$Command, [string[]]$Arguments) {
-    # To the host, so the tools' output does not become the caller's return values.
-    & $Command @Arguments | Out-Host
+    # PowerShell decodes the piped output with the console's encoding (Shift_JIS
+    # on Japanese Windows), but npm writes UTF-8. With the console in UTF-8,
+    # dotnet and winapp write UTF-8 too, so every tool's text shows correctly.
+    $consoleEncoding = [Console]::OutputEncoding
+    [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
+    try {
+        # To the host, so the tools' output does not become the caller's return values.
+        & $Command @Arguments | Out-Host
+    } finally {
+        [Console]::OutputEncoding = $consoleEncoding
+    }
     if ($LASTEXITCODE -ne 0) {
         throw "$Command failed with exit code $LASTEXITCODE"
     }
 }
 
 if (-not (Test-Path $CertPath)) {
-    throw "Certificate not found: $CertPath (packages are always signed; see design §9.3)."
+    throw "Certificate not found: $CertPath (packages are always signed; see design section 9.3)."
 }
 if (-not $CertPassword) {
     throw 'Set -CertPassword or MSIX_CERT_PASSWORD.'
@@ -101,7 +110,12 @@ $manifestPath = Join-Path $Out 'Package.appxmanifest'
 $manifest.Save($manifestPath)
 
 # 4. Bundle and sign (each folder's architecture comes from its executable).
-$bundle = Join-Path $Out "${fileName}_$version4.msixbundle"
+#    One architecture makes a plain .msix instead of a bundle.
+$bundle = if ($folders.Count -gt 1) {
+    Join-Path $Out "${fileName}_$version4.msixbundle"
+} else {
+    Join-Path $Out "${fileName}_${version4}_$($Arch[0]).msix"
+}
 Invoke-Checked 'winapp' (@('package') + $folders + @('--manifest', $manifestPath, '--cert', $CertPath,
     '--cert-password', $CertPassword, '--output', $bundle))
 Write-Host "Created $bundle"

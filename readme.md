@@ -28,29 +28,36 @@ This is an unofficial tool and is not affiliated with the Mermaid project. It wa
 
 ```
 TextToSvgDiagramsForExcel/
-  build.js                 ← esbuild build script (build / dev / watch / serve)
+  build.js                 ← esbuild build script (build / dev / watch / serve / engine)
   manifest.xml             ← Office Add-in manifest
   package.json
   tsconfig.json
   assets/                  ← Icon directory
-  scripts/sync-version.js  ← Syncs the package.json version to the manifest and installer
+  scripts/sync-version.js  ← Syncs the package.json version to the manifest, installer and desktop app
   site/index.html          ← Landing page served at the GitHub Pages root (includes install guide)
-  src/taskpane/
-    taskpane.html / .css
-    taskpane.ts            ← UI wiring (entry point)
+  src/core/                ← Code shared by the add-in and the desktop app
     render.ts              ← Mermaid rendering
     image.ts               ← SVG → PNG/JPEG conversion
     officeSvg.ts           ← SVG simplified for Excel's Convert to Shape
     flowchartModel.ts      ← Flowchart SVG → Excel shape model
     svgUtil.ts             ← Matrix and color helpers
-    excelShapes.ts         ← Excel shape insert / replace / list
-    excelTable.ts          ← Reads the selected cells
     tableToMermaid.ts      ← Table → Mermaid code
     templates.ts           ← Starting code for each diagram type
+    errorLine.ts           ← Maps a render error to the editor line
+    messages.ts            ← Shared messages (English and Japanese)
+  src/taskpane/            ← Add-in only
+    taskpane.html / .css
+    taskpane.ts            ← UI wiring (entry point)
+    excelShapes.ts         ← Excel shape insert / replace / list
+    excelTable.ts          ← Reads the selected cells
     ribbon.ts              ← Diagrams tab commands (shared runtime)
     splitter.ts            ← Editor / preview splitter
-    errorLine.ts           ← Maps a render error to the editor line
     lineHighlight.ts       ← Highlights a line of the editor
+  src/engine/              ← The desktop app's rendering engine (a page run in WebView2)
+  desktop/                 ← Desktop app (WPF); see docs/desktop-design.md
+    src/                   ← The app
+    tests/                 ← xUnit tests
+    package/               ← MSIX manifest, images and packaging script (pack.ps1)
   samples/                 ← Sample workbook for manual testing
   test/                    ← Vitest tests (Office.js, mermaid and Canvas are mocked)
   dist/                    ← Build output (not committed; deployed by GitHub Actions)
@@ -92,11 +99,100 @@ An **[Open Text-to-SVG]** button will be added to the Home tab.
 | `npm stop` | Stop debugging |
 | `npm run build` | One-time build to `dist/` (manifest with production URLs) |
 | `npm run build:dev` | One-time build to `dist/` (manifest with `https://localhost:3000`) |
+| `npm run build:engine` | Build the desktop app's rendering engine into `desktop/src/TextToSvgDiagramsForExcel.Desktop/web/` |
 | `npm run watch` | Watch for file changes and auto-rebuild |
 | `npm run typecheck` | Type-check the source and tests with `tsc` |
 | `npm test` | Run the tests with Vitest |
 | `npm run test:watch` | Run the tests in watch mode |
-| `npm version <patch\|minor\|major>` | Bump the version and sync it to `manifest.xml` and the installer |
+| `npm version <patch\|minor\|major>` | Bump the version and sync it to `manifest.xml`, the installer and the desktop app (csproj and `Package.appxmanifest`) |
+
+## Desktop App (WPF)
+
+Requirements: .NET 10 SDK, Node.js (the build creates the rendering engine), and [winapp CLI](https://learn.microsoft.com/windows/apps/dev-tools/winapp-cli) (`winget install Microsoft.winappcli`; only for MSIX).
+
+### Build, Run and Test
+
+```bash
+dotnet build desktop/TextToSvgDiagramsForExcel.Desktop.sln
+dotnet test desktop/TextToSvgDiagramsForExcel.Desktop.sln
+```
+
+The build runs `npm run build:engine`. The executable is `desktop/src/TextToSvgDiagramsForExcel.Desktop/bin/Debug/net10.0-windows10.0.19041.0/win-x64/TextToSvgDiagramsForExcel.exe` (outside MSIX it keeps its settings in `%LOCALAPPDATA%\TextToSvgDiagramsForExcel`).
+
+### Creating the MSIX
+
+MSIX packages are always signed with a self-signed certificate whose subject is the Store Publisher; the same certificate signs the release and development packages (see `docs/desktop-design.md` §9).
+
+**1. Create the certificate** (once; again when it expires)
+
+```bash
+winapp cert generate --manifest desktop/package/Package.appxmanifest --output desktop/package/cert/TextToSvgDiagramsForExcel.pfx --password <password> --export-cer --valid-days 365
+```
+
+- Don't use the default password (`password`); it is publicly known.
+- `desktop/package/cert/` and `.pfx` / `.cer` files are never committed (they are in `.gitignore`).
+
+**2. Save the password in an environment variable** (optional; saves typing it every time)
+
+```powershell
+[Environment]::SetEnvironmentVariable('MSIX_CERT_PASSWORD', '<password>', 'User')
+```
+
+Open a new terminal after saving it.
+
+**3. Create the MSIX** (PowerShell)
+
+```powershell
+# Development (Identity ...Dev; Debug build with WebView2 DevTools)
+./desktop/package/pack.ps1 -Variant Dev
+
+# Release (the one submitted to the Store)
+./desktop/package/pack.ps1 -Variant Release
+```
+
+- Without the environment variable, add `-CertPassword <password>`.
+- For a certificate somewhere else, add `-CertPath <path to .pfx>`.
+- To build one architecture only, add `-Arch x64` (or `arm64`); the result is a `.msix` instead of a bundle.
+- The output goes to `desktop/out/<Dev|Release>/`, named `TextToSvgDiagramsForExcel[.Dev]_<version>.msixbundle` (x64 and Arm64 in one bundle).
+- The development package has its own Identity, so it installs next to the Store version.
+
+### Installing on a Test Machine
+
+**1. Trust the certificate** (once per machine; run as administrator)
+
+```bash
+winapp cert install desktop/package/cert/TextToSvgDiagramsForExcel.cer
+```
+
+Without winapp, import the `.cer` into Local Computer → Trusted People. On a development PC you can instead add `--install` to `cert generate`.
+
+**2. Install the package**
+
+```powershell
+Add-AppxPackage desktop/out/Dev/TextToSvgDiagramsForExcel.Dev_1.5.0.0.msixbundle
+```
+
+- Double-clicking the `.msixbundle` also installs it.
+- Uninstall it from Settings → Apps.
+- `.msixbundle` files are not distributed to users; the app is distributed only through the Microsoft Store.
+
+### Submitting to the Store
+
+To build the release package and submit it, add `-Publish`.
+
+```powershell
+./desktop/package/pack.ps1 -Variant Release -Publish
+```
+
+The first submission and the Store listing are made in Partner Center.
+
+### CI
+
+`.github/workflows/desktop.yml` builds and tests the app. When the repository secrets `MSIX_CERT_BASE64` (the `.pfx` in Base64) and `MSIX_CERT_PASSWORD` are set, it also creates the development `.msixbundle` as a build artifact. To get the `.pfx` in Base64, run:
+
+```powershell
+[Convert]::ToBase64String([IO.File]::ReadAllBytes('desktop/package/cert/TextToSvgDiagramsForExcel.pfx')) | Set-Clipboard
+```
 
 ## Replacing Icons
 
