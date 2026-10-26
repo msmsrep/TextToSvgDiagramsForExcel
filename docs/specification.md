@@ -2,7 +2,7 @@
 
 本書は現行実装（`src/taskpane/*.ts`, `src/taskpane/taskpane.html`, `src/taskpane/taskpane.css`, `manifest.xml`, `build.js`, `Installer/TextToSvgDiagramsForExcel.iss`）から起こした仕様書である。記述は実装の挙動を正とする。主要な挙動は `test/` の自動テストで検証している（§6.4）。
 
-- 対象バージョン: 1.4.0（`package.json` / マニフェスト `1.4.0.0`）
+- 対象バージョン: 1.5.0（`package.json` / マニフェスト `1.5.0.0`）
 - 作成日: 2026-10-21
 - 更新日: 2026-10-23
 
