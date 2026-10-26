@@ -186,7 +186,7 @@ Add-AppxPackage desktop/out/Dev/TextToSvgDiagramsForExcel.Dev_1.5.0.0.msixbundle
 ./desktop/package/pack.ps1 -Variant Release -Publish
 ```
 
-最初の提出と掲載情報の登録は Partner Center で行います。
+最初の提出と掲載情報の登録は Partner Center で行います。説明文・スクリーンショット・プロモーション画像などの掲載素材は [desktop/store/](./desktop/store/README.md) にあります。
 
 ### CI
 
@@ -232,6 +232,14 @@ Text-to-SVG Diagrams for Excelは、ユーザーの個人情報およびデー�
 ### Cookieおよびトラッキング
 
 本アドインはCookie、ローカルストレージ、トラッキング技術を使用しません。
+
+### デスクトップ版（Microsoft Store）
+
+デスクトップ版も、ユーザーの個人情報およびデータを**一切収集しません**。
+
+- ダイアグラムの描画はパソコンの中だけで行い、通信は一切しません
+- Excel への挿入と選択セルの読み込みは、パソコン上の Excel に直接行います。セルの値はコードの生成にだけ使い、保存しません
+- アプリのデータフォルダーに保存するのは、ウィンドウの位置、出力の大きさと形式、言語などの設定だけです。入力したコードは保存しません。データはアンインストールで消えます
 
 ## お問い合わせ
 

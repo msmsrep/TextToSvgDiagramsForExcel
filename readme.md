@@ -184,7 +184,7 @@ To build the release package and submit it, add `-Publish`.
 ./desktop/package/pack.ps1 -Variant Release -Publish
 ```
 
-The first submission and the Store listing are made in Partner Center.
+The first submission and the Store listing are made in Partner Center. The listing materials (descriptions, screenshots, promotional images) are in [desktop/store/](./desktop/store/README.md).
 
 ### CI
 
@@ -229,6 +229,14 @@ No user data is included in this communication.
 ### Cookies and Tracking
 
 This add-in does not use cookies, local storage, or any tracking technologies.
+
+### Desktop App (Microsoft Store)
+
+The desktop app does not collect any personal information or data either.
+
+- Diagrams are drawn only on your PC; the app makes no network connections
+- It inserts diagrams and reads the selected cells directly in Excel on your PC; cell values are used only to build the code and are not stored
+- Only settings (window position, output size and format, language and so on) are saved in the app's data folder; your code is not saved, and the data is removed when you uninstall the app
 
 ### Contact
 
