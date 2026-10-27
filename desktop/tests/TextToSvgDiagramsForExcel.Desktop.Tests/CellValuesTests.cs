@@ -60,4 +60,25 @@ public class CellValuesTests
         Assert.Equal(45658.0, CellValues.Convert(new DateTime(2025, 1, 1)));
         Assert.Equal(1.5, CellValues.Convert(1.5m));
     }
+
+    [Fact]
+    public void BoundsAreTheRowsAndColumnsWithValues()
+    {
+        object[][] values =
+        [
+            ["", "", "", ""],
+            ["", "A", "", ""],
+            ["", "", "", 1.0],
+            ["", "", "", ""],
+        ];
+
+        Assert.Equal((1, 1, 2, 3), CellValues.Bounds(values));
+        Assert.Equal([["A", "", ""], ["", "", 1.0]], CellValues.Slice(values, 1, 1, 2, 3));
+    }
+
+    [Fact]
+    public void EmptyCellsHaveNoBounds()
+    {
+        Assert.Null(CellValues.Bounds([["", ""], ["", ""]]));
+    }
 }

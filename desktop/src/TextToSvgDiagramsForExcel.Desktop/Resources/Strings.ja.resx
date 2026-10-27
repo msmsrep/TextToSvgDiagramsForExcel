@@ -214,4 +214,7 @@ https://go.microsoft.com/fwlink/p/?LinkId=2124703 からインストールし、
   <data name="EngineFailed" xml:space="preserve">
     <value>描画エンジンを起動できませんでした: {0}</value>
   </data>
+  <data name="UnexpectedError" xml:space="preserve">
+    <value>予期しないエラーが発生しました: {0}</value>
+  </data>
 </root>

@@ -281,8 +281,9 @@ COM の `SheetSelectionChange` は図形の選択では発生せず、Office.js 
 **範囲の決め方**（Office.js の `getUsedRangeOrNullObject(true)` は値のあるセルだけで切り詰めるが、COM の `UsedRange` は書式だけのセルも含むため、同じ結果になるよう自分で求める）:
 
 1. 対象ウィンドウの `Selection` が `Range` でなければ `Select a cell range on the sheet.`。複数の範囲を選んでいる（`Areas.Count > 1`）ときも同じエラーにする（Office.js の `getSelectedRange` も複数範囲では失敗する。要検証）。
-2. 選択範囲の中で値のある最初と最後のセルを `Range.Find("*", LookIn: xlFormulas, SearchOrder: xlByRows / xlByColumns, SearchDirection: xlNext / xlPrevious)` で求め、その行・列で囲んだ範囲にする。見つからなければ `The selection is empty.`。列全体の選択（`A:C` など）でも `Value2` を 100 万行分読まずに済む。
-3. 行数が 500 を超えれば `The selection has more than 500 rows.`（アドインと同じ。値を読む前に調べる）。
+2. 選択範囲と `UsedRange` の重なり（`Application.Intersect`）の `Value2` を 1 回で読み、値のある（空でない）最初と最後の行・列で囲んだ範囲にする。重なりがないか値が 1 つもなければ `The selection is empty.`。列全体の選択（`A:C` など）でも `Value2` を 100 万行分読まずに済む。`Range.Find` は使わない（ユーザーの［検索］ダイアログの設定を書き換えてしまうため）。
+3. 行数が 500 を超えれば `The selection has more than 500 rows.`（アドインと同じ。`Text` と `NumberFormat` を読む前に調べる）。
+4. `Text` と `NumberFormat` はセルごとの呼び出しになるため、tableToMermaid が使う数値と真偽値のセルだけ読み、ほかは `""` にする。
 
 **値の変換**:
 

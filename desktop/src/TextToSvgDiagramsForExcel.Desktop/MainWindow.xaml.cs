@@ -95,7 +95,17 @@ public partial class MainWindow : Window
         DataContext = vm;
         await Dispatcher.InvokeAsync(ShowCurrentDiagram, DispatcherPriority.Background);
 
-        await vm.InitializeAsync();
+        try
+        {
+            await vm.InitializeAsync();
+        }
+        catch (EngineException ex)
+        {
+            // The engine page loaded but does not answer.
+            MessageBox.Show(this, Strings.Format("EngineFailed", ex.Message), Strings.Get("AppTitle"), MessageBoxButton.OK, MessageBoxImage.Error);
+            Close();
+            return;
+        }
         _closeCheck.Start();
         Editor.Focus();
     }
