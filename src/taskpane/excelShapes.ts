@@ -1,5 +1,6 @@
 import { type Box, connectionSite, type Fill, type Label, type Line, type ShapeModel } from "../core/flowchartModel";
 import type { RasterImage, SvgImage } from "../core/image";
+import { t } from "../core/messages";
 import { PX_TO_PT } from "../core/util";
 
 // Marks images inserted by this add-in; the Mermaid code goes in the description.
@@ -111,7 +112,7 @@ async function loadPlacement(
   await ctx.sync();
 
   if (target.isNullObject) {
-    throw new Error("Selected diagram no longer exists.");
+    throw new Error(t("diagramNoLongerExists"));
   }
   return { left: target.left, top: target.top, name: target.name };
 }
@@ -123,7 +124,7 @@ export function getDiagramWidth(id: string): Promise<number> {
     shape.load(["isNullObject", "width"]);
     await ctx.sync();
     if (shape.isNullObject) {
-      throw new Error("Selected diagram no longer exists.");
+      throw new Error(t("diagramNoLongerExists"));
     }
     return shape.width;
   });
@@ -197,99 +198,138 @@ function setText(shape: Excel.Shape, label: Label, verticalAlignment: "Middle" |
   frame.textRange.font.color = label.color;
 }
 
+/** Deletes the shapes added since `before`, so a failed insertion leaves nothing behind. */
+async function deleteAddedShapes(before: Set<string>): Promise<void> {
+  try {
+    await Excel.run(async (ctx) => {
+      const shapes = activeShapes(ctx);
+      shapes.load("items/id");
+      await ctx.sync();
+      for (const shape of shapes.items) {
+        if (!before.has(shape.id)) shape.delete();
+      }
+      await ctx.sync();
+    });
+  } catch {
+    // Keep the insertion's own error, which tells more.
+  }
+}
+
 /**
  * Builds a flowchart from native shapes: geometric shapes for nodes and
  * subgraphs, connectors attached to them for edges, and text boxes for edge
- * labels, all grouped into one shape that carries the Mermaid code.
+ * labels, all grouped into one shape that carries the Mermaid code. Shapes
+ * are written to the sheet in several syncs, so a failure deletes the ones
+ * already added.
  */
-export function insertNativeShapes(
+export async function insertNativeShapes(
   model: ShapeModel,
   mermaidCode: string,
   replaceId?: string,
 ): Promise<string> {
-  return Excel.run(async (ctx) => {
-    const placement = await loadPlacement(ctx, replaceId);
-    const shapes = activeShapes(ctx);
-    const all: Excel.Shape[] = [];
-    const place = (shape: Excel.Shape, box: Box) => {
-      shape.left = placement.left + box.left;
-      shape.top = placement.top + box.top;
-      shape.width = box.width;
-      shape.height = box.height;
-    };
+  if (model.nodes.length + model.edges.length + model.labels.length === 0) {
+    throw new Error(t("diagramHasNoShapes"));
+  }
+  let before: Set<string> | undefined;
+  try {
+    return await Excel.run(async (ctx) => {
+      const existing = activeShapes(ctx);
+      existing.load("items/id");
+      const placement = await loadPlacement(ctx, replaceId);
+      before = new Set(existing.items.map((s) => s.id));
+      return await addNativeShapes(ctx, model, mermaidCode, placement, replaceId);
+    });
+  } catch (e) {
+    if (before) await deleteAddedShapes(before);
+    throw e;
+  }
+}
 
-    const nodes = new Map<string, { shape: Excel.Shape; box: Box; type: string }>();
-    for (const node of model.nodes) {
-      const shape = shapes.addGeometricShape(node.type);
-      place(shape, node.box);
-      setFill(shape, node.fill);
-      setLine(shape, node.line);
-      if (node.label.text) {
-        setText(shape, node.label, node.labelPosition);
-      }
-      shape.load("connectionSiteCount");
-      nodes.set(node.id, { shape, box: node.box, type: node.type });
-      all.push(shape);
+async function addNativeShapes(
+  ctx: Excel.RequestContext,
+  model: ShapeModel,
+  mermaidCode: string,
+  placement: Placement,
+  replaceId?: string,
+): Promise<string> {
+  const shapes = activeShapes(ctx);
+  const all: Excel.Shape[] = [];
+  const place = (shape: Excel.Shape, box: Box) => {
+    shape.left = placement.left + box.left;
+    shape.top = placement.top + box.top;
+    shape.width = box.width;
+    shape.height = box.height;
+  };
+
+  const nodes = new Map<string, { shape: Excel.Shape; box: Box; type: string }>();
+  for (const node of model.nodes) {
+    const shape = shapes.addGeometricShape(node.type);
+    place(shape, node.box);
+    setFill(shape, node.fill);
+    setLine(shape, node.line);
+    if (node.label.text) {
+      setText(shape, node.label, node.labelPosition);
     }
-    // Connection site counts are needed to attach the connectors.
-    await ctx.sync();
+    shape.load("connectionSiteCount");
+    nodes.set(node.id, { shape, box: node.box, type: node.type });
+    all.push(shape);
+  }
+  // Connection site counts are needed to attach the connectors.
+  await ctx.sync();
 
-    for (const edge of model.edges) {
-      const shape = shapes.addLine(
-        placement.left + edge.begin.x,
-        placement.top + edge.begin.y,
-        placement.left + edge.end.x,
-        placement.top + edge.end.y,
-        edge.connectorType,
+  for (const edge of model.edges) {
+    const shape = shapes.addLine(
+      placement.left + edge.begin.x,
+      placement.top + edge.begin.y,
+      placement.left + edge.end.x,
+      placement.top + edge.end.y,
+      edge.connectorType,
+    );
+    const from = nodes.get(edge.from);
+    const to = nodes.get(edge.to);
+    let beginSite: number | undefined;
+    if (from && from.shape.connectionSiteCount > 0) {
+      beginSite = connectionSite(from.box, edge.begin, from.shape.connectionSiteCount, from.type);
+      shape.line.connectBeginShape(from.shape, beginSite);
+    }
+    if (to && to.shape.connectionSiteCount > 0) {
+      // A self-loop needs two different sites, or the connector has no length.
+      const exclude = from === to ? beginSite : undefined;
+      shape.line.connectEndShape(
+        to.shape,
+        connectionSite(to.box, edge.end, to.shape.connectionSiteCount, to.type, exclude),
       );
-      const from = nodes.get(edge.from);
-      const to = nodes.get(edge.to);
-      let beginSite: number | undefined;
-      if (from && from.shape.connectionSiteCount > 0) {
-        beginSite = connectionSite(from.box, edge.begin, from.shape.connectionSiteCount, from.type);
-        shape.line.connectBeginShape(from.shape, beginSite);
-      }
-      if (to && to.shape.connectionSiteCount > 0) {
-        // A self-loop needs two different sites, or the connector has no length.
-        const exclude = from === to ? beginSite : undefined;
-        shape.line.connectEndShape(
-          to.shape,
-          connectionSite(to.box, edge.end, to.shape.connectionSiteCount, to.type, exclude),
-        );
-      }
-      shape.line.beginArrowheadStyle = edge.beginArrow;
-      shape.line.endArrowheadStyle = edge.endArrow;
-      setLine(shape, edge.line);
-      all.push(shape);
     }
+    shape.line.beginArrowheadStyle = edge.beginArrow;
+    shape.line.endArrowheadStyle = edge.endArrow;
+    setLine(shape, edge.line);
+    all.push(shape);
+  }
 
-    for (const label of model.labels) {
-      const shape = shapes.addTextBox(label.label.text);
-      place(shape, label.box);
-      setFill(shape, label.fill);
-      setLine(shape, null);
-      setText(shape, label.label, "Middle");
-      all.push(shape);
-    }
+  for (const label of model.labels) {
+    const shape = shapes.addTextBox(label.label.text);
+    place(shape, label.box);
+    setFill(shape, label.fill);
+    setLine(shape, null);
+    setText(shape, label.label, "Middle");
+    all.push(shape);
+  }
 
-    if (all.length === 0) {
-      throw new Error("The diagram has no shapes.");
-    }
-    const diagram = all.length > 1 ? shapes.addGroup(all) : all[0];
-    applyShapeProps(diagram, placement, mermaidCode);
-    diagram.load("id");
-    if (replaceId) {
-      shapes.getItem(replaceId).delete();
-    }
-    await ctx.sync();
-    return diagram.id;
-  });
+  const diagram = all.length > 1 ? shapes.addGroup(all) : all[0];
+  applyShapeProps(diagram, placement, mermaidCode);
+  diagram.load("id");
+  if (replaceId) {
+    shapes.getItem(replaceId).delete();
+  }
+  await ctx.sync();
+  return diagram.id;
 }
 
 /**
  * Inserts an SVG through setSelectedDataAsync. The new shape is found by
  * diffing shape IDs before and after insertion, and the old shape is deleted
- * only after the new one is in place.
+ * only after the new one is in place. If the new shape cannot be set up, it
+ * is deleted rather than left without the Mermaid code.
  */
 export async function insertSvgShape(
   image: SvgImage,
@@ -307,24 +347,36 @@ export async function insertSvgShape(
 
   return Excel.run(async (ctx) => {
     const shapes = activeShapes(ctx);
-    shapes.load("items/id");
+    shapes.load("items/id,items/type");
     await ctx.sync();
 
-    const added = shapes.items.filter((s) => !before.ids.has(s.id));
+    // The SVG arrives as a picture; other shapes added meanwhile (a chart, a
+    // drawn shape) are not candidates.
+    const added = shapes.items.filter((s) => !before.ids.has(s.id) && s.type === "Image");
     if (added.length !== 1) {
-      throw new Error("Could not identify the inserted shape.");
+      throw new Error(t("insertedShapeUnknown"));
     }
     const shape = added[0];
-    // Excel picks its own size for the inserted SVG. "Convert to Shape" scales
-    // the shapes with the picture but keeps the font sizes, so the picture
-    // must be at its actual size for the text to fit.
-    if (image.width > 0 && image.height > 0) {
-      shape.lockAspectRatio = false;
-      shape.width = image.width * PX_TO_PT;
-      shape.height = image.height * PX_TO_PT;
+    try {
+      // Excel picks its own size for the inserted SVG. "Convert to Shape" scales
+      // the shapes with the picture but keeps the font sizes, so the picture
+      // must be at its actual size for the text to fit.
+      if (image.width > 0 && image.height > 0) {
+        shape.lockAspectRatio = false;
+        shape.width = image.width * PX_TO_PT;
+        shape.height = image.height * PX_TO_PT;
+      }
+      applyShapeProps(shape, before.placement, mermaidCode);
+      await ctx.sync();
+    } catch (e) {
+      try {
+        shape.delete();
+        await ctx.sync();
+      } catch {
+        // Keep the original error.
+      }
+      throw e;
     }
-    applyShapeProps(shape, before.placement, mermaidCode);
-    await ctx.sync();
 
     if (replaceId) {
       const target = shapes.getItemOrNullObject(replaceId);

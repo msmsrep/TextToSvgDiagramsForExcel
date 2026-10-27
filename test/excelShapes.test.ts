@@ -280,6 +280,32 @@ describe("insertSvgShape", () => {
     expect(fake.shapes.map((s) => s.id)).toEqual(["shape-1"]);
   });
 
+  it("ignores other kinds of shapes added during insertion", async () => {
+    setup();
+    fake.Office.context.document.setSelectedDataAsync.mockImplementationOnce(
+      (_data: string, _opts: unknown, cb: (r: unknown) => void) => {
+        for (const [id, type] of [["chart", "Chart"], ["svg", "Image"]]) {
+          fake.shapes.push({
+            id, name: id, type, altTextTitle: "", altTextDescription: "", left: 0, top: 0, width: 1, height: 1,
+          });
+        }
+        cb({ status: "succeeded" });
+      },
+    );
+
+    expect(await insertSvgShape(svgImage, "pie")).toBe("svg");
+    expect(fake.shapes.find((s) => s.id === "chart")).toMatchObject({ altTextTitle: "" });
+  });
+
+  it("deletes the new shape when it cannot be set up, keeping the original", async () => {
+    setup({ altTextTitle: TITLE });
+    // The placement and the shape list load; setting up the new shape fails.
+    fake.failSyncAfter(2);
+
+    await expect(insertSvgShape(svgImage, "pie", "shape-1")).rejects.toThrow("Sync failed");
+    expect(fake.shapes.map((s) => s.id)).toEqual(["shape-1"]);
+  });
+
   it.each([0, 2])("fails when %i shapes appear instead of one, keeping the original", async (n) => {
     setup({ altTextTitle: TITLE });
     fake.svgInsert.addShapes = n;
@@ -477,6 +503,23 @@ describe("insertNativeShapes", () => {
 
     expect(byId(id)).toMatchObject({ fill: { cleared: true }, lineFormat: { visible: false } });
     expect(byId(id).textFrame).toBeUndefined();
+  });
+
+  it.each([1, 2])("deletes the shapes already added when the sync after %i fails", async (n) => {
+    setup({ name: "Unrelated" });
+    // Sync 1 loads the placement, sync 2 adds the nodes and sync 3 the rest.
+    fake.failSyncAfter(n);
+
+    await expect(insertNativeShapes(model, "graph LR")).rejects.toThrow("Sync failed");
+    expect(fake.shapes.map((s) => s.name)).toEqual(["Unrelated"]);
+  });
+
+  it("keeps the diagram being replaced when adding the nodes fails", async () => {
+    setup({ name: "Target", altTextTitle: TITLE });
+    fake.failSyncAfter(1);
+
+    await expect(insertNativeShapes(model, "graph LR", "shape-1")).rejects.toThrow("Sync failed");
+    expect(fake.shapes.map((s) => s.name)).toEqual(["Target"]);
   });
 
   it("fails when the model has no shapes", async () => {
