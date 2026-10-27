@@ -187,7 +187,18 @@ export function connect(host: WebViewHost, preview: HTMLElement): void {
     const request = e.data as EngineRequest;
     // Rendering is queued anyway (one mermaid render at a time); queuing here
     // keeps responses in request order.
-    queue = queue.then(async () => host.postMessage(await engine.handle(request)));
+    queue = queue
+      .then(async () => {
+        const response = await engine.handle(request);
+        try {
+          host.postMessage(response);
+        } catch (e) {
+          // A result that cannot be sent still gets an answer, so the app does not wait for it.
+          host.postMessage({ id: response.id, error: { code: "internal", message: errorMessage(e) } });
+        }
+      })
+      // A failed request must not stop the ones after it.
+      .catch(() => {});
   });
 }
 

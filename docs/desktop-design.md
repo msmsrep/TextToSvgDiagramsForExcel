@@ -281,8 +281,9 @@ COM の `SheetSelectionChange` は図形の選択では発生せず、Office.js 
 **範囲の決め方**（Office.js の `getUsedRangeOrNullObject(true)` は値のあるセルだけで切り詰めるが、COM の `UsedRange` は書式だけのセルも含むため、同じ結果になるよう自分で求める）:
 
 1. 対象ウィンドウの `Selection` が `Range` でなければ `Select a cell range on the sheet.`。複数の範囲を選んでいる（`Areas.Count > 1`）ときも同じエラーにする（Office.js の `getSelectedRange` も複数範囲では失敗する。要検証）。
-2. 選択範囲の中で値のある最初と最後のセルを `Range.Find("*", LookIn: xlFormulas, SearchOrder: xlByRows / xlByColumns, SearchDirection: xlNext / xlPrevious)` で求め、その行・列で囲んだ範囲にする。見つからなければ `The selection is empty.`。列全体の選択（`A:C` など）でも `Value2` を 100 万行分読まずに済む。
-3. 行数が 500 を超えれば `The selection has more than 500 rows.`（アドインと同じ。値を読む前に調べる）。
+2. 選択範囲と `UsedRange` の重なり（`Application.Intersect`）の `Value2` を 1 回で読み、値のある（空でない）最初と最後の行・列で囲んだ範囲にする。重なりがないか値が 1 つもなければ `The selection is empty.`。列全体の選択（`A:C` など）でも `Value2` を 100 万行分読まずに済む。`Range.Find` は使わない（ユーザーの［検索］ダイアログの設定を書き換えてしまうため）。
+3. 行数が 500 を超えれば `The selection has more than 500 rows.`（アドインと同じ。`Text` と `NumberFormat` を読む前に調べる）。
+4. `Text` と `NumberFormat` はセルごとの呼び出しになるため、tableToMermaid が使う数値と真偽値のセルだけ読み、ほかは `""` にする。
 
 **値の変換**:
 
@@ -291,7 +292,7 @@ COM の `SheetSelectionChange` は図形の選択では発生せず、Office.js 
 - エラー値は COM では `int`（CVErr。`#N/A` は -2146826246 など）になるが、Office.js では `"#N/A"` などの文字列になる。エラー番号から文字列に変換して Office.js と同じにする。
 - `Text` と `NumberFormat` は、範囲内の値が混在すると配列ではなく `null` を返すため、セルごとに読む（最大 500 行 × 列数回の COM 呼び出し。速度は要検証）。
 
-読んだ値は `TableData`（`values` / `text` / `numberFormat` / `firstRow`）にしてエンジンの `fromTable` に渡す。`TableData` に省略可能な `date1904` を加え、`tableToMermaid` の `serialToIso` で使う。これでアドインの既知の制約 §8-5 の日付のずれがデスクトップ版では起きない。アドインは Office.js でブックの日付システムを取得できないため、従来どおり 1900 年日付システムとして扱う。
+読んだ値は `TableData`（`values` / `text` / `numberFormat` / `firstRow`）にしてエンジンの `fromTable` に渡す。`TableData` に省略可能な `date1904` を加え、`tableToMermaid` の `serialToIso` で使う。これで 1904 年日付システムのブックでも日付がずれない。アドインは Office.js にブックの日付システムのプロパティがないため、`functions.date(1904, 1, 1)` が 0 になるかで判定して渡す（仕様書 §4.10）。
 
 ### 5.7 Excel 操作の制約
 
@@ -523,7 +524,7 @@ MSIX はマニフェストの Publisher と署名した証明書のサブジェ�
 | # | 変更 | 動作の変化 | 時期 |
 |---|---|---|---|
 | 1 | 共通 TS を `src/core` に分離 | なし | 段階 1 |
-| 2 | `TableData` に省略可能な `date1904` を追加 | なし（アドインは渡さない） | 段階 4 |
+| 2 | `TableData` に省略可能な `date1904` を追加し、アドインも `functions.date(1904, 1, 1)` で判定して渡す | 1904 年日付システムのブックで日付がずれない | 段階 4 |
 | 3 | 代替テキストから読んだコードの改行を `\n` にそろえる（§5.3） | 改行コードが混ざった図でも未保存の判定がずれない | 段階 3 |
 | 4 | §10.2 の検証結果による修正（一覧の対象の種類、接続ポイントの番号・方向など） | 検証結果による | 段階 3〜4 |
 | 5 | `connectionSite` のテストを共有フィクスチャに移す | なし | 段階 4 |
@@ -614,6 +615,5 @@ Excel 16.0（ビルド 20527、Microsoft 365）と WebView2 で、テスト用�
 
 - MSIX をインストールして動かす確認（§5.1 / §5.5 のパッケージ内での `AccessibleObjectFromWindow`・一時ファイル、Arm64 端末）。証明書をテスト端末に入れる必要がある（§9.3）。
 - アドインとの互換確認（§10.2）。
-- アドインの日本語対応（§10 #6）。`messages.ts` は共通のエラー文だけを持ち、アドインは英語のまま。
 - ストア提出、紹介ページへのストアのリンクの追加（段階 6）。掲載素材（`desktop/store/`）とプライバシーの項は用意済み。
 - SVG に対応しない Excel、管理者として動く Excel での確認。

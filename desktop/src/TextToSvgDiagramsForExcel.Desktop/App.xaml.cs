@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Windows;
 using Microsoft.Web.WebView2.Core;
@@ -26,7 +28,7 @@ public partial class App : Application
         Strings.Culture = Strings.CultureFor(settings.Language);
         Thread.CurrentThread.CurrentUICulture = Strings.Culture;
 
-        _instanceMutex = new Mutex(true, $@"Local\TextToSvgDiagramsForExcel-{AppPaths.LocalFolder.GetHashCode():X8}", out bool created);
+        _instanceMutex = new Mutex(true, InstanceMutexName(AppPaths.LocalFolder), out bool created);
         if (!created)
         {
             ActivateExistingInstance();
@@ -49,6 +51,7 @@ public partial class App : Application
             return;
         }
 
+        DispatcherUnhandledException += OnDispatcherUnhandledException;
         MessageFilter.Register();
         var window = new MainWindow(settings, store);
         MainWindow = window;
@@ -60,6 +63,29 @@ public partial class App : Application
         MessageFilter.Unregister();
         _instanceMutex?.Dispose();
         base.OnExit(e);
+    }
+
+    /// <summary>
+    /// The single-instance mutex's name for the settings folder (one per user
+    /// and package). string.GetHashCode differs between processes, so the
+    /// name uses a stable hash.
+    /// </summary>
+    internal static string InstanceMutexName(string localFolder)
+    {
+        byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(localFolder.ToUpperInvariant()));
+        return $@"Local\TextToSvgDiagramsForExcel-{Convert.ToHexString(hash, 0, 8)}";
+    }
+
+    /// <summary>Shows errors no operation handled instead of closing the app.</summary>
+    private void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+    {
+        e.Handled = true;
+        MessageBox.Show(
+            MainWindow,
+            Strings.Format("UnexpectedError", e.Exception.Message),
+            Strings.Get("AppTitle"),
+            MessageBoxButton.OK,
+            MessageBoxImage.Error);
     }
 
     /// <summary>Whether the WebView2 Runtime is installed; it cannot be installed from an MSIX package.</summary>
@@ -82,18 +108,25 @@ public partial class App : Application
         {
             if (process.Id != current.Id && process.MainWindowHandle != IntPtr.Zero)
             {
-                ShowWindow(process.MainWindowHandle, SW_RESTORE_IF_MINIMIZED);
+                // Restoring a window that is not minimized would undo its maximizing.
+                if (IsIconic(process.MainWindowHandle))
+                {
+                    ShowWindow(process.MainWindowHandle, SW_RESTORE);
+                }
                 SetForegroundWindow(process.MainWindowHandle);
                 return;
             }
         }
     }
 
-    private const int SW_RESTORE_IF_MINIMIZED = 9;
+    private const int SW_RESTORE = 9;
 
     [DllImport("user32.dll")]
     private static extern bool SetForegroundWindow(IntPtr hwnd);
 
     [DllImport("user32.dll")]
     private static extern bool ShowWindow(IntPtr hwnd, int command);
+
+    [DllImport("user32.dll")]
+    private static extern bool IsIconic(IntPtr hwnd);
 }

@@ -11,7 +11,9 @@
   <ProviderName>msmsrep</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Text-to-SVG Diagrams for Excel"/>
-  <Description DefaultValue="Create diagrams using Mermaid syntax and insert them into Excel"/>
+  <Description DefaultValue="Create diagrams using Mermaid syntax and insert them into Excel">
+    <Override Locale="ja-JP" Value="Mermaid 記法で図を作り、Excel に挿入します"/>
+  </Description>
   <IconUrl DefaultValue="https://localhost:3000/assets/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/icon-64.png"/>
   <SupportUrl DefaultValue="https://github.com/msmsrep/TextToSvgDiagramsForExcel/issues"/>
@@ -392,10 +394,18 @@
         <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="GetStarted.Title" DefaultValue="Getting Started with Text-to-SVG Diagrams for Excel"/>
-        <bt:String id="GetStarted.Description" DefaultValue="Create diagrams using Mermaid syntax and insert them into Excel"/>
-        <bt:String id="OpenPane.Label" DefaultValue="Editor"/>
-        <bt:String id="Group.Editor.Label" DefaultValue="Editor"/>
+        <bt:String id="GetStarted.Title" DefaultValue="Getting Started with Text-to-SVG Diagrams for Excel">
+          <bt:Override Locale="ja-JP" Value="Text-to-SVG Diagrams for Excel を使ってみる"/>
+        </bt:String>
+        <bt:String id="GetStarted.Description" DefaultValue="Create diagrams using Mermaid syntax and insert them into Excel">
+          <bt:Override Locale="ja-JP" Value="Mermaid 記法で図を作り、Excel に挿入します"/>
+        </bt:String>
+        <bt:String id="OpenPane.Label" DefaultValue="Editor">
+          <bt:Override Locale="ja-JP" Value="エディター"/>
+        </bt:String>
+        <bt:String id="Group.Editor.Label" DefaultValue="Editor">
+          <bt:Override Locale="ja-JP" Value="エディター"/>
+        </bt:String>
         <bt:String id="Template.flowchart.Label" DefaultValue="Flowchart"/>
         <bt:String id="Template.sequence.Label" DefaultValue="Sequence"/>
         <bt:String id="Template.class.Label" DefaultValue="Class"/>
@@ -405,55 +415,131 @@
         <bt:String id="Template.pie.Label" DefaultValue="Pie"/>
         <bt:String id="Template.mindmap.Label" DefaultValue="Mindmap"/>
         <bt:String id="Template.timeline.Label" DefaultValue="Timeline"/>
-        <bt:String id="Template.Label" DefaultValue="Template"/>
-        <bt:String id="Cells.auto.Label" DefaultValue="Auto"/>
+        <bt:String id="Template.Label" DefaultValue="Template">
+          <bt:Override Locale="ja-JP" Value="テンプレート"/>
+        </bt:String>
+        <bt:String id="Cells.auto.Label" DefaultValue="Auto">
+          <bt:Override Locale="ja-JP" Value="自動"/>
+        </bt:String>
         <bt:String id="Cells.flowchart.Label" DefaultValue="Flowchart"/>
         <bt:String id="Cells.gantt.Label" DefaultValue="Gantt"/>
         <bt:String id="Cells.pie.Label" DefaultValue="Pie"/>
-        <bt:String id="Cells.Label" DefaultValue="From cells"/>
-        <bt:String id="Group.New.Label" DefaultValue="New"/>
+        <bt:String id="Cells.Label" DefaultValue="From cells">
+          <bt:Override Locale="ja-JP" Value="セルから"/>
+        </bt:String>
+        <bt:String id="Group.New.Label" DefaultValue="New">
+          <bt:Override Locale="ja-JP" Value="新規"/>
+        </bt:String>
         <bt:String id="Insert.png.Label" DefaultValue="PNG"/>
         <bt:String id="Insert.jpeg.Label" DefaultValue="JPEG"/>
         <bt:String id="Insert.svg.Label" DefaultValue="SVG"/>
-        <bt:String id="Insert.svgOffice.Label" DefaultValue="SVG (for shape conversion)"/>
-        <bt:String id="Insert.shapes.Label" DefaultValue="Shapes (editable)"/>
-        <bt:String id="Insert.Label" DefaultValue="Insert as"/>
+        <bt:String id="Insert.svgOffice.Label" DefaultValue="SVG (for shape conversion)">
+          <bt:Override Locale="ja-JP" Value="SVG (図形変換用)"/>
+        </bt:String>
+        <bt:String id="Insert.shapes.Label" DefaultValue="Shapes (editable)">
+          <bt:Override Locale="ja-JP" Value="図形 (編集可能)"/>
+        </bt:String>
+        <bt:String id="Insert.Label" DefaultValue="Insert as">
+          <bt:Override Locale="ja-JP" Value="形式を指定して挿入"/>
+        </bt:String>
         <bt:String id="Download.png.Label" DefaultValue="PNG"/>
         <bt:String id="Download.jpeg.Label" DefaultValue="JPEG"/>
         <bt:String id="Download.svg.Label" DefaultValue="SVG"/>
-        <bt:String id="Download.svgOffice.Label" DefaultValue="SVG (for shape conversion)"/>
-        <bt:String id="Download.Label" DefaultValue="Download"/>
-        <bt:String id="Group.Output.Label" DefaultValue="Output"/>
-        <bt:String id="Tab.Label" DefaultValue="Diagrams"/>
+        <bt:String id="Download.svgOffice.Label" DefaultValue="SVG (for shape conversion)">
+          <bt:Override Locale="ja-JP" Value="SVG (図形変換用)"/>
+        </bt:String>
+        <bt:String id="Download.Label" DefaultValue="Download">
+          <bt:Override Locale="ja-JP" Value="ダウンロード"/>
+        </bt:String>
+        <bt:String id="Group.Output.Label" DefaultValue="Output">
+          <bt:Override Locale="ja-JP" Value="出力"/>
+        </bt:String>
+        <bt:String id="Tab.Label" DefaultValue="Diagrams">
+          <bt:Override Locale="ja-JP" Value="図"/>
+        </bt:String>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="OpenPane.Description" DefaultValue="Open the pane to write Mermaid code, preview the diagram and insert it into the sheet"/>
-        <bt:String id="Template.flowchart.Description" DefaultValue="Put a Flowchart example in the editor"/>
-        <bt:String id="Template.sequence.Description" DefaultValue="Put a Sequence example in the editor"/>
-        <bt:String id="Template.class.Description" DefaultValue="Put a Class example in the editor"/>
-        <bt:String id="Template.state.Description" DefaultValue="Put a State example in the editor"/>
-        <bt:String id="Template.er.Description" DefaultValue="Put a Entity relationship example in the editor"/>
-        <bt:String id="Template.gantt.Description" DefaultValue="Put a Gantt example in the editor"/>
-        <bt:String id="Template.pie.Description" DefaultValue="Put a Pie example in the editor"/>
-        <bt:String id="Template.mindmap.Description" DefaultValue="Put a Mindmap example in the editor"/>
-        <bt:String id="Template.timeline.Description" DefaultValue="Put a Timeline example in the editor"/>
-        <bt:String id="Template.Description" DefaultValue="Start a new diagram from a short example of the chosen type"/>
-        <bt:String id="Cells.auto.Description" DefaultValue="Picks the diagram type from the selected table"/>
-        <bt:String id="Cells.flowchart.Description" DefaultValue="Columns: parent | child | label"/>
-        <bt:String id="Cells.gantt.Description" DefaultValue="Columns: task | start | end or days | section"/>
-        <bt:String id="Cells.pie.Description" DefaultValue="Columns: label | value"/>
-        <bt:String id="Cells.Description" DefaultValue="Make Mermaid code from the table in the selected cells"/>
-        <bt:String id="Insert.png.Description" DefaultValue="Insert the diagram as PNG"/>
-        <bt:String id="Insert.jpeg.Description" DefaultValue="Insert the diagram as JPEG"/>
-        <bt:String id="Insert.svg.Description" DefaultValue="Insert the diagram as SVG"/>
-        <bt:String id="Insert.svgOffice.Description" DefaultValue="Insert the diagram as SVG (for shape conversion)"/>
-        <bt:String id="Insert.shapes.Description" DefaultValue="Insert the diagram as Shapes (editable)"/>
-        <bt:String id="Insert.Description" DefaultValue="Insert the diagram into the sheet, replacing the diagram being edited"/>
-        <bt:String id="Download.png.Description" DefaultValue="Download the diagram as PNG"/>
-        <bt:String id="Download.jpeg.Description" DefaultValue="Download the diagram as JPEG"/>
-        <bt:String id="Download.svg.Description" DefaultValue="Download the diagram as SVG"/>
-        <bt:String id="Download.svgOffice.Description" DefaultValue="Download the diagram as SVG (for shape conversion)"/>
-        <bt:String id="Download.Description" DefaultValue="Save the diagram as a file"/>
+        <bt:String id="OpenPane.Description" DefaultValue="Open the pane to write Mermaid code, preview the diagram and insert it into the sheet">
+          <bt:Override Locale="ja-JP" Value="Mermaid のコードを書き、図をプレビューしてシートに挿入するウィンドウを開きます"/>
+        </bt:String>
+        <bt:String id="Template.flowchart.Description" DefaultValue="Put a Flowchart example in the editor">
+          <bt:Override Locale="ja-JP" Value="Flowchart の例を入力欄に入れます"/>
+        </bt:String>
+        <bt:String id="Template.sequence.Description" DefaultValue="Put a Sequence example in the editor">
+          <bt:Override Locale="ja-JP" Value="Sequence の例を入力欄に入れます"/>
+        </bt:String>
+        <bt:String id="Template.class.Description" DefaultValue="Put a Class example in the editor">
+          <bt:Override Locale="ja-JP" Value="Class の例を入力欄に入れます"/>
+        </bt:String>
+        <bt:String id="Template.state.Description" DefaultValue="Put a State example in the editor">
+          <bt:Override Locale="ja-JP" Value="State の例を入力欄に入れます"/>
+        </bt:String>
+        <bt:String id="Template.er.Description" DefaultValue="Put a Entity relationship example in the editor">
+          <bt:Override Locale="ja-JP" Value="Entity relationship の例を入力欄に入れます"/>
+        </bt:String>
+        <bt:String id="Template.gantt.Description" DefaultValue="Put a Gantt example in the editor">
+          <bt:Override Locale="ja-JP" Value="Gantt の例を入力欄に入れます"/>
+        </bt:String>
+        <bt:String id="Template.pie.Description" DefaultValue="Put a Pie example in the editor">
+          <bt:Override Locale="ja-JP" Value="Pie の例を入力欄に入れます"/>
+        </bt:String>
+        <bt:String id="Template.mindmap.Description" DefaultValue="Put a Mindmap example in the editor">
+          <bt:Override Locale="ja-JP" Value="Mindmap の例を入力欄に入れます"/>
+        </bt:String>
+        <bt:String id="Template.timeline.Description" DefaultValue="Put a Timeline example in the editor">
+          <bt:Override Locale="ja-JP" Value="Timeline の例を入力欄に入れます"/>
+        </bt:String>
+        <bt:String id="Template.Description" DefaultValue="Start a new diagram from a short example of the chosen type">
+          <bt:Override Locale="ja-JP" Value="選んだ種類の短い例から新しい図を始めます"/>
+        </bt:String>
+        <bt:String id="Cells.auto.Description" DefaultValue="Picks the diagram type from the selected table">
+          <bt:Override Locale="ja-JP" Value="選択した表から図の種類を選びます"/>
+        </bt:String>
+        <bt:String id="Cells.flowchart.Description" DefaultValue="Columns: parent | child | label">
+          <bt:Override Locale="ja-JP" Value="列: 親 | 子 | ラベル"/>
+        </bt:String>
+        <bt:String id="Cells.gantt.Description" DefaultValue="Columns: task | start | end or days | section">
+          <bt:Override Locale="ja-JP" Value="列: タスク | 開始 | 終了または日数 | セクション"/>
+        </bt:String>
+        <bt:String id="Cells.pie.Description" DefaultValue="Columns: label | value">
+          <bt:Override Locale="ja-JP" Value="列: ラベル | 値"/>
+        </bt:String>
+        <bt:String id="Cells.Description" DefaultValue="Make Mermaid code from the table in the selected cells">
+          <bt:Override Locale="ja-JP" Value="選択したセルの表から Mermaid のコードを作ります"/>
+        </bt:String>
+        <bt:String id="Insert.png.Description" DefaultValue="Insert the diagram as PNG">
+          <bt:Override Locale="ja-JP" Value="図を PNG でシートに挿入します"/>
+        </bt:String>
+        <bt:String id="Insert.jpeg.Description" DefaultValue="Insert the diagram as JPEG">
+          <bt:Override Locale="ja-JP" Value="図を JPEG でシートに挿入します"/>
+        </bt:String>
+        <bt:String id="Insert.svg.Description" DefaultValue="Insert the diagram as SVG">
+          <bt:Override Locale="ja-JP" Value="図を SVG でシートに挿入します"/>
+        </bt:String>
+        <bt:String id="Insert.svgOffice.Description" DefaultValue="Insert the diagram as SVG (for shape conversion)">
+          <bt:Override Locale="ja-JP" Value="図を SVG (図形変換用) でシートに挿入します"/>
+        </bt:String>
+        <bt:String id="Insert.shapes.Description" DefaultValue="Insert the diagram as Shapes (editable)">
+          <bt:Override Locale="ja-JP" Value="図を 図形 (編集可能) でシートに挿入します"/>
+        </bt:String>
+        <bt:String id="Insert.Description" DefaultValue="Insert the diagram into the sheet, replacing the diagram being edited">
+          <bt:Override Locale="ja-JP" Value="図をシートに挿入します。編集中の図があれば置き換えます"/>
+        </bt:String>
+        <bt:String id="Download.png.Description" DefaultValue="Download the diagram as PNG">
+          <bt:Override Locale="ja-JP" Value="図を PNG でダウンロードします"/>
+        </bt:String>
+        <bt:String id="Download.jpeg.Description" DefaultValue="Download the diagram as JPEG">
+          <bt:Override Locale="ja-JP" Value="図を JPEG でダウンロードします"/>
+        </bt:String>
+        <bt:String id="Download.svg.Description" DefaultValue="Download the diagram as SVG">
+          <bt:Override Locale="ja-JP" Value="図を SVG でダウンロードします"/>
+        </bt:String>
+        <bt:String id="Download.svgOffice.Description" DefaultValue="Download the diagram as SVG (for shape conversion)">
+          <bt:Override Locale="ja-JP" Value="図を SVG (図形変換用) でダウンロードします"/>
+        </bt:String>
+        <bt:String id="Download.Description" DefaultValue="Save the diagram as a file">
+          <bt:Override Locale="ja-JP" Value="図をファイルとして保存します"/>
+        </bt:String>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>

@@ -14,6 +14,7 @@ import { readSelection } from "./excelTable";
 import { extractFlowchart, scaleModel } from "../core/flowchartModel";
 import { type ImageFormat, serializeSvg, svgSize, svgToDataUrl, svgToRaster } from "../core/image";
 import { initLineHighlight } from "./lineHighlight";
+import { setLocale, t, toLocale } from "../core/messages";
 import { toOfficeSvg } from "../core/officeSvg";
 import { getFlowchartData, initMermaid, renderMermaid } from "../core/render";
 import { registerRibbonCommands } from "./ribbon";
@@ -21,11 +22,9 @@ import { initSplitter } from "./splitter";
 import { type TableKind, tableToMermaid } from "../core/tableToMermaid";
 import { TEMPLATES } from "../core/templates";
 import { errorMessage, PX_TO_PT } from "../core/util";
-import { byId } from "./dom";
+import { byId, localize } from "./dom";
 
 const RENDER_DEBOUNCE_MS = 250;
-const PREVIEW_HINT_HTML =
-  '<span class="hint">Type Mermaid code, or start from Diagrams &gt; Template on the ribbon</span>';
 const FILE_EXTENSIONS: Record<ImageFormat, string> = {
   png: "png",
   jpeg: "jpg",
@@ -39,6 +38,11 @@ const FILE_EXTENSIONS: Record<ImageFormat, string> = {
 type OutputFormat = ImageFormat | "svg-office" | "shapes";
 
 Office.onReady(() => {
+  // Office's display language, not the browser's, so the pane matches the ribbon.
+  const locale = toLocale(Office.context?.displayLanguage);
+  setLocale(locale);
+  document.documentElement.lang = locale;
+  localize(document);
   initMermaid();
 
   const input = byId<HTMLTextAreaElement>("mermaid-input");
@@ -68,6 +72,9 @@ Office.onReady(() => {
   // Anything else in the editor is unsaved and asks before being replaced.
   let savedCode = input.value.trim();
   let pendingLoad: DiagramItem | undefined;
+  // An insert or download in progress; pressing again (or a ribbon command)
+  // meanwhile would insert twice or replace a diagram already replaced.
+  let busy = false;
 
   const selectedFormat = () => formatSelect.value as OutputFormat;
 
@@ -99,7 +106,7 @@ Office.onReady(() => {
   function actualWidthPt(svgEl: SVGSVGElement): number {
     const { width } = svgSize(svgEl);
     if (width === 0) {
-      throw new Error("The diagram's size is unknown.");
+      throw new Error(t("sizeUnknown"));
     }
     return width * PX_TO_PT;
   }
@@ -114,7 +121,7 @@ Office.onReady(() => {
     }
     const width = Number(sizeWidth.value);
     if (!(width > 0)) {
-      throw new Error("Enter a width greater than 0.");
+      throw new Error(t("enterWidth"));
     }
     return width / actualWidthPt(svgEl);
   }
@@ -152,7 +159,7 @@ Office.onReady(() => {
 
     const defaultOption = document.createElement("option");
     defaultOption.value = "";
-    defaultOption.textContent = "(No diagram selected)";
+    defaultOption.textContent = t("noDiagramSelected");
     diagramSelect.appendChild(defaultOption);
 
     for (const item of items) {
@@ -196,8 +203,7 @@ Office.onReady(() => {
       return;
     }
     pendingLoad = item;
-    loadConfirmText.textContent =
-      `Load "${item.name}"? The code in the editor has unsaved changes and will be replaced.`;
+    loadConfirmText.textContent = t("loadConfirm", { name: item.name });
     loadConfirm.hidden = false;
   }
 
@@ -253,7 +259,7 @@ Office.onReady(() => {
 
   /** Shows a render error, highlighting the line it points at when there is one. */
   function showRenderError(source: string, message: string) {
-    errDiv.textContent = `Render error: ${message}`;
+    errDiv.textContent = t("renderError", { message });
     const line = errorSourceLine(source, message);
     if (line === undefined) {
       errorHighlight.clear();
@@ -262,9 +268,16 @@ Office.onReady(() => {
     errorHighlight.show(line);
     const goTo = document.createElement("button");
     goTo.className = "link-btn";
-    goTo.textContent = `Go to line ${line + 1}`;
+    goTo.textContent = t("goToLine", { line: line + 1 });
     goTo.addEventListener("click", () => errorHighlight.goTo(line));
     errDiv.append(" ", goTo);
+  }
+
+  function showHint() {
+    const hint = document.createElement("span");
+    hint.className = "hint";
+    hint.textContent = t("previewHint", { menu: t("ribbonTemplateMenu") });
+    preview.replaceChildren(hint);
   }
 
   async function renderPreview() {
@@ -276,7 +289,7 @@ Office.onReady(() => {
     const code = source.trim();
     if (!code) {
       errorHighlight.clear();
-      preview.innerHTML = PREVIEW_HINT_HTML;
+      showHint();
       return;
     }
 
@@ -331,7 +344,7 @@ Office.onReady(() => {
     try {
       code = tableToMermaid(await readSelection(), kind);
     } catch (e) {
-      errDiv.textContent = `Generate error: ${errorMessage(e)}`;
+      errDiv.textContent = t("generateError", { message: errorMessage(e) });
       return;
     }
     await startNewDiagram(code);
@@ -340,25 +353,37 @@ Office.onReady(() => {
   // ── Insert / Download ──────────────────────────────────────────────────────
   /**
    * Runs an action on the rendered SVG and reports any failure. Code typed
-   * since the last render (or still rendering) is rendered first.
+   * since the last render (or still rendering) is rendered first. A second
+   * action while one runs (including its render) is ignored.
    */
-  async function withRenderedSvg(errorPrefix: string, action: (svgEl: SVGSVGElement) => Promise<void>) {
-    if (actionsEnabled) {
-      errDiv.textContent = "";
-    } else {
-      window.clearTimeout(renderDebounceTimer);
-      await renderPreview();
-    }
-    const svgEl = preview.querySelector<SVGSVGElement>("svg");
-    if (!svgEl) {
-      // Keep a render error, which tells more than this.
-      errDiv.textContent ||= "Please render first";
+  async function withRenderedSvg(
+    errorId: "insertError" | "downloadError",
+    action: (svgEl: SVGSVGElement) => Promise<void>,
+  ) {
+    if (busy) {
       return;
     }
+    busy = true;
     try {
-      await action(svgEl);
-    } catch (e) {
-      errDiv.textContent = `${errorPrefix}: ${errorMessage(e)}`;
+      if (actionsEnabled) {
+        errDiv.textContent = "";
+      } else {
+        window.clearTimeout(renderDebounceTimer);
+        await renderPreview();
+      }
+      const svgEl = preview.querySelector<SVGSVGElement>("svg");
+      if (!svgEl) {
+        // Keep a render error, which tells more than this.
+        errDiv.textContent ||= t("pleaseRenderFirst");
+        return;
+      }
+      try {
+        await action(svgEl);
+      } catch (e) {
+        errDiv.textContent = t(errorId, { message: errorMessage(e) });
+      }
+    } finally {
+      busy = false;
     }
   }
 
@@ -371,9 +396,9 @@ Office.onReady(() => {
 
   function download(format: OutputFormat) {
     setFormat(format);
-    return withRenderedSvg("Download error", async (svgEl) => {
+    return withRenderedSvg("downloadError", async (svgEl) => {
       if (format === "shapes") {
-        throw new Error("Shapes cannot be downloaded.");
+        throw new Error(t("shapesCannotBeDownloaded"));
       }
       const scale = chosenScale(svgEl);
       let dataUrl: string;
@@ -394,7 +419,7 @@ Office.onReady(() => {
 
   function insert(format: OutputFormat) {
     setFormat(format);
-    return withRenderedSvg("Insert error", async (svgEl) => {
+    return withRenderedSvg("insertError", async (svgEl) => {
       const mermaidCode = input.value.trim();
       const replaceId = currentDiagramId || undefined;
       let insertedShapeId: string;
@@ -402,7 +427,7 @@ Office.onReady(() => {
       if (format === "shapes") {
         const data = await getFlowchartData(mermaidCode);
         if (!data) {
-          throw new Error("Shapes format supports flowcharts only.");
+          throw new Error(t("shapesFlowchartOnly"));
         }
         const scale = await insertScale(svgEl, replaceId);
         insertedShapeId = await insertNativeShapes(
@@ -412,9 +437,7 @@ Office.onReady(() => {
         );
       } else if (format === "svg" || format === "svg-office") {
         if (!isSvgInsertSupported()) {
-          throw new Error(
-            "SVG insertion is not supported in this version of Excel. Use PNG or JPEG.",
-          );
+          throw new Error(t("svgNotSupported"));
         }
         const scale = await insertScale(svgEl, replaceId);
         const svg = format === "svg" ? serializeSvg(svgEl) : toOfficeSvg(svgEl);

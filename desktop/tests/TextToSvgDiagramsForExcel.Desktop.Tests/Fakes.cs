@@ -187,14 +187,20 @@ internal sealed class FakeDialogs : IDialogService
     public List<(string Name, string Filter, byte[] Data)> Saved { get; } = [];
     public string? OpenResult { get; set; }
     public (byte[] Png, string Svg)? Copied { get; private set; }
+    /// <summary>Thrown by the next file or clipboard operations instead of doing them.</summary>
+    public Exception? Error { get; set; }
 
     public bool SaveFile(string defaultName, string filter, byte[] data)
     {
+        if (Error is not null)
+        {
+            throw Error;
+        }
         Saved.Add((defaultName, filter, data));
         return true;
     }
 
-    public string? OpenText(string filter) => OpenResult;
+    public string? OpenText(string filter) => Error is not null ? throw Error : OpenResult;
 
-    public void CopyImage(byte[] png, string svg) => Copied = (png, svg);
+    public void CopyImage(byte[] png, string svg) => Copied = Error is not null ? throw Error : (png, svg);
 }

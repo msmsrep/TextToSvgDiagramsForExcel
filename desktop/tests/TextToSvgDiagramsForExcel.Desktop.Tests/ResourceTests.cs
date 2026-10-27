@@ -120,4 +120,14 @@ public class ResourceTests
         Assert.Equal("Dash", model.Edges[0].Line.DashStyle);
         Assert.Equal(new Engine.Point(3, 4), model.Edges[0].End);
     }
+
+    [Fact]
+    public void InstanceMutexNameIsStableForTheFolder()
+    {
+        // string.GetHashCode differs between processes, so the name must not depend on it.
+        string name = App.InstanceMutexName(@"C:\Users\a\AppData\Local\TextToSvgDiagramsForExcel");
+        Assert.Equal("Local\\TextToSvgDiagramsForExcel-", name[..^16]);
+        Assert.Equal(name, App.InstanceMutexName(@"c:\users\a\appdata\local\TextToSvgDiagramsForExcel"));
+        Assert.NotEqual(name, App.InstanceMutexName(@"C:\Users\b\AppData\Local\TextToSvgDiagramsForExcel"));
+    }
 }
