@@ -229,6 +229,21 @@ Open the download page now?</value>
   <data name="FromText_Kind" xml:space="preserve">
     <value>Diagram</value>
   </data>
+  <data name="FromText_UseAi" xml:space="preserve">
+    <value>Use AI (runs on this PC)</value>
+  </data>
+  <data name="FromText_HintAi" xml:space="preserve">
+    <value>Write what the diagram should show in plain sentences: steps and branches, who sends what to whom, or tasks with dates. A small AI model on this PC makes the diagram; nothing is sent anywhere.</value>
+  </data>
+  <data name="FromText_Generating" xml:space="preserve">
+    <value>Creating with AI... (Cancel stops it)</value>
+  </data>
+  <data name="AiError" xml:space="preserve">
+    <value>AI could not create a diagram: {0}</value>
+  </data>
+  <data name="AiNoCode" xml:space="preserve">
+    <value>The answer had no Mermaid code.</value>
+  </data>
   <data name="Button_Create" xml:space="preserve">
     <value>Create</value>
   </data>

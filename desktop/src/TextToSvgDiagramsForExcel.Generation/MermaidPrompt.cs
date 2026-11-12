@@ -69,6 +69,18 @@ public static partial class MermaidPrompt
         return [new(ChatRole.System, System), .. Examples, new(ChatRole.User, request)];
     }
 
+    /// <summary>
+    /// The file a model tuned for this task (desktop/tools/MermaidTraining) has in its folder.
+    /// Such a model gets the text alone: it learned the rules and needs no instructions or examples.
+    /// </summary>
+    public const string TunedMarker = "text-to-mermaid.json";
+
+    public static bool IsTunedModel(string folder) => File.Exists(Path.Combine(folder, TunedMarker));
+
+    /// <summary>The conversation for a tuned model: the text, and the type when one is asked for (as in training).</summary>
+    public static List<ChatMessage> TunedMessages(string text, string kind) =>
+        [Messages(text, kind)[^1]];
+
     /// <summary>The follow-up asking the model to fix code mermaid rejected.</summary>
     public static ChatMessage Repair(string error) =>
         new(ChatRole.User, $"""

@@ -89,6 +89,13 @@ public sealed class MainViewModel : ObservableObject
             new("flowchart", "Flowchart"),
             new("sequence", "Sequence"),
         ];
+        AiTextKinds =
+        [
+            new("auto", Strings.Get("TableAuto")),
+            new("flowchart", "Flowchart"),
+            new("sequence", "Sequence"),
+            new("gantt", "Gantt"),
+        ];
         DiagramOptions = [NoDiagram];
 
         InsertCommand = new RelayCommand(_ => InsertAsync(Format), () => CanInsert);
@@ -147,6 +154,14 @@ public sealed class MainViewModel : ObservableObject
     public IReadOnlyList<Option> Sizes { get; }
     public IReadOnlyList<Option> TableKinds { get; }
     public IReadOnlyList<Option> TextKinds { get; }
+    /// <summary>The kinds the local model can make, which include Gantt.</summary>
+    public IReadOnlyList<Option> AiTextKinds { get; }
+
+    /// <summary>The local model for "From text", or null when the app has none (design §14).</summary>
+    public ITextModel? TextModel { get; init; }
+
+    /// <summary>"From text" starts with the local model checked; saved between runs.</summary>
+    public bool UseAiForText { get; set; } = true;
 
     private ObservableCollection<Template> _templates = [];
     public ObservableCollection<Template> Templates
@@ -543,12 +558,26 @@ public sealed class MainViewModel : ObservableObject
     /// <summary>Asks for text and builds a new diagram from it (design §14).</summary>
     public async Task GenerateFromTextAsync()
     {
-        if (_dialogs.AskText(_lastText, _lastTextKind, TextKinds) is not { } request)
+        var ai = TextModel is { } model
+            ? new TextAiChoice(model, UseAiForText, AiTextKinds.Where(k => model.Kinds.Contains(k.Value)).ToList())
+            : null;
+        if (_dialogs.AskText(_lastText, _lastTextKind, TextKinds, ai) is not { } request)
         {
             return;
         }
         _lastText = request.Text;
         _lastTextKind = request.Kind;
+        if (ai is not null)
+        {
+            UseAiForText = request.UseAi;
+        }
+        if (request.Code is { } code)
+        {
+            // The local model made it in the dialog; the editor shows any error in it.
+            ClearError();
+            await StartNewDiagramAsync(code);
+            return;
+        }
         await GenerateFromTextAsync(request.Text, request.Kind);
     }
 

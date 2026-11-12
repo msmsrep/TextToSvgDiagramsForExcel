@@ -27,10 +27,10 @@ public sealed class DialogService(Window owner) : IDialogService
         return dialog.ShowDialog(owner) == true ? File.ReadAllText(dialog.FileName, Encoding.UTF8) : null;
     }
 
-    public TextRequest? AskText(string text, string kind, IReadOnlyList<Option> kinds)
+    public TextRequest? AskText(string text, string kind, IReadOnlyList<Option> kinds, TextAiChoice? ai = null)
     {
-        var dialog = new FromTextWindow(text, kind, kinds) { Owner = owner };
-        return dialog.ShowDialog() == true ? new TextRequest(dialog.Text, dialog.Kind) : null;
+        var dialog = new FromTextWindow(text, kind, kinds, ai) { Owner = owner };
+        return dialog.ShowDialog() == true ? new TextRequest(dialog.Text, dialog.Kind, dialog.UseAi, dialog.Code) : null;
     }
 
     public void CopyImage(byte[] png, string svg)

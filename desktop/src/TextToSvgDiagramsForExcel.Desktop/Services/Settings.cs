@@ -18,6 +18,8 @@ public sealed class Settings
     public string Format { get; set; } = "png";
     public bool AlwaysOnTop { get; set; }
     public bool AutoDetectSelection { get; set; } = true;
+    /// <summary>"From text" starts with the local model checked (when the app has one).</summary>
+    public bool UseAiForText { get; set; } = true;
     /// <summary>"system", "en" or "ja".</summary>
     public string Language { get; set; } = "system";
 }

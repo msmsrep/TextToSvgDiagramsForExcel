@@ -1,6 +1,6 @@
 # TextToMermaidEval
 
-文章から Mermaid を作る処理を `cases.ja.json`（日本語 20 件）で測るツール。ルールベース（`src/core/textToMermaid.ts`）と、ONNX Runtime GenAI で動かすローカルモデル（`src/TextToSvgDiagramsForExcel.Generation`）を比べる。
+文章から Mermaid を作る処理を `cases.ja.json`（日本語 100 件）で測るツール。ルールベース（`src/core/textToMermaid.ts`）と、ONNX Runtime GenAI で動かすローカルモデル（`src/TextToSvgDiagramsForExcel.Generation`）を比べる。
 
 - コードの検証は `scripts/mermaid-validate.mjs`（Node で `mermaid.parse`）を標準入出力でつないで行う。サーバーは立てず、外へ通信もしない。
 - 結果は `desktop/out/eval/<日時>.json`（生成したコードとモデルの回答全文）と `.md`（表）に保存する。
@@ -12,8 +12,10 @@
 dotnet run --project desktop/tools/TextToMermaidEval
 
 # ローカルモデルも測る（作り直しは最大 2 回）
-dotnet run --project desktop/tools/TextToMermaidEval -c Release -- --model desktop/models/qwen3.5-2b --repairs 2
+dotnet run --project desktop/tools/TextToMermaidEval -c Release -- --model desktop/models/mermaid-0.8b-mix --repairs 2
 ```
+
+使うモデルは、この用途に学習させた `mermaid-0.8b-mix`（作り方は `desktop/tools/MermaidTraining/README.md`）。フォルダに `text-to-mermaid.json` があれば、指示や例を付けずに文章だけを送る。
 
 ## 指標
 
@@ -31,7 +33,7 @@ dotnet run --project desktop/tools/TextToMermaidEval -c Release -- --model deskt
 
 ONNX Runtime GenAI の形式（`genai_config.json` のあるフォルダ）が要る。
 
-### Qwen3.5-2B / 4B（Apache 2.0）
+### Qwen3.5-2B / 4B（Apache 2.0、比べる用）
 
 genai 形式の配布がないため、model builder で int4 に変換する。
 - builder に `-m` でモデル名を渡すと Hugging Face のトークンを求められる。そのため、重みは先に `hf download` で取得し、`-i` でフォルダを渡す。

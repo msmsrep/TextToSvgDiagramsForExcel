@@ -218,11 +218,20 @@ internal sealed class FakeDialogs : IDialogService
     /// <summary>The answer to the next "From text" dialogs; null cancels.</summary>
     public TextRequest? TextAnswer { get; set; }
     /// <summary>What the last "From text" dialog started with.</summary>
-    public (string Text, string Kind, IReadOnlyList<ViewModels.Option> Kinds)? TextAsked { get; private set; }
+    public (string Text, string Kind, IReadOnlyList<ViewModels.Option> Kinds, TextAiChoice? Ai)? TextAsked { get; private set; }
 
-    public TextRequest? AskText(string text, string kind, IReadOnlyList<ViewModels.Option> kinds)
+    public TextRequest? AskText(string text, string kind, IReadOnlyList<ViewModels.Option> kinds, TextAiChoice? ai = null)
     {
-        TextAsked = (text, kind, kinds);
+        TextAsked = (text, kind, kinds, ai);
         return TextAnswer;
     }
+}
+
+/// <summary>A local model that answers with fixed code (the dialog calls it, not the view model).</summary>
+public sealed class FakeTextModel : ITextModel
+{
+    public IReadOnlyList<string> Kinds { get; } = ["auto", "flowchart", "sequence", "gantt"];
+
+    public Task<string> GenerateAsync(string text, string kind, CancellationToken cancellationToken) =>
+        Task.FromResult("flowchart TD\n    A --> B");
 }

@@ -24,9 +24,12 @@ public sealed class MermaidGenerator(IChatModel model, Func<string, Cancellation
     /// <summary>How many times an invalid answer is sent back to be fixed.</summary>
     public int MaxRepairs { get; init; } = 2;
 
+    /// <summary>True for a model tuned for this task: it gets the text without instructions or examples.</summary>
+    public bool Tuned { get; init; }
+
     public async Task<GenerationResult> GenerateAsync(string text, string kind, CancellationToken cancellationToken = default)
     {
-        var messages = MermaidPrompt.Messages(text.Trim(), kind);
+        var messages = Tuned ? MermaidPrompt.TunedMessages(text.Trim(), kind) : MermaidPrompt.Messages(text.Trim(), kind);
         var attempts = new List<Attempt>();
         while (true)
         {

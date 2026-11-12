@@ -57,7 +57,9 @@ async Task<List<CaseResult>> RunModel(string modelDir)
     var generator = new MermaidGenerator(model, (code, _) => mermaid.CheckAsync(code))
     {
         MaxRepairs = int.Parse(options.GetValueOrDefault("repairs") ?? "2"),
+        Tuned = MermaidPrompt.IsTunedModel(modelDir),
     };
+    Console.Error.WriteLine(generator.Tuned ? "Tuned model: the text alone is sent." : "General model: instructions and examples are sent.");
     var results = new List<CaseResult>();
     foreach (var c in cases)
     {

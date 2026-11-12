@@ -28,8 +28,24 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TextToSvgDiagramsForExcel.Generation\TextToSvgDiagramsForExcel.Generation.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <InternalsVisibleTo Include="TextToSvgDiagramsForExcel.Desktop.Tests" />
     <Resource Include="Assets\icon.ico" />
+  </ItemGroup>
+
+  <!-- The local model for "From text" (design §14.5), copied to models\text-to-mermaid
+       next to the executable when it exists. Debug builds only for now: how the model
+       reaches users (in the package or not) is not decided, so Release and the Store
+       package leave it out unless IncludeTextModel is set to true. -->
+  <PropertyGroup>
+    <TextModelFolder Condition="'$(TextModelFolder)' == ''">$(MSBuildThisFileDirectory)..\..\models\mermaid-0.8b-mix\</TextModelFolder>
+    <IncludeTextModel Condition="'$(IncludeTextModel)' == '' And '$(Configuration)' == 'Debug'">true</IncludeTextModel>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(IncludeTextModel)' == 'true' And Exists('$(TextModelFolder)genai_config.json')">
+    <Content Include="$(TextModelFolder)**" Link="models\text-to-mermaid\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <!-- Builds the rendering engine (src/engine) into web/ with esbuild. -->

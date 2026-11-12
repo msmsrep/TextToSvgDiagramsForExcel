@@ -32,6 +32,13 @@ public class MermaidPromptTests
     }
 
     [Fact]
+    public void GivesATunedModelTheTextAlone()
+    {
+        Assert.Equal([new ChatMessage(ChatRole.User, "手順\n\n(Use a gantt chart.)")], MermaidPrompt.TunedMessages("手順", "gantt"));
+        Assert.Equal([new ChatMessage(ChatRole.User, "手順")], MermaidPrompt.TunedMessages("手順", "auto"));
+    }
+
+    [Fact]
     public void ExamplesAreValidCodeBlocks()
     {
         foreach (var answer in MermaidPrompt.Examples.Where(m => m.Role == ChatRole.Assistant))
