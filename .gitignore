@@ -11,3 +11,4 @@
 *.msixbundle
 /desktop/package/cert
 /desktop/models
+__pycache__/

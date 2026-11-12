@@ -1,0 +1,321 @@
+=== sequence
+社員がヘルプデスクにPCの不調をチャットで伝える。ヘルプデスクは遠隔操作ツールで社員のPCに接続し、設定を直す。直ったらヘルプデスクは社員に確認を求め、社員が「直りました」と返す。
+---
+sequenceDiagram
+    participant E as 社員
+    participant H as ヘルプデスク
+    participant R as 遠隔操作ツール
+    E->>H: PCの不調を伝える
+    H->>R: 社員のPCに接続
+    R-->>H: 接続完了
+    H->>R: 設定を直す
+    H->>E: 確認を求める
+    E-->>H: 直りました
+=== sequence
+購入者がフリマアプリで商品を買うと、アプリは出品者に購入を通知する。出品者が発送してアプリに発送済みを入れると、アプリは購入者に知らせる。購入者が受け取り評価をすると、アプリは出品者に売上を反映する。
+---
+sequenceDiagram
+    participant B as 購入者
+    participant A as フリマアプリ
+    participant S as 出品者
+    B->>A: 商品を買う
+    A->>S: 購入を通知
+    S->>B: 発送
+    S->>A: 発送済み
+    A->>B: 発送を知らせる
+    B->>A: 受け取り評価
+    A->>S: 売上を反映
+=== sequence
+申請者が補助金の申請書を市のシステムに提出する。担当課が書類を審査し、不足があれば申請者に補正を依頼する。申請者が書類を出し直すと担当課は交付を決定し、申請者に通知する。
+---
+sequenceDiagram
+    participant A as 申請者
+    participant S as 市のシステム
+    participant K as 担当課
+    A->>S: 申請書を提出
+    S->>K: 申請書
+    K->>K: 書類を審査
+    K->>A: 補正を依頼
+    A->>S: 書類を出し直す
+    S->>K: 書類
+    K->>A: 交付の決定を通知
+=== sequence
+店長がシフト管理アプリで来月のシフトを公開する。アプリはスタッフ全員に通知する。スタッフが交代を申し出ると、アプリは他のスタッフに代わりを募集し、引き受けた人が決まったら店長に承認を求める。
+---
+sequenceDiagram
+    participant M as 店長
+    participant A as シフト管理アプリ
+    participant S as スタッフ
+    participant O as 他のスタッフ
+    M->>A: 来月のシフトを公開
+    A->>S: 通知
+    S->>A: 交代を申し出る
+    A->>O: 代わりを募集
+    O->>A: 引き受ける
+    A->>M: 承認を求める
+=== sequence
+旅行者が観光案内所で翌日のバスツアーを申し込む。案内所はツアー会社に空席を確認し、ツアー会社が予約番号を返す。案内所は旅行者に集合場所と予約番号を書いた紙を渡す。
+---
+sequenceDiagram
+    participant T as 旅行者
+    participant I as 観光案内所
+    participant C as ツアー会社
+    T->>I: バスツアーを申し込む
+    I->>C: 空席を確認
+    C-->>I: 予約番号
+    I-->>T: 集合場所と予約番号を書いた紙
+=== sequence
+基幹システムは毎晩0時に売上データをデータ連携サーバーに送る。データ連携サーバーは形式を変換して会計システムに渡し、会計システムは取り込み結果を返す。連携サーバーは結果を管理者にメールする。
+---
+sequenceDiagram
+    participant K as 基幹システム
+    participant D as データ連携サーバー
+    participant A as 会計システム
+    participant M as 管理者
+    K->>D: 売上データを送る
+    D->>D: 形式を変換
+    D->>A: データを渡す
+    A-->>D: 取り込み結果
+    D->>M: 結果をメール
+=== sequence
+生徒がタブレットで課題を提出すると、学習システムは自動採点をして点数を返す。先生は学習システムで全員の点数を見て、点数の低い生徒に補習の連絡を送る。
+---
+sequenceDiagram
+    participant S as 生徒
+    participant L as 学習システム
+    participant T as 先生
+    S->>L: 課題を提出
+    L->>L: 自動採点
+    L-->>S: 点数
+    T->>L: 全員の点数を見る
+    L-->>T: 点数の一覧
+    T->>S: 補習の連絡
+=== sequence
+住人がマンションの管理会社に水漏れを電話で連絡する。管理会社は提携の水道業者に修理を依頼し、水道業者が住人に訪問日時を連絡する。修理が終わると水道業者は管理会社に報告書を出す。
+---
+sequenceDiagram
+    participant R as 住人
+    participant K as 管理会社
+    participant W as 水道業者
+    R->>K: 水漏れを連絡
+    K->>W: 修理を依頼
+    W->>R: 訪問日時を連絡
+    W->>W: 修理
+    W-->>K: 報告書
+=== sequence
+ブラウザがCDNに画像を要求する。CDNにキャッシュがあればそのまま返し、なければCDNはオリジンサーバーから取得してキャッシュし、ブラウザに返す。
+---
+sequenceDiagram
+    participant B as ブラウザ
+    participant C as CDN
+    participant O as オリジンサーバー
+    B->>C: 画像を要求
+    alt キャッシュがある
+        C-->>B: 画像
+    else キャッシュがない
+        C->>O: 画像を取得
+        O-->>C: 画像
+        C->>C: キャッシュ
+        C-->>B: 画像
+    end
+=== sequence
+営業担当がCRMに商談を登録すると、CRMは上長に通知する。上長がコメントを付けると、CRMは営業担当にコメントを知らせる。商談が受注になると、CRMは経理に請求の準備を依頼する。
+---
+sequenceDiagram
+    participant S as 営業担当
+    participant C as CRM
+    participant M as 上長
+    participant A as 経理
+    S->>C: 商談を登録
+    C->>M: 通知
+    M->>C: コメントを付ける
+    C->>S: コメントを知らせる
+    S->>C: 受注
+    C->>A: 請求の準備を依頼
+=== sequence
+お客様がスマホで美容院の予約サイトを開き、担当者と時間を選ぶ。予約サイトは店舗の予約管理システムに登録し、前日にお客様へリマインドのメッセージを送る。
+---
+sequenceDiagram
+    participant C as お客様
+    participant W as 予約サイト
+    participant S as 予約管理システム
+    C->>W: 担当者と時間を選ぶ
+    W->>S: 登録
+    S-->>W: 登録完了
+    W-->>C: 予約完了
+    W->>C: 前日にリマインド
+=== sequence
+工場の設備がセンサーで異常振動を検知すると、設備監視システムに警報を送る。監視システムは保全担当のスマホに通知し、保全担当が現場を確認して結果を監視システムに入力する。
+---
+sequenceDiagram
+    participant E as 設備
+    participant M as 設備監視システム
+    participant H as 保全担当
+    E->>M: 警報を送る
+    M->>H: スマホに通知
+    H->>E: 現場を確認
+    H->>M: 結果を入力
+=== sequence
+注文者がスマホで出前を頼むと、出前アプリは店舗のタブレットに注文を出す。店舗が受付ボタンを押すとアプリは注文者に調理時間を知らせ、調理が終わると店舗がアプリで配達員を呼ぶ。
+---
+sequenceDiagram
+    participant U as 注文者
+    participant A as 出前アプリ
+    participant S as 店舗
+    participant D as 配達員
+    U->>A: 出前を頼む
+    A->>S: 注文
+    S->>A: 受付ボタンを押す
+    A-->>U: 調理時間を知らせる
+    S->>A: 配達員を呼ぶ
+    A->>D: 配達依頼
+=== sequence
+クライアントがファイルのアップロードを始めると、APIサーバーはストレージの署名付きURLを発行して返す。クライアントはそのURLにファイルを直接送り、終わったらAPIサーバーに完了を伝える。
+---
+sequenceDiagram
+    participant C as クライアント
+    participant A as APIサーバー
+    participant S as ストレージ
+    C->>A: アップロードを始める
+    A->>S: 署名付きURLを発行
+    S-->>A: 署名付きURL
+    A-->>C: 署名付きURL
+    C->>S: ファイルを送る
+    C->>A: 完了を伝える
+=== sequence
+見学希望者が老人ホームに電話で見学を申し込む。相談員が日程を決め、当日に施設を案内する。希望者が入居を申し込むと、相談員は施設長に面談を依頼する。
+---
+sequenceDiagram
+    participant V as 見学希望者
+    participant C as 相談員
+    participant D as 施設長
+    V->>C: 見学を申し込む
+    C-->>V: 日程を決める
+    C->>V: 施設を案内
+    V->>C: 入居を申し込む
+    C->>D: 面談を依頼
+=== sequence
+ドライバーがガソリンスタンドの給油機でカードを差し込む。給油機はカード会社に与信を確認し、OKが返ると給油を許可する。給油が終わると給油機は確定した金額をカード会社に送る。
+---
+sequenceDiagram
+    participant D as ドライバー
+    participant P as 給油機
+    participant C as カード会社
+    D->>P: カードを差し込む
+    P->>C: 与信を確認
+    C-->>P: OK
+    P-->>D: 給油を許可
+    D->>P: 給油
+    P->>C: 確定した金額を送る
+=== sequence
+・社員Aが会議の日程調整ツールに候補日を3つ登録する
+・ツールが参加者3人にメールで回答を依頼する
+・参加者がそれぞれ都合のよい日を回答する
+・ツールが全員の都合が合う日を社員Aに知らせる
+---
+sequenceDiagram
+    participant A as 社員A
+    participant T as 日程調整ツール
+    participant P as 参加者
+    A->>T: 候補日を3つ登録
+    T->>P: 回答を依頼
+    P->>T: 都合のよい日を回答
+    T-->>A: 全員の都合が合う日
+=== sequence
+スマートウォッチが心拍数の異常を検出すると、スマホのアプリに知らせる。アプリは利用者に「安静にしてください」と表示し、5分たっても戻らなければ登録された家族にメッセージを送る。
+---
+sequenceDiagram
+    participant W as スマートウォッチ
+    participant A as スマホのアプリ
+    participant U as 利用者
+    participant F as 家族
+    W->>A: 心拍数の異常
+    A->>U: 安静にしてください
+    opt 5分たっても戻らない
+        A->>F: メッセージを送る
+    end
+=== sequence
+編集部が作家に原稿を依頼する。作家は締め切りの前日に原稿をメールで送る。編集部は校正者に回し、校正者が赤字を入れて返すと、編集部は作家に確認してもらう。
+---
+sequenceDiagram
+    participant E as 編集部
+    participant W as 作家
+    participant K as 校正者
+    E->>W: 原稿を依頼
+    W->>E: 原稿をメールで送る
+    E->>K: 回す
+    K-->>E: 赤字を入れて返す
+    E->>W: 確認を依頼
+=== sequence
+運送会社の配車係がドライバーに翌日の配送ルートを送る。ドライバーは朝、荷主の倉庫で荷物を積み、配送先に届けるたびに配送アプリで完了を報告する。配車係は進み具合を画面で確認する。
+---
+sequenceDiagram
+    participant H as 配車係
+    participant D as ドライバー
+    participant W as 荷主の倉庫
+    participant A as 配送アプリ
+    H->>D: 配送ルートを送る
+    D->>W: 荷物を積む
+    loop 配送先ごと
+        D->>A: 完了を報告
+    end
+    H->>A: 進み具合を確認
+=== sequence
+利用者がメールの配信停止リンクを押すと、配信システムは配信停止ページを表示する。利用者が「停止する」を押すと、配信システムは配信リストから利用者を外し、完了画面を出す。
+---
+sequenceDiagram
+    participant U as 利用者
+    participant S as 配信システム
+    U->>S: 配信停止リンクを押す
+    S-->>U: 配信停止ページ
+    U->>S: 停止するを押す
+    S->>S: 配信リストから外す
+    S-->>U: 完了画面
+=== sequence
+親が子どものスマホの利用時間を延ばしたいとき、子どもがアプリで延長をリクエストする。アプリは親のスマホに通知し、親が許可すると子どものスマホの制限が30分延びる。
+---
+sequenceDiagram
+    participant C as 子ども
+    participant A as アプリ
+    participant P as 親
+    C->>A: 延長をリクエスト
+    A->>P: 通知
+    P->>A: 許可
+    A-->>C: 制限が30分延びる
+=== sequence
+ユーザーがSlackで「/休暇 12月24日」と打つと、Slackは勤怠ボットに伝える。ボットは勤怠システムに休暇を申請し、申請番号をSlackに返す。
+---
+sequenceDiagram
+    participant U as ユーザー
+    participant S as Slack
+    participant B as 勤怠ボット
+    participant K as 勤怠システム
+    U->>S: /休暇 12月24日
+    S->>B: 伝える
+    B->>K: 休暇を申請
+    K-->>B: 申請番号
+    B-->>S: 申請番号を返す
+=== sequence
+注文が確定すると、注文サービスはメッセージキューに「注文確定」のイベントを出す。在庫サービスと通知サービスがそれぞれイベントを受け取り、在庫サービスは在庫を減らし、通知サービスはお客様にメールを送る。
+---
+sequenceDiagram
+    participant O as 注文サービス
+    participant Q as メッセージキュー
+    participant I as 在庫サービス
+    participant N as 通知サービス
+    O->>Q: 注文確定のイベント
+    Q->>I: イベント
+    Q->>N: イベント
+    I->>I: 在庫を減らす
+    N->>N: お客様にメールを送る
+=== sequence
+子どもが塾の入口でカードをかざすと、入退室システムが保護者に「到着しました」とメールを送る。授業が終わって退室するときも同じようにかざし、システムが「退室しました」と送る。
+---
+sequenceDiagram
+    participant C as 子ども
+    participant S as 入退室システム
+    participant P as 保護者
+    C->>S: カードをかざす
+    S->>P: 到着しました
+    C->>S: 退室時にかざす
+    S->>P: 退室しました

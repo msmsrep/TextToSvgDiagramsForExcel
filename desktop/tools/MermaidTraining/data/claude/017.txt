@@ -1,0 +1,316 @@
+=== sequence
+A社の購買担当がB社に見積もりを依頼し、B社が見積書を返す。A社が発注書を送るとB社は注文請書を返し、納品後に請求書を送る。
+---
+sequenceDiagram
+    participant A as A社の購買担当
+    participant B as B社
+    A->>B: 見積もりを依頼
+    B-->>A: 見積書
+    A->>B: 発注書
+    B-->>A: 注文請書
+    B->>A: 納品
+    B->>A: 請求書
+=== sequence
+利用者 → 窓口：転居の届け出
+窓口 → 住民記録システム：住所を変更
+住民記録システム → 窓口：変更完了
+窓口 → 利用者：新しい住民票
+---
+sequenceDiagram
+    participant U as 利用者
+    participant W as 窓口
+    participant S as 住民記録システム
+    U->>W: 転居の届け出
+    W->>S: 住所を変更
+    S-->>W: 変更完了
+    W-->>U: 新しい住民票
+=== sequence
+監督がコーチに次の試合のメンバー案を頼む。コーチは選手の体調をトレーナーに確認し、その結果を踏まえてメンバー案を監督に出す。監督が決めたメンバーをコーチが選手に発表する。
+---
+sequenceDiagram
+    participant K as 監督
+    participant C as コーチ
+    participant T as トレーナー
+    participant P as 選手
+    K->>C: メンバー案を頼む
+    C->>T: 選手の体調を確認
+    T-->>C: 体調の結果
+    C->>K: メンバー案
+    K-->>C: メンバーを決める
+    C->>P: 発表
+=== sequence
+お客様が保険会社のアプリで事故を報告する。アプリは事故受付センターに連絡し、センターの担当者がお客様に電話して状況を聞く。担当者はレッカー業者を手配する。
+---
+sequenceDiagram
+    participant C as お客様
+    participant A as アプリ
+    participant S as 事故受付センター
+    participant R as レッカー業者
+    C->>A: 事故を報告
+    A->>S: 連絡
+    S->>C: 電話で状況を聞く
+    S->>R: 手配
+=== sequence
+スマホのアプリがバックグラウンドで新しい記事があるかサーバーに問い合わせる。新しい記事があればサーバーは記事の一覧を返し、アプリは端末に保存してバッジの数字を増やす。
+---
+sequenceDiagram
+    participant A as アプリ
+    participant S as サーバー
+    A->>S: 新しい記事があるか問い合わせ
+    alt 新しい記事がある
+        S-->>A: 記事の一覧
+        A->>A: 端末に保存
+        A->>A: バッジの数字を増やす
+    else ない
+        S-->>A: なし
+    end
+=== sequence
+決済端末で客がカードを差し込むと、端末は加盟店のゲートウェイに承認を求める。ゲートウェイはカードの発行会社に照会し、発行会社が承認すると端末に承認番号が届く。
+---
+sequenceDiagram
+    participant C as 客
+    participant T as 決済端末
+    participant G as ゲートウェイ
+    participant I as 発行会社
+    C->>T: カードを差し込む
+    T->>G: 承認を求める
+    G->>I: 照会
+    I-->>G: 承認
+    G-->>T: 承認番号
+=== sequence
+農家がJAに出荷予定を連絡すると、JAは市場に出荷の数量を伝える。市場は競りの結果をJAに返し、JAは農家に販売代金を振り込む。
+---
+sequenceDiagram
+    participant F as 農家
+    participant J as JA
+    participant M as 市場
+    F->>J: 出荷予定を連絡
+    J->>M: 出荷の数量
+    M-->>J: 競りの結果
+    J->>F: 販売代金を振り込む
+=== sequence
+自動ドアのセンサーが人を検知すると、制御装置にモーターを動かすよう伝える。ドアが開いたら制御装置は5秒待ち、センサーが人を検知していなければドアを閉める。
+---
+sequenceDiagram
+    participant S as センサー
+    participant C as 制御装置
+    participant M as モーター
+    S->>C: 人を検知
+    C->>M: ドアを開ける
+    C->>C: 5秒待つ
+    C->>S: 人がいるか確認
+    S-->>C: 検知していない
+    C->>M: ドアを閉める
+=== sequence
+新入社員が入社書類をWebで提出すると、労務管理システムが人事担当に知らせる。人事担当は内容を確認し、社会保険の手続きを年金事務所にオンラインで申請する。
+---
+sequenceDiagram
+    participant N as 新入社員
+    participant S as 労務管理システム
+    participant H as 人事担当
+    participant N2 as 年金事務所
+    N->>S: 入社書類を提出
+    S->>H: 知らせる
+    H->>S: 内容を確認
+    H->>N2: 社会保険の手続きを申請
+=== sequence
+ゲーム機でオンライン対戦をするとき、ゲーム機はまずサーバーにログインし、フレンドの一覧を取得する。フレンドに招待を送り、フレンドが参加すると対戦が始まる。
+---
+sequenceDiagram
+    participant G as ゲーム機
+    participant S as サーバー
+    participant F as フレンド
+    G->>S: ログイン
+    G->>S: フレンドの一覧を取得
+    S-->>G: フレンドの一覧
+    G->>F: 招待を送る
+    F->>G: 参加
+    G->>G: 対戦が始まる
+=== sequence
+家電の修理受付では、お客様が電話で故障を伝えると、受付係が修理センターに訪問を手配する。修理センターの技術者がお客様の家に行き、修理が終わったら受付係に完了を連絡する。
+---
+sequenceDiagram
+    participant C as お客様
+    participant U as 受付係
+    participant T as 技術者
+    C->>U: 故障を伝える
+    U->>T: 訪問を手配
+    T->>C: 家に行って修理
+    T-->>U: 完了を連絡
+=== sequence
+利用者がチャットで「注文した商品がまだ届かない」と問い合わせると、チャットボットは注文番号を聞く。利用者が番号を送ると、ボットは配送システムで状況を調べて配達予定日を答える。
+---
+sequenceDiagram
+    participant U as 利用者
+    participant B as チャットボット
+    participant D as 配送システム
+    U->>B: 商品がまだ届かない
+    B-->>U: 注文番号を聞く
+    U->>B: 注文番号
+    B->>D: 状況を調べる
+    D-->>B: 配達予定日
+    B-->>U: 配達予定日を答える
+=== sequence
+発表者がオンライン会議で画面共有を始めると、会議アプリは共有の映像をサーバーに送る。サーバーは参加者全員に映像を配信し、発表者が共有を止めると配信も止まる。
+---
+sequenceDiagram
+    participant P as 発表者
+    participant A as 会議アプリ
+    participant S as サーバー
+    participant M as 参加者
+    P->>A: 画面共有を始める
+    A->>S: 共有の映像
+    S->>M: 映像を配信
+    P->>A: 共有を止める
+    A->>S: 停止
+    S->>M: 配信を止める
+=== sequence
+宿泊客がフロントにタクシーを頼むと、フロントはタクシー会社に電話する。タクシー会社が到着時間を伝え、フロントは宿泊客にロビーで待つよう伝える。
+---
+sequenceDiagram
+    participant G as 宿泊客
+    participant F as フロント
+    participant T as タクシー会社
+    G->>F: タクシーを頼む
+    F->>T: 電話
+    T-->>F: 到着時間
+    F-->>G: ロビーで待つよう伝える
+=== sequence
+ネットショップで注文が入ると、ショップは倉庫管理システムに出荷を依頼する。倉庫管理システムは配送業者に集荷を依頼し、集荷のときに追跡番号をショップに返す。ショップはお客様に追跡番号をメールする。
+---
+sequenceDiagram
+    participant S as ショップ
+    participant W as 倉庫管理システム
+    participant D as 配送業者
+    participant C as お客様
+    S->>W: 出荷を依頼
+    W->>D: 集荷を依頼
+    D-->>W: 追跡番号
+    W-->>S: 追跡番号
+    S->>C: 追跡番号をメール
+=== sequence
+部長が来期の予算案を各課長にメールで依頼する。各課長は課内の担当者から要望を集め、まとめた案を部長に返す。部長は全体をまとめて経営企画部に提出する。
+---
+sequenceDiagram
+    participant B as 部長
+    participant K as 各課長
+    participant T as 担当者
+    participant P as 経営企画部
+    B->>K: 予算案を依頼
+    K->>T: 要望を集める
+    T-->>K: 要望
+    K-->>B: まとめた案
+    B->>P: 提出
+=== sequence
+カーナビが渋滞情報センターに現在地の周辺の渋滞情報を問い合わせる。渋滞情報センターが情報を返すと、カーナビは空いているルートを計算し直し、ドライバーに新しいルートを案内する。
+---
+sequenceDiagram
+    participant N as カーナビ
+    participant C as 渋滞情報センター
+    participant D as ドライバー
+    N->>C: 周辺の渋滞情報を問い合わせ
+    C-->>N: 渋滞情報
+    N->>N: ルートを計算し直す
+    N-->>D: 新しいルートを案内
+=== sequence
+パン屋の店主が問屋に小麦粉を注文する。問屋は在庫があれば翌日に配達し、なければ製粉会社に取り寄せて3日後に届ける。
+---
+sequenceDiagram
+    participant P as 店主
+    participant T as 問屋
+    participant S as 製粉会社
+    P->>T: 小麦粉を注文
+    alt 在庫がある
+        T->>P: 翌日に配達
+    else 在庫がない
+        T->>S: 取り寄せ
+        S-->>T: 小麦粉
+        T->>P: 3日後に届ける
+    end
+=== sequence
+社員がPCを起動すると、PCは管理サーバーにセキュリティソフトの定義ファイルの更新を確認する。新しい定義ファイルがあれば管理サーバーから受け取って適用し、結果を管理サーバーに報告する。
+---
+sequenceDiagram
+    participant P as PC
+    participant M as 管理サーバー
+    P->>M: 定義ファイルの更新を確認
+    opt 新しい定義ファイルがある
+        M-->>P: 定義ファイル
+        P->>P: 適用
+        P->>M: 結果を報告
+    end
+=== sequence
+IoTの水位計が川の水位を10分ごとに河川管理事務所に送る。水位が危険な高さを超えると、事務所は市役所に連絡し、市役所が防災無線で住民に避難を呼びかける。
+---
+sequenceDiagram
+    participant W as 水位計
+    participant K as 河川管理事務所
+    participant C as 市役所
+    participant R as 住民
+    loop 10分ごと
+        W->>K: 水位
+    end
+    K->>C: 危険な高さを超えたと連絡
+    C->>R: 防災無線で避難を呼びかける
+=== sequence
+プロジェクトマネージャーが顧客に週報を送る。顧客は内容への質問を返し、マネージャーはエンジニアに確認してから回答する。
+---
+sequenceDiagram
+    participant M as プロジェクトマネージャー
+    participant C as 顧客
+    participant E as エンジニア
+    M->>C: 週報
+    C-->>M: 質問
+    M->>E: 確認
+    E-->>M: 回答
+    M-->>C: 回答
+=== sequence
+ウェブアプリのフロントエンドがGraphQLサーバーにユーザー情報と注文履歴をまとめて問い合わせる。GraphQLサーバーはユーザーサービスと注文サービスにそれぞれ問い合わせ、結果を1つにまとめて返す。
+---
+sequenceDiagram
+    participant F as フロントエンド
+    participant G as GraphQLサーバー
+    participant U as ユーザーサービス
+    participant O as 注文サービス
+    F->>G: ユーザー情報と注文履歴を問い合わせ
+    G->>U: ユーザー情報
+    U-->>G: 結果
+    G->>O: 注文履歴
+    O-->>G: 結果
+    G-->>F: 1つにまとめて返す
+=== sequence
+観光客が美術館の音声ガイドアプリで作品番号を入力する。アプリはサーバーからその作品の解説音声をダウンロードして再生する。
+---
+sequenceDiagram
+    participant T as 観光客
+    participant A as 音声ガイドアプリ
+    participant S as サーバー
+    T->>A: 作品番号を入力
+    A->>S: 解説音声を要求
+    S-->>A: 解説音声
+    A-->>T: 再生
+=== sequence
+校長が教育委員会に台風による臨時休校を報告する。教育委員会は了承し、校長は教員に休校を伝え、教員が保護者にメールで連絡する。
+---
+sequenceDiagram
+    participant P as 校長
+    participant B as 教育委員会
+    participant T as 教員
+    participant G as 保護者
+    P->>B: 臨時休校を報告
+    B-->>P: 了承
+    P->>T: 休校を伝える
+    T->>G: メールで連絡
+=== sequence
+クラウド会計ソフトが銀行のAPIから入出金の明細を取り込む。会計ソフトは明細を勘定科目に自動で振り分け、判断できなかったものだけ経理担当に確認を求める。
+---
+sequenceDiagram
+    participant S as 会計ソフト
+    participant B as 銀行のAPI
+    participant K as 経理担当
+    S->>B: 入出金の明細を要求
+    B-->>S: 明細
+    S->>S: 勘定科目に自動で振り分け
+    opt 判断できなかった
+        S->>K: 確認を求める
+    end
