@@ -1,6 +1,6 @@
 # MermaidTraining
 
-文章から Mermaid を作る小さなモデルを、このアプリの用途向けに学習させるための道具（設計書 §14.5）。学習データ作り → 学習（`train.py`）→ ONNX への変換（`export.py`）→ 評価（`TextToMermaidEval`）の順に使う。
+文章から Mermaid を作る小さなモデルを、このアプリの用途向けに学習させるための道具（設計書 §14.5）。学習データ作り → 語彙を絞る（`prune_vocab.py`）→ 学習（`train.py`）→ ONNX への変換（`export.py`）→ 評価（`TextToMermaidEval`）の順に使う。
 
 学習データは 2 つの出どころを組み合わせる。
 
@@ -44,7 +44,7 @@ flowchart TD
 py -3.12 -m venv desktop/out/venv-train
 desktop/out/venv-train/Scripts/pip install torch==2.14.1+cu130 --index-url https://download.pytorch.org/whl/cu130
 desktop/out/venv-train/Scripts/pip install transformers==5.22.2 accelerate peft
-desktop/out/venv-train/Scripts/pip install onnxruntime-genai==0.19.0 onnx onnx_ir
+desktop/out/venv-train/Scripts/pip install onnxruntime-genai==0.19.0 onnx onnx_ir pyarrow
 ```
 
 教師モデルの重みは、`TextToMermaidEval/README.md` の手順で `desktop/out/hf/Qwen3.5-4B` に取得済みのものを使う（bf16 で約 8GB の VRAM を使う）。
@@ -88,30 +88,45 @@ PYTHONIOENCODING=utf-8 desktop/out/venv-train/Scripts/python -I desktop/tools/Me
 
 小さいモデルは見たものをそのまま真似るため、アプリの書き方にそろった組だけ残す。フローチャートはラベルをすべて `"…"` で囲み、`subgraph` なし、ノード 14 個まで。シーケンス図は参加者を `as` で宣言し、6 人・12 通まで。ガントは `dateFormat YYYY-MM-DD`、作業 10 個まで。文章は 300 字まで。ラベルの言葉が文章に出てくる割合（`grounding`）は 0.65 以上（シーケンス図は 0.5 以上）。2,641 組中 2,090 組が残った（落ちた理由で多いのは、シーケンス図の grounding 178、ラベルの囲みなし 148、subgraph 70）。
 
-## 学習
+## 語彙を絞る（`prune_vocab.py`）
 
-学習させる側のモデルは Qwen3.5-0.8B（Apache 2.0）。
+学習させる側のモデルは Qwen3.5-0.8B（Apache 2.0）。このモデルはあらゆる言語のために 248,320 語のトークンを持ち、その表が int4 のモデルの中でいちばん大きい（541MB 中 159MB）。日本語と英語でよく使う 40,000 語だけを残した写しを作り、それを学習の元にする。
 
 ```bash
 desktop/out/venv-train/Scripts/hf download Qwen/Qwen3.5-0.8B --local-dir desktop/out/hf/Qwen3.5-0.8B
-PYTHONIOENCODING=utf-8 desktop/out/venv-train/Scripts/python -I desktop/tools/MermaidTraining/train.py --base desktop/out/hf/Qwen3.5-0.8B --data desktop/out/train-data/claude.jsonl --out desktop/out/mermaid-0.8b
+desktop/out/venv-train/Scripts/hf download wikimedia/wikipedia 20231101.ja/train-00002-of-00015.parquet 20231101.en/train-00002-of-00041.parquet --repo-type dataset --local-dir desktop/out/corpus/wikipedia
+desktop/out/venv-train/Scripts/python -I desktop/tools/MermaidTraining/prune_vocab.py --base desktop/out/hf/Qwen3.5-0.8B --out desktop/out/hf/Qwen3.5-0.8B-jaen --corpus desktop/out/corpus/wikipedia/20231101.ja/train-00002-of-00015.parquet desktop/out/corpus/wikipedia/20231101.en/train-00002-of-00041.parquet --always desktop/out/train-data/claude.jsonl desktop/out/train-data/qwen4b/filtered.jsonl
+```
+
+- 残す語: 単独のバイト、日本語（cp932）と ASCII で書ける 1 文字（合わせて 5,417 語）、学習データと会話の枠（`<|im_start|>assistant` や ```` ```mermaid ```` など）に出てくる語（6,607 語）、あとは Wikipedia の日本語と英語（それぞれ 5,000 万字、重みは同じ）でよく出る順。特殊トークン（276 語ぶん）は並びを変えずに残す。
+- 残さなかった語を作る結合ルールもトークナイザーから消す。その語を使っていた文章は、残した小さい語（最後は 1 バイト）に分かれるので、読めない・書けない文字は出ない。トークンの数が少し増えるだけ（Wikipedia の別の部分で日本語 1.011 倍、英語 1.049 倍。学習データは変わらず、評価の 100 件は 6,586 → 6,609）。
+- 出力は元と同じ形のモデルのフォルダ（埋め込みの行、トークナイザー、設定の中のトークン番号を付け替える）。`train.py` と `export.py` の `--base` にそのまま渡す。内訳は `pruned-vocab.json` に残る。
+- 元の語彙で学習したモデルには使えない（トークンの番号と分かれ方が変わる）。学習し直す。
+- Wikipedia はどの語を残すか数えるためだけに使う。取得するだけで、外へは何も送らない。
+
+## 学習
+
+```bash
+PYTHONIOENCODING=utf-8 desktop/out/venv-train/Scripts/python -I desktop/tools/MermaidTraining/train.py --base desktop/out/hf/Qwen3.5-0.8B-jaen --data desktop/out/train-data/claude.jsonl --out desktop/out/mermaid-0.8b
 ```
 
 - LoRA（rank 16、すべての線形層）で学習し、最後に元のモデルへ結合して `<out>/merged` に保存する。損失は `<out>/log.json`。
 - モデルに見せるのは文章だけ。3 割の組には、アプリで図の種類を選んだときと同じ「(Use a flowchart.)」などを付ける。答えは ```` ```mermaid ```` のコードブロック 1 つ。指示や例は見せないので、アプリは学習済みのモデルに文章だけを送る（`MermaidPrompt.TunedMessages`）。
 - 4B の組も使うときは `--data` に並べる。Claude の組は 2 回並べて、数の多い 4B の組に埋もれないようにする（`--data desktop/out/train-data/claude.jsonl desktop/out/train-data/claude.jsonl desktop/out/train-data/qwen4b/filtered.jsonl`）。
-- 12GB の VRAM では、組が多いと長い組が集まった回にメモリがあふれる（出力の語彙が 25 万語あるため）。そのときは `--batch 2 --grad-accum 8` にする（合計の量は同じ）。ただし 1 ステップ 約 11 秒と遅くなる（`--batch 8` なら 1.6 秒）。
+- 元の語彙（25 万語）のままだと、12GB の VRAM では長い組が集まった回にメモリがあふれ、`--batch 2 --grad-accum 8` にする必要があった（1 ステップ 約 11 秒）。4 万語に絞ったモデルなら既定の `--batch 8 --grad-accum 2` で足りる（1 ステップ 約 2 秒）。
 - 5% の組は学習に使わず、損失を測るのに使う（`--val`）。
 - 動作の確認だけなら `--device cpu --batch 2 --grad-accum 1 --max-steps 3`。
 
 ## ONNX への変換と評価
 
 ```bash
-PYTHONIOENCODING=utf-8 desktop/out/venv-train/Scripts/python -I desktop/tools/MermaidTraining/export.py --base desktop/out/hf/Qwen3.5-0.8B --merged desktop/out/mermaid-0.8b/merged --out desktop/models/mermaid-0.8b
+PYTHONIOENCODING=utf-8 desktop/out/venv-train/Scripts/python -I desktop/tools/MermaidTraining/export.py --base desktop/out/hf/Qwen3.5-0.8B-jaen --merged desktop/out/mermaid-0.8b/merged --out desktop/models/mermaid-0.8b
 dotnet run --project desktop/tools/TextToMermaidEval -c Release -- --model desktop/models/mermaid-0.8b
 ```
 
-- ONNX Runtime GenAI の model builder は、Qwen3.5 を元の形（画像も扱うモデル）でしか読めない。`train.py` が保存するのは文章の部分だけなので、`export.py` は元のモデルの写しに学習した重みを差し込んでから（重みの名前は同じ）、文章の部分を int4 の CPU 用モデルにする。0.8B で約 540MB。
+- ONNX Runtime GenAI の model builder は、Qwen3.5 を元の形（画像も扱うモデル）でしか読めない。`train.py` が保存するのは文章の部分だけなので、`export.py` は元のモデルの写しに学習した重みを差し込んでから（重みの名前は同じ）、文章の部分を int4 の CPU 用モデルにする。
+- 位置の表（sin / cos）は 1 位置 1 行で、元の設定（262,144 位置）のままだと 67MB になる。アプリが送るのは数百トークンなので、`export.py` は 4,096 位置に縮めてから変換する（`--max-positions`）。結果は変わらない。
+- 大きさは、元の語彙のままで 473MB（位置の表を縮める前は 536MB）、4 万語に絞ったモデルで 329MB。
 - 変換したフォルダには `text-to-mermaid.json` を置く。評価ツールとアプリは、このファイルがあれば学習済みのモデルとみなし、文章だけを送る。
 
 動作の確認（2026-11-12、CPU で 3 ステップだけ学習）: 学習・結合・変換・評価まで通った。評価では 5 件中 3 件が読めた。3 ステップでは中身はまだ学習できていない。
@@ -123,5 +138,9 @@ dotnet run --project desktop/tools/TextToMermaidEval -c Release -- --model deskt
 | Qwen3.5-4B（汎用） | 2.6GB | 99/100 | 91/100 | 97% | 14.8 | 56.6 |
 | `mermaid-0.8b-claude`（Claude の 500 組、3 エポック、GPU で 3 分） | 536MB | 98/100 | 91/100 | 96% | 1.9 | 41.1 |
 | `mermaid-0.8b-mix`（Claude ×2 ＋ 4B の 2,090 組、3 エポック、GPU で約 1 時間） | 536MB | 99/100 | 94/100 | 95% | 1.5 | 6.4 |
+| 同じ重みで位置の表だけ縮めたもの | 473MB | 99/100 | 94/100 | 95% | 1.4 | 5.9 |
+| `mermaid-0.8b-jaen`（4 万語に絞った元モデルで、`mix` と同じデータ・同じ設定。GPU で 33 分） | 329MB | 100/100 | 93/100 | 96% | 1.1 | 1.6 |
 
-検証用の損失は、A が 0.98 → 0.20（2 エポック目が最小）、B が 0.79 → 0.21（同）。3 エポック目は少し上がるので、2 エポックでもよい。詳しくは設計書 §14.5。
+検証用の損失は、A が 0.98 → 0.20（2 エポック目が最小）、B が 0.79 → 0.21（同）。3 エポック目は少し上がるので、2 エポックでもよい。`jaen` は 0.76 → 0.21（同）で、語彙を絞っても損失は変わらない。
+
+`jaen` は 1 件を作り直しで読めるようにした（1 回目で読めたのは 99/100。アプリは学習済みのモデルを作り直させないので、アプリでは 99/100 にあたる）。種類の 94 と 93 の差は 100 件では誤差の範囲。学習データは日本語だけだが、英語の文章 3 つ（分岐のある手順、やり取り、日程）を試すと、どれも正しい種類の読める図になった。英語の評価ケースはまだない。詳しくは設計書 §14.5。

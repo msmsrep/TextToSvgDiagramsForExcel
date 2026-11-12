@@ -53,11 +53,19 @@ def main() -> int:
     parser.add_argument("--merged", required=True)
     parser.add_argument("--out", required=True, help="the ONNX model folder to make")
     parser.add_argument("--work", help="where to put the full checkpoint (default: next to merged)")
+    parser.add_argument("--max-positions", type=int, default=4096, help="the longest conversation, in tokens, the model can take")
     args = parser.parse_args()
 
     merged = Path(args.merged)
     work = Path(args.work) if args.work else merged.parent / "full"
     full_checkpoint(Path(args.base), merged, work)
+    # The builder stores a sin/cos table with one row per position: 67MB for the base
+    # model's 262,144. The app sends a few hundred tokens, so a short table is enough.
+    config_path = work / "config.json"
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    text = config.get("text_config", config)
+    text["max_position_embeddings"] = min(text["max_position_embeddings"], args.max_positions)
+    config_path.write_text(json.dumps(config, ensure_ascii=False, indent=2), encoding="utf-8")
 
     out = Path(args.out)
     subprocess.run([sys.executable, "-m", "onnxruntime_genai.models.builder", "-i", str(work), "-o", str(out),
