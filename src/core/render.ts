@@ -49,6 +49,12 @@ export async function getFlowchartData(code: string): Promise<FlowchartData | nu
   return { nodes, edges };
 }
 
+/** Checks the code's syntax without rendering; throws mermaid's error when it is invalid. */
+export async function parseMermaid(code: string): Promise<string> {
+  const { diagramType } = await mermaid.parse(code);
+  return diagramType;
+}
+
 /** Renders Mermaid code to an SVG string. */
 export async function renderMermaid(code: string): Promise<string> {
   // Remove element with the same ID to avoid errors

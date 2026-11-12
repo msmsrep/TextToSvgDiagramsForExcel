@@ -46,6 +46,11 @@ public sealed class EngineClient : IEngineClient
     public async Task<IReadOnlyList<Template>> TemplatesAsync() =>
         await CallAsync<Template[]>("templates", null);
 
+    public async Task<string> FromTextAsync(string text, string kind) =>
+        (await CallAsync<CodeResult>("fromText", new { text, kind })).Code;
+
+    public Task<ParseResult> ParseAsync(string code) => CallAsync<ParseResult>("parse", new { code });
+
     private async Task<T> CallAsync<T>(string method, object? parameters)
     {
         var result = await CallAsync(method, parameters);

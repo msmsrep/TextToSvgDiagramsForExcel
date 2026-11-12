@@ -25,6 +25,9 @@ internal sealed class FakeEngine : IEngineClient
     public string TableCode { get; set; } = "graph TD\n    n1[\"A\"] --> n2[\"B\"]";
     public TableData? LastTable { get; private set; }
     public string? LastTableKind { get; private set; }
+    public Exception? TextError { get; set; }
+    public string TextCode { get; set; } = "graph TD\n    n1[\"X\"] --> n2[\"Y\"]";
+    public (string Text, string Kind)? LastText { get; private set; }
 
     public static readonly ShapeModel Model = new([], [], []);
 
@@ -88,6 +91,14 @@ internal sealed class FakeEngine : IEngineClient
     }
 
     public Task<IReadOnlyList<Template>> TemplatesAsync() => Task.FromResult(Templates);
+
+    public Task<string> FromTextAsync(string text, string kind)
+    {
+        LastText = (text, kind);
+        return TextError is null ? Task.FromResult(TextCode) : Task.FromException<string>(TextError);
+    }
+
+    public Task<ParseResult> ParseAsync(string code) => Task.FromResult(new ParseResult(true, "flowchart-v2"));
 }
 
 internal sealed class FakeExcel : IExcelGateway
@@ -203,4 +214,15 @@ internal sealed class FakeDialogs : IDialogService
     public string? OpenText(string filter) => Error is not null ? throw Error : OpenResult;
 
     public void CopyImage(byte[] png, string svg) => Copied = Error is not null ? throw Error : (png, svg);
+
+    /// <summary>The answer to the next "From text" dialogs; null cancels.</summary>
+    public TextRequest? TextAnswer { get; set; }
+    /// <summary>What the last "From text" dialog started with.</summary>
+    public (string Text, string Kind, IReadOnlyList<ViewModels.Option> Kinds)? TextAsked { get; private set; }
+
+    public TextRequest? AskText(string text, string kind, IReadOnlyList<ViewModels.Option> kinds)
+    {
+        TextAsked = (text, kind, kinds);
+        return TextAnswer;
+    }
 }

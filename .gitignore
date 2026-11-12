@@ -10,3 +10,4 @@
 *.msix
 *.msixbundle
 /desktop/package/cert
+/desktop/models

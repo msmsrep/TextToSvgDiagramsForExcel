@@ -4,6 +4,7 @@ using System.Text;
 using TextToSvgDiagramsForExcel.Desktop.Engine;
 using TextToSvgDiagramsForExcel.Desktop.Excel;
 using TextToSvgDiagramsForExcel.Desktop.Resources;
+using TextToSvgDiagramsForExcel.Desktop.Services;
 using TextToSvgDiagramsForExcel.Desktop.ViewModels;
 
 namespace TextToSvgDiagramsForExcel.Desktop.Tests;
@@ -469,6 +470,52 @@ public class MainViewModelTests
         await vm.GenerateFromCellsAsync("auto");
 
         Assert.Equal("Generate error: Select at least two columns.", vm.ErrorText);
+    }
+
+    [Fact]
+    public async Task GeneratesCodeFromTextAndOffersTheTextAgain()
+    {
+        var vm = await StartAsync(D1);
+        await vm.ChooseDiagramAsync("1");
+        _dialogs.TextAnswer = new TextRequest("A -> B: hi\nB -> A: ok", "sequence");
+
+        await vm.GenerateFromTextAsync();
+
+        Assert.Equal(("", "auto"), (_dialogs.TextAsked!.Value.Text, _dialogs.TextAsked.Value.Kind));
+        Assert.Equal(["auto", "flowchart", "sequence"], _dialogs.TextAsked.Value.Kinds.Select(k => k.Value));
+        Assert.Equal(("A -> B: hi\nB -> A: ok", "sequence"), _engine.LastText);
+        Assert.Equal(_engine.TextCode, _editor);
+        Assert.Equal("", vm.CurrentDiagramId);
+
+        _dialogs.TextAnswer = null;
+        await vm.GenerateFromTextAsync();
+
+        Assert.Equal(("A -> B: hi\nB -> A: ok", "sequence"), (_dialogs.TextAsked.Value.Text, _dialogs.TextAsked.Value.Kind));
+    }
+
+    [Fact]
+    public async Task LeavesTheCodeAloneWhenTheTextDialogIsCanceled()
+    {
+        var vm = await StartAsync();
+        _editor = null;
+
+        await vm.GenerateFromTextAsync();
+
+        Assert.Null(_engine.LastText);
+        Assert.Null(_editor);
+    }
+
+    [Fact]
+    public async Task ReportsTextErrors()
+    {
+        var vm = await StartAsync();
+        _engine.TextError = new EngineException("text", "Enter some text.");
+        _editor = null;
+
+        await vm.GenerateFromTextAsync("  ", "auto");
+
+        Assert.Equal("Generate error: Enter some text.", vm.ErrorText);
+        Assert.Null(_editor);
     }
 
     [Fact]

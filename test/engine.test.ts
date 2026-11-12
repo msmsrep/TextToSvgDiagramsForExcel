@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const m = vi.hoisted(() => ({
   initMermaid: vi.fn(),
   renderMermaid: vi.fn(),
+  parseMermaid: vi.fn(),
   getFlowchartData: vi.fn(),
   svgToRaster: vi.fn(),
   toOfficeSvg: vi.fn(),
@@ -11,6 +12,7 @@ const m = vi.hoisted(() => ({
 vi.mock("../src/core/render", () => ({
   initMermaid: m.initMermaid,
   renderMermaid: m.renderMermaid,
+  parseMermaid: m.parseMermaid,
   getFlowchartData: m.getFlowchartData,
 }));
 vi.mock("../src/core/image", async (importOriginal) => ({
@@ -229,6 +231,39 @@ describe("fromTable", () => {
       code: "table",
       message: "2 列以上を選択してください。",
     });
+  });
+});
+
+describe("fromText", () => {
+  it("builds code from text", async () => {
+    expect((await call("fromText", { text: "A -> B" })).result).toEqual({
+      code: 'graph TD\n    n1["A"] --> n2["B"]',
+    });
+  });
+
+  it("returns text errors in the chosen language", async () => {
+    setLocale("ja");
+    expect((await call("fromText", { text: "", kind: "auto" })).error).toEqual({
+      code: "text",
+      message: "文章を入力してください。",
+    });
+  });
+});
+
+describe("parse", () => {
+  it("returns the diagram type of valid code without touching the preview", async () => {
+    m.parseMermaid.mockResolvedValue("flowchart-v2");
+    preview.innerHTML = "<p>kept</p>";
+    expect((await call("parse", { code: " graph LR\r\n A-->B " })).result).toEqual({ valid: true, type: "flowchart-v2" });
+    expect(m.parseMermaid).toHaveBeenCalledWith("graph LR\n A-->B");
+    expect(preview.innerHTML).toBe("<p>kept</p>");
+    expect(m.renderMermaid).not.toHaveBeenCalled();
+  });
+
+  it("returns the error and its line for invalid code", async () => {
+    const message = "Parse error on line 2:\n...\nExpecting 'X'";
+    m.parseMermaid.mockRejectedValue(new Error(message));
+    expect((await call("parse", { code: "graph LR\n A--" })).result).toEqual({ valid: false, message, line: 1 });
   });
 });
 

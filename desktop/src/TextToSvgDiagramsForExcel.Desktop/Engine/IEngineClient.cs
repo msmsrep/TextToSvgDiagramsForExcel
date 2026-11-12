@@ -23,4 +23,10 @@ public interface IEngineClient
     Task<string> FromTableAsync(TableData table, string kind);
 
     Task<IReadOnlyList<Template>> TemplatesAsync();
+
+    /// <summary>Builds code from plain text with fixed rules (textToMermaid.ts); kind is auto, flowchart or sequence.</summary>
+    Task<string> FromTextAsync(string text, string kind);
+
+    /// <summary>Checks code's syntax without changing the preview.</summary>
+    Task<ParseResult> ParseAsync(string code);
 }
