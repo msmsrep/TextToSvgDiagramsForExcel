@@ -32,14 +32,6 @@ internal static class Office
     public const int MsoLineSolid = 1;
     public const int MsoLineDash = 4;
 
-    // Range.Find
-    public const int XlFormulas = -4123;
-    public const int XlPart = 2;
-    public const int XlByRows = 1;
-    public const int XlByColumns = 2;
-    public const int XlNext = 1;
-    public const int XlPrevious = 2;
-
     /// <summary>MsoAutoShapeType for the shape model's types (Office.js GeometricShapeType names).</summary>
     public static readonly Dictionary<string, int> AutoShapeTypes = new()
     {

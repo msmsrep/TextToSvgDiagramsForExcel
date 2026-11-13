@@ -105,6 +105,9 @@ export function createFakeOffice(init: Partial<ShapeState>[] = []) {
     addShapes: 1,
   };
   let svgSupported = true;
+  let date1904 = false;
+  /** Fails the sync after this many more succeed, as Excel does when a queued call fails. */
+  let failSyncAfter: number | undefined;
 
   function fillProxy(state: ShapeState) {
     const fill = (state.fill ??= {});
@@ -261,8 +264,19 @@ export function createFakeOffice(init: Partial<ShapeState>[] = []) {
       },
       getActiveCell: () => ({ ...activeCell, load: vi.fn() }),
       getSelectedRange: () => ({ getUsedRangeOrNullObject: selectedUsedRange }),
+      functions: {
+        /** DATE(y, m, d) as a serial in the workbook's date system (only 1904-01-01 is needed). */
+        date: (y: number, m: number, d: number) => ({
+          value: y === 1904 && m === 1 && d === 1 ? (date1904 ? 0 : 1462) : NaN,
+          load: vi.fn(),
+        }),
+      },
     },
     sync: vi.fn(async () => {
+      if (failSyncAfter !== undefined && failSyncAfter-- === 0) {
+        failSyncAfter = undefined;
+        throw new Error("Sync failed");
+      }
       if (pendingSyncError) {
         const e = pendingSyncError;
         pendingSyncError = undefined;
@@ -347,6 +361,9 @@ export function createFakeOffice(init: Partial<ShapeState>[] = []) {
     get syncCount() { return syncCount; },
     setSvgSupported(v: boolean) { svgSupported = v; },
     setSelection(s: typeof selection) { selection = s; },
+    setDate1904(v: boolean) { date1904 = v; },
+    /** Makes the sync after `n` successful ones fail. */
+    failSyncAfter(n: number) { failSyncAfter = n; },
     /** Installs the fakes as the `Excel` and `Office` globals. */
     install() {
       vi.stubGlobal("Excel", Excel);

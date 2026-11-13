@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using TextToSvgDiagramsForExcel.Desktop.Engine;
 using TextToSvgDiagramsForExcel.Desktop.Excel;
@@ -529,15 +530,34 @@ public sealed class MainViewModel : ObservableObject
 
     public async Task OpenMmdAsync()
     {
-        if (_dialogs.OpenText(Strings.Get("MmdFilter")) is { } text)
+        string? text;
+        try
+        {
+            text = _dialogs.OpenText(Strings.Get("MmdFilter"));
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+        {
+            ShowError(Strings.Format("FileError", e.Message));
+            return;
+        }
+        if (text is not null)
         {
             ClearError();
             await StartNewDiagramAsync(text);
         }
     }
 
-    public void SaveMmd() =>
-        _dialogs.SaveFile("diagram.mmd", Strings.Get("MmdFilter"), new UTF8Encoding(false).GetBytes(_code));
+    public void SaveMmd()
+    {
+        try
+        {
+            _dialogs.SaveFile("diagram.mmd", Strings.Get("MmdFilter"), new UTF8Encoding(false).GetBytes(_code));
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+        {
+            ShowError(Strings.Format("SaveError", e.Message));
+        }
+    }
 
     // ── Loading diagrams ───────────────────────────────────────────────────
 
@@ -761,29 +781,31 @@ public sealed class MainViewModel : ObservableObject
         {
             return;
         }
-        if (ActionsEnabled)
-        {
-            ClearError();
-        }
-        else
-        {
-            await RenderAsync();
-        }
-        if (_renderedSeq == 0)
-        {
-            // Keep a render error, which tells more than this.
-            if (ErrorText == "")
-            {
-                ShowError(Strings.Get("PleaseRenderFirst"));
-            }
-            return;
-        }
+        // Busy from the start, so a second action cannot start while this one renders.
         IsBusy = true;
         try
         {
+            if (ActionsEnabled)
+            {
+                ClearError();
+            }
+            else
+            {
+                await RenderAsync();
+            }
+            if (_renderedSeq == 0)
+            {
+                // Keep a render error, which tells more than this.
+                if (ErrorText == "")
+                {
+                    ShowError(Strings.Get("PleaseRenderFirst"));
+                }
+                return;
+            }
             await action(_renderedSeq);
         }
-        catch (Exception e) when (e is UserException or ExcelException or EngineException or IOException or UnauthorizedAccessException)
+        // ExternalException: the clipboard is held by another app (CLIPBRD_E_CANT_OPEN).
+        catch (Exception e) when (e is UserException or ExcelException or EngineException or IOException or UnauthorizedAccessException or ExternalException)
         {
             ShowError(Strings.Format(errorKey, e.Message));
         }

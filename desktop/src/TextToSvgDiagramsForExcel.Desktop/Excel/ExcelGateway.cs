@@ -28,6 +28,8 @@ public sealed class ExcelGateway : IExcelGateway
     private dynamic? _app;
     private dynamic? _window;
     private AppEventsSink? _sink;
+    // Set on Dispose; events queued before it are ignored and nothing reconnects.
+    private bool _disposed;
 
     public ExcelGateway(ExcelLocator locator)
     {
@@ -41,6 +43,10 @@ public sealed class ExcelGateway : IExcelGateway
 
     public bool Locate(bool quiet = false)
     {
+        if (_disposed)
+        {
+            return false;
+        }
         using var _ = MessageFilter.Quiet(quiet);
         var target = _locator.Locate();
         // Same window: keep the connection (a failed one is tried again).
@@ -159,6 +165,10 @@ public sealed class ExcelGateway : IExcelGateway
     {
         try
         {
+            if (_disposed)
+            {
+                return;
+            }
             using var _ = MessageFilter.Quiet();
             using var s = new ComScope();
             dynamic workbook = s.T(((dynamic)sheet).Parent);
@@ -180,7 +190,10 @@ public sealed class ExcelGateway : IExcelGateway
     private void OnWorkbookActivate(object workbook) => _dispatcher.BeginInvoke(() =>
     {
         Marshal.ReleaseComObject(workbook);
-        SheetChanged?.Invoke(this, EventArgs.Empty);
+        if (!_disposed)
+        {
+            SheetChanged?.Invoke(this, EventArgs.Empty);
+        }
     });
 
     private void Release()
@@ -210,6 +223,7 @@ public sealed class ExcelGateway : IExcelGateway
 
     public void Dispose()
     {
+        _disposed = true;
         Release();
         _target = null;
     }
@@ -363,20 +377,29 @@ public sealed class ExcelGateway : IExcelGateway
                 // Embedded, not linked; -1 keeps the picture's own size.
                 dynamic picture = s.T(shapes.AddPicture(
                     path, Office.MsoFalse, Office.MsoTrue, placement.Left, placement.Top, sized ? widthPt : -1, sized ? heightPt : -1));
-                if (sized)
+                try
                 {
-                    // Excel picks its own size for SVG; Convert to Shape keeps font
-                    // sizes, so the picture must be at the actual size (as the add-in).
-                    picture.LockAspectRatio = Office.MsoFalse;
-                    picture.Width = widthPt;
-                    picture.Height = heightPt;
+                    if (sized)
+                    {
+                        // Excel picks its own size for SVG; Convert to Shape keeps font
+                        // sizes, so the picture must be at the actual size (as the add-in).
+                        picture.LockAspectRatio = Office.MsoFalse;
+                        picture.Width = widthPt;
+                        picture.Height = heightPt;
+                    }
+                    if (extension != "svg")
+                    {
+                        picture.LockAspectRatio = Office.MsoTrue;
+                    }
+                    Finish(s, shapes, picture, placement, code, replaceId);
+                    return ((int)picture.ID).ToString(CultureInfo.InvariantCulture);
                 }
-                if (extension != "svg")
+                catch
                 {
-                    picture.LockAspectRatio = Office.MsoTrue;
+                    // Leave no unmarked picture behind, as InsertShapes.
+                    DeleteQuietly(picture);
+                    throw;
                 }
-                Finish(s, shapes, picture, placement, code, replaceId);
-                return ((int)picture.ID).ToString(CultureInfo.InvariantCulture);
             });
         }
         finally
@@ -423,18 +446,24 @@ public sealed class ExcelGateway : IExcelGateway
                 // Leave nothing behind, as a failed Excel.run in the add-in.
                 foreach (var shape in diagram is not null ? [diagram] : Enumerable.Reverse(created))
                 {
-                    try
-                    {
-                        shape.Delete();
-                    }
-                    catch (COMException)
-                    {
-                    }
+                    DeleteQuietly(shape);
                 }
                 throw;
             }
         });
     });
+
+    private static void DeleteQuietly(dynamic shape)
+    {
+        try
+        {
+            shape.Delete();
+        }
+        catch (COMException)
+        {
+            // Already gone, or Excel is busy; nothing more to do.
+        }
+    }
 
     private static dynamic BuildShapes(ComScope s, dynamic shapes, ShapeModel model, Placement placement, List<dynamic> created)
     {
@@ -573,41 +602,44 @@ public sealed class ExcelGateway : IExcelGateway
             throw new ExcelException(Strings.Get("SelectCellRange"));
         }
 
-        // Trim to the cells with values, as Office.js getUsedRangeOrNullObject(true)
-        // (UsedRange would include formatted empty cells). Find also avoids
-        // reading a million rows for whole-column selections.
-        dynamic cells = s.T(selection.Cells);
-        dynamic first = s.T(cells[1, 1]);
-        dynamic last = s.T(cells[(int)s.T(selection.Rows).Count, (int)s.T(selection.Columns).Count]);
-        dynamic? Find(dynamic after, int order, int direction) => s.T(selection.Find(
-            What: "*", After: after, LookIn: Office.XlFormulas, LookAt: Office.XlPart,
-            SearchOrder: order, SearchDirection: direction, MatchCase: false));
-        dynamic? top = Find(last, Office.XlByRows, Office.XlNext);
-        if (top is null)
+        // Trim to the cells with values, as Office.js getUsedRangeOrNullObject(true).
+        // Intersecting with UsedRange keeps whole-column selections small; its
+        // values are read in one call and trimmed here. (Range.Find would
+        // overwrite the settings of the user's Find dialog.)
+        dynamic sheet = s.T(selection.Worksheet);
+        dynamic? used = s.T(_app!.Intersect(selection, s.T(sheet.UsedRange)));
+        if (used is null)
         {
             throw new ExcelException(Strings.Get("SelectionEmpty"));
         }
-        int firstRow = top.Row;
-        int lastRow = Find(first, Office.XlByRows, Office.XlPrevious)!.Row;
-        int firstColumn = Find(last, Office.XlByColumns, Office.XlNext)!.Column;
-        int lastColumn = Find(first, Office.XlByColumns, Office.XlPrevious)!.Column;
-        int rows = lastRow - firstRow + 1;
-        int columns = lastColumn - firstColumn + 1;
+        int usedRow = used.Row;
+        int usedColumn = used.Column;
+        var usedValues = CellValues.FromValue2((object?)used.Value2, (int)s.T(used.Rows).Count, (int)s.T(used.Columns).Count);
+        if (CellValues.Bounds(usedValues) is not var (top, left, bottom, right))
+        {
+            throw new ExcelException(Strings.Get("SelectionEmpty"));
+        }
+        int firstRow = usedRow + top;
+        int rows = bottom - top + 1;
+        int columns = right - left + 1;
         if (rows > MaxTableRows)
         {
             throw new ExcelException(Strings.Format("SelectionTooManyRows", MaxTableRows));
         }
+        var values = CellValues.Slice(usedValues, top, left, rows, columns);
 
-        dynamic sheet = s.T(selection.Worksheet);
         dynamic sheetCells = s.T(sheet.Cells);
-        dynamic range = s.T(sheet.Range(s.T(sheetCells[firstRow, firstColumn]), s.T(sheetCells[lastRow, lastColumn])));
-        var values = CellValues.FromValue2((object?)range.Value2, rows, columns);
+        dynamic range = s.T(sheet.Range(
+            s.T(sheetCells[firstRow, usedColumn + left]),
+            s.T(sheetCells[usedRow + bottom, usedColumn + right])));
         dynamic workbook = s.T(sheet.Parent);
         // NumberFormat is in English except "General", which comes back in the
         // UI language ("G/標準", "Standard"); Office.js returns "General".
         string general = (string)s.T(s.T(workbook.Styles).Item("Normal")).NumberFormat;
         string English(object? format) => format is string f ? (f == general ? "General" : f) : "";
-        // Text and NumberFormat are null (DBNull) for ranges with mixed values, so read them per cell.
+        // Text and NumberFormat are null (DBNull) for ranges with mixed values, so
+        // they are read per cell, and only where tableToMermaid uses them
+        // (numbers and booleans), since each read is a call into Excel.
         object? sharedFormat = range.NumberFormat;
         var text = new string[rows][];
         var numberFormat = new string[rows][];
@@ -618,9 +650,18 @@ public sealed class ExcelGateway : IExcelGateway
             numberFormat[r] = new string[columns];
             for (int c = 0; c < columns; c++)
             {
+                text[r][c] = "";
+                numberFormat[r][c] = "";
+                if (values[r][c] is not (double or bool))
+                {
+                    continue;
+                }
                 dynamic cell = s.T(rangeCells[r + 1, c + 1]);
                 text[r][c] = cell.Text as string ?? "";
-                numberFormat[r][c] = English(sharedFormat as string ?? (object?)cell.NumberFormat);
+                if (values[r][c] is double)
+                {
+                    numberFormat[r][c] = English(sharedFormat as string ?? (object?)cell.NumberFormat);
+                }
             }
         }
         return new TableData(values, text, numberFormat, firstRow, (bool)workbook.Date1904);

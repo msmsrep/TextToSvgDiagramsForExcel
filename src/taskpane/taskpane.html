@@ -12,16 +12,16 @@
     <!-- New diagrams (templates, code from cells) and Insert as / Download
          menus are on the ribbon's Diagrams tab (ribbon.ts). -->
     <div class="diagram-row">
-      <label class="field-label" for="sheet-diagram-select">Diagram</label>
-      <select id="sheet-diagram-select" aria-label="Select Mermaid diagram in active sheet">
-        <option value="">(No diagram selected)</option>
+      <label class="field-label" for="sheet-diagram-select" data-i18n="labelDiagram">Diagram</label>
+      <select id="sheet-diagram-select" aria-label="Select Mermaid diagram in active sheet" data-i18n-label="diagramSelectLabel">
+        <option value="" data-i18n="noDiagramSelected">(No diagram selected)</option>
       </select>
     </div>
     <div id="load-confirm" role="alert" hidden>
       <span id="load-confirm-text"></span>
       <div class="confirm-buttons">
-        <button id="load-confirm-replace" class="action-btn">Replace</button>
-        <button id="load-confirm-keep" class="secondary-btn">Keep</button>
+        <button id="load-confirm-replace" class="action-btn" data-i18n="buttonReplace">Replace</button>
+        <button id="load-confirm-keep" class="secondary-btn" data-i18n="buttonKeep">Keep</button>
       </div>
     </div>
 
@@ -30,6 +30,7 @@
       <textarea
         id="mermaid-input"
         aria-label="Mermaid code"
+        data-i18n-label="codeLabel"
         spellcheck="false"
         placeholder="graph TD&#10;A-->B"
       >
@@ -46,6 +47,7 @@ graph LR
       role="separator"
       aria-orientation="horizontal"
       aria-label="Resize editor"
+      data-i18n-label="splitterLabel"
       tabindex="0"
     ></div>
 
@@ -55,32 +57,32 @@ graph LR
 
     <div class="output">
       <div class="size-group">
-        <label class="field-label" for="size-select">Size</label>
-        <select id="size-select" aria-label="Output size">
+        <label class="field-label" for="size-select" data-i18n="labelSize">Size</label>
+        <select id="size-select" aria-label="Output size" data-i18n-label="sizeLabel">
           <option value="0.5">50%</option>
           <option value="0.75">75%</option>
           <option value="1" selected>100%</option>
           <option value="1.5">150%</option>
           <option value="2">200%</option>
-          <option value="width">Width (pt)</option>
+          <option value="width" data-i18n="sizeWidth">Width (pt)</option>
         </select>
-        <input id="size-width" type="number" min="1" step="1" aria-label="Width in points" hidden />
+        <input id="size-width" type="number" min="1" step="1" aria-label="Width in points" data-i18n-label="widthLabel" hidden />
         <label class="check-label">
           <input id="keep-size" type="checkbox" checked disabled />
-          Keep current size
+          <span data-i18n="keepCurrentSize">Keep current size</span>
         </label>
       </div>
 
       <div class="buttons">
-        <select id="format-select" aria-label="Output format">
+        <select id="format-select" aria-label="Output format" data-i18n-label="formatLabel">
           <option value="png">PNG</option>
           <option value="jpeg">JPEG</option>
           <option value="svg">SVG</option>
-          <option value="svg-office">SVG (for shape conversion)</option>
-          <option value="shapes">Shapes (editable)</option>
+          <option value="svg-office" data-i18n="formatSvgOffice">SVG (for shape conversion)</option>
+          <option value="shapes" data-i18n="formatShapes">Shapes (editable)</option>
         </select>
-        <button id="insert-btn" class="action-btn" disabled>Insert to Excel</button>
-        <button id="download-btn" class="secondary-btn icon-btn" title="Download" aria-label="Download" disabled>
+        <button id="insert-btn" class="action-btn" data-i18n="buttonInsert" disabled>Insert to Excel</button>
+        <button id="download-btn" class="secondary-btn icon-btn" title="Download" aria-label="Download" data-i18n-title="buttonDownload" data-i18n-label="buttonDownload" disabled>
           <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
             <path d="M8 2v8m-3.5-3.5L8 10l3.5-3.5M3 13h10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
           </svg>

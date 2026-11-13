@@ -214,4 +214,7 @@ Open the download page now?</value>
   <data name="EngineFailed" xml:space="preserve">
     <value>The drawing engine could not start: {0}</value>
   </data>
+  <data name="UnexpectedError" xml:space="preserve">
+    <value>An unexpected error occurred: {0}</value>
+  </data>
 </root>

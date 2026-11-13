@@ -23,7 +23,14 @@ describe("readSelection", () => {
       text: [["A", "1.0"]],
       numberFormat: [["General", "0.0"]],
       firstRow: 5,
+      date1904: false,
     });
+  });
+
+  it("tells when the workbook uses the 1904 date system", async () => {
+    fake.setSelection({ values: [["A", 0]], text: [["A", "1904/1/1"]], numberFormat: [["General", "yyyy/m/d"]], rowIndex: 0 });
+    fake.setDate1904(true);
+    expect((await readSelection()).date1904).toBe(true);
   });
 
   it("reports an empty selection", async () => {

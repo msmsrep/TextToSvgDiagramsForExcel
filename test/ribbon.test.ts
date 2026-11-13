@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { DOWNLOAD_FORMATS, INSERT_FORMATS, ribbonCommands } from "../src/taskpane/ribbon";
 import { TEMPLATES } from "../src/core/templates";
+import { MESSAGES } from "../src/core/messages";
 
 const MANIFEST = readFileSync(join(__dirname, "../manifest.xml"), "utf8");
 
@@ -38,13 +39,37 @@ describe("ribbon commands", () => {
   it("offer the same formats as the task pane's format select", () => {
     const html = readFileSync(join(__dirname, "../src/taskpane/taskpane.html"), "utf8");
     const select = html.match(/<select id="format-select"[\s\S]*?<\/select>/)![0];
-    const options = Array.from(select.matchAll(/<option value="([^"]+)">([^<]+)</g), ([, v, label]) => [v, label]);
+    const options = Array.from(select.matchAll(/<option value="([^"]+)"[^>]*>([^<]+)</g), ([, v, label]) => [v, label]);
 
     expect(options.map(([v]) => v)).toEqual([...INSERT_FORMATS]);
     expect(menuLabels("InsertMenu")).toEqual(options.map(([, label]) => label));
     expect(menuLabels("DownloadMenu")).toEqual(
       options.filter(([v]) => (DOWNLOAD_FORMATS as readonly string[]).includes(v)).map(([, label]) => label),
     );
+  });
+
+  it("have Japanese text, except for diagram type and file format names", () => {
+    const ids = Array.from(MANIFEST.matchAll(/<bt:String id="([^"]+)"/g), ([, id]) => id);
+    const translated = new Set(
+      Array.from(MANIFEST.matchAll(/<bt:String id="([^"]+)" DefaultValue="[^"]*">\s*<bt:Override Locale="ja-JP"/g), ([, id]) => id),
+    );
+    const english = /^(Template\.\w+|Cells\.(flowchart|gantt|pie)|(Insert|Download)\.(png|jpeg|svg))\.Label$/;
+    expect(ids.filter((id) => !translated.has(id) && !english.test(id))).toEqual([]);
+    expect(ids.filter((id) => translated.has(id) && english.test(id))).toEqual([]);
+  });
+
+  it("are labeled in Japanese as in the task pane", () => {
+    const ja = new Map(
+      Array.from(
+        MANIFEST.matchAll(/<bt:String id="([^"]+)" DefaultValue="[^"]*">\s*<bt:Override Locale="ja-JP" Value="([^"]*)"/g),
+        ([, id, value]) => [id, value],
+      ),
+    );
+    expect(ja.get("Insert.svgOffice.Label")).toBe(MESSAGES.ja.formatSvgOffice);
+    expect(ja.get("Insert.shapes.Label")).toBe(MESSAGES.ja.formatShapes);
+    expect(ja.get("Download.svgOffice.Label")).toBe(MESSAGES.ja.formatSvgOffice);
+    // The preview hint points at the Template menu on the Diagrams tab.
+    expect(MESSAGES.ja.ribbonTemplateMenu).toBe(`リボンの [${ja.get("Tab.Label")}] > [${ja.get("Template.Label")}]`);
   });
 
   it("run the action with their argument", async () => {

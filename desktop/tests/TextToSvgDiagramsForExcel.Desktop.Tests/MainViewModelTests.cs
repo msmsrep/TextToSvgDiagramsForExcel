@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.IO;
 using System.Text;
 using TextToSvgDiagramsForExcel.Desktop.Engine;
 using TextToSvgDiagramsForExcel.Desktop.Excel;
@@ -486,6 +487,20 @@ public class MainViewModelTests
         Assert.Equal("graph LR\n  F --> G", Encoding.UTF8.GetString(_dialogs.Saved[^1].Data));
     }
 
+    [Fact]
+    public async Task ReportsFilesThatCannotBeOpenedOrSaved()
+    {
+        var vm = await StartAsync();
+        _dialogs.Error = new IOException("in use");
+
+        await vm.OpenMmdAsync();
+        Assert.Equal("The file could not be opened: in use", vm.ErrorText);
+        Assert.Equal(MainViewModel.InitialCode, vm.Code);
+
+        vm.SaveMmd();
+        Assert.Equal("Save error: in use", vm.ErrorText);
+    }
+
     // ── Insert ─────────────────────────────────────────────────────────────
 
     [Fact]
@@ -701,6 +716,35 @@ public class MainViewModelTests
 
         Assert.Equal(["raster 1 png 2", "svg 1 2"], _engine.Calls);
         Assert.Equal("<svg scale=\"2\"/>", _dialogs.Copied!.Value.Svg);
+    }
+
+    [Fact]
+    public async Task ReportsAClipboardHeldByAnotherApp()
+    {
+        var vm = await StartAsync();
+        _dialogs.Error = new System.Runtime.InteropServices.COMException("OpenClipboard failed", unchecked((int)0x800401D0));
+
+        await vm.CopyAsync();
+
+        Assert.Equal("Copy error: OpenClipboard failed", vm.ErrorText);
+        Assert.False(vm.IsBusy);
+    }
+
+    [Fact]
+    public async Task IgnoresASecondActionWhileTheFirstRenders()
+    {
+        var vm = await StartAsync();
+        vm.OnCodeEdited("graph TD\n    A --> B");
+        var slow = new TaskCompletionSource<RenderResult>();
+        _engine.NextRenders.Enqueue((_, _) => slow.Task);
+
+        var first = vm.InsertAsync("png");
+        await vm.InsertAsync("png");
+        slow.SetResult(new RenderResult(_engine.Renders[^1].Seq, 200, 100));
+        await first;
+
+        Assert.Equal("", vm.ErrorText);
+        Assert.Single(_excel.Calls, call => call.StartsWith("picture"));
     }
 
     // ── Output size ────────────────────────────────────────────────────────

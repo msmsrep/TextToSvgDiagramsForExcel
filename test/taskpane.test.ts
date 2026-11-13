@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { DiagramItem } from "../src/taskpane/excelShapes";
 import { TEMPLATES } from "../src/core/templates";
+import { MESSAGES } from "../src/core/messages";
 
 const m = vi.hoisted(() => ({
   listDiagrams: vi.fn(),
@@ -139,10 +140,11 @@ async function click(button: HTMLButtonElement) {
 }
 
 /** Loads taskpane.html and runs taskpane.ts as if Office had just become ready. */
-async function start() {
+async function start(displayLanguage = "en-US") {
   document.documentElement.innerHTML = HTML.replace(/^[\s\S]*?<html[^>]*>|<\/html>[\s\S]*$/g, "");
   vi.stubGlobal("Office", {
     onReady: (cb: () => void) => cb(),
+    context: { displayLanguage },
     actions: { associate: (name: string, handler: never) => commands.set(name, handler) },
     addin: { showAsTaskpane },
   });
@@ -863,6 +865,44 @@ describe("insert", () => {
     expect(errorText()).toBe("Please render first");
     expect(m.insertImageShape).not.toHaveBeenCalled();
   });
+
+  it("ignores a second insert while the first is in progress", async () => {
+    const first = deferred<string>();
+    m.insertImageShape.mockReturnValueOnce(first.promise);
+    await click(insertBtn());
+    await click(insertBtn());
+    await runCommand("insertPng");
+    expect(m.insertImageShape).toHaveBeenCalledOnce();
+
+    first.resolve("new-id");
+    await flush();
+    await click(insertBtn());
+    expect(m.insertImageShape).toHaveBeenCalledTimes(2);
+  });
+
+  it("ignores a second insert while the code is still rendering", async () => {
+    const render = deferred<string>();
+    m.renderMermaid.mockReturnValueOnce(render.promise);
+    type("graph TD\nA-->B");
+    // The button is disabled until the render finishes, but the ribbon is not.
+    const insertFromRibbon = () => void commands.get("insertPng")!({ completed: vi.fn() });
+    insertFromRibbon();
+    await flush();
+    insertFromRibbon();
+    await flush();
+
+    render.resolve(SVG);
+    await flush();
+    expect(m.insertImageShape).toHaveBeenCalledOnce();
+    expect(errorText()).toBe("");
+  });
+
+  it("accepts another insert after one fails", async () => {
+    m.insertImageShape.mockRejectedValueOnce(new Error("fail"));
+    await click(insertBtn());
+    await click(insertBtn());
+    expect(m.insertImageShape).toHaveBeenCalledTimes(2);
+  });
 });
 
 describe("download", () => {
@@ -1193,5 +1233,42 @@ describe("without a shared runtime", () => {
 
     expect(preview().querySelector("svg")).not.toBeNull();
     expect(commands.size).toBe(0);
+  });
+});
+
+describe("Japanese", () => {
+  beforeEach(() => start("ja-JP"));
+
+  it("shows the pane in Office's display language", () => {
+    expect(document.documentElement.lang).toBe("ja");
+    expect(insertBtn().textContent).toBe("Excel に挿入");
+    expect(downloadBtn().title).toBe("ダウンロード");
+    expect(diagramSelect().getAttribute("aria-label")).toBe("アクティブ シートの Mermaid の図を選択");
+    expect(optionLabels()).toEqual([["", "(図を選択していません)"]]);
+    expect(formatSelect().selectedOptions[0].textContent).toBe("PNG");
+    expect(Array.from(formatSelect().options, (o) => o.textContent)).toContain("図形 (編集可能)");
+  });
+
+  it("shows the hint and errors in Japanese", async () => {
+    type("");
+    await vi.advanceTimersByTimeAsync(250);
+    expect(preview().textContent).toBe("Mermaid のコードを入力するか、リボンの [図] > [テンプレート] から始めてください");
+
+    m.renderMermaid.mockRejectedValueOnce(new Error("Parse error"));
+    type("x");
+    await vi.advanceTimersByTimeAsync(250);
+    expect(errorText()).toBe("描画エラー: Parse error");
+
+    m.insertImageShape.mockRejectedValueOnce(new Error("fail"));
+    type("graph TD");
+    await vi.advanceTimersByTimeAsync(250);
+    await click(insertBtn());
+    expect(errorText()).toBe("挿入エラー: fail");
+  });
+
+  it("names only existing messages in the page", () => {
+    const ids = Array.from(HTML.matchAll(/data-i18n(?:-label|-title)?="([^"]+)"/g), ([, id]) => id);
+    expect(ids.length).toBeGreaterThan(10);
+    expect(ids.filter((id) => !(id in MESSAGES.en))).toEqual([]);
   });
 });

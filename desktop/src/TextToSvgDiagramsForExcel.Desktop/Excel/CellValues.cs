@@ -67,6 +67,37 @@ public static class CellValues
         _ => value.ToString() ?? "",
     };
 
+    /// <summary>
+    /// The 0-based first and last rows and columns that have values (anything
+    /// but ""), or null when every cell is empty.
+    /// </summary>
+    public static (int Top, int Left, int Bottom, int Right)? Bounds(object[][] values)
+    {
+        int top = -1, left = int.MaxValue, bottom = -1, right = -1;
+        for (int r = 0; r < values.Length; r++)
+        {
+            for (int c = 0; c < values[r].Length; c++)
+            {
+                if (values[r][c] is "")
+                {
+                    continue;
+                }
+                if (top < 0)
+                {
+                    top = r;
+                }
+                bottom = r;
+                left = Math.Min(left, c);
+                right = Math.Max(right, c);
+            }
+        }
+        return top < 0 ? null : (top, left, bottom, right);
+    }
+
+    /// <summary>The block of the given size from the 0-based row and column.</summary>
+    public static object[][] Slice(object[][] values, int top, int left, int rows, int columns) =>
+        values.Skip(top).Take(rows).Select(row => row.Skip(left).Take(columns).ToArray()).ToArray();
+
     public static string ErrorText(int cvErr) =>
         s_errors.TryGetValue(cvErr - CvErrBase, out var text) ? text : "#UNKNOWN!";
 }

@@ -276,4 +276,28 @@ describe("connect", () => {
 
     expect(posted.map((r) => r.id)).toEqual([1, 2]);
   });
+
+  it("keeps answering after a response cannot be sent", async () => {
+    let listener!: (e: { data: unknown }) => void;
+    const posted: EngineResponse[] = [];
+    let failNext = true;
+    const host: WebViewHost = {
+      postMessage: (message) => {
+        if (failNext) {
+          failNext = false;
+          throw new Error("could not clone");
+        }
+        posted.push(message as EngineResponse);
+      },
+      addEventListener: (_type, l) => (listener = l),
+    };
+    connect(host, preview);
+
+    listener({ data: { id: 1, method: "templates" } });
+    listener({ data: { id: 2, method: "templates" } });
+    await vi.waitFor(() => expect(posted).toHaveLength(2));
+
+    expect(posted[0]).toEqual({ id: 1, error: { code: "internal", message: "could not clone" } });
+    expect(posted[1].id).toBe(2);
+  });
 });
