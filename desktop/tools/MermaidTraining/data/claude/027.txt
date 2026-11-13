@@ -1,0 +1,262 @@
+=== sequence
+お客様が受付ロボットに行き先を伝える。受付ロボットは入館システムに予約を問い合わせ、入館システムが予約ありと返す。受付ロボットは担当者に来客を知らせ、お客様に入館カードを渡す。
+---
+sequenceDiagram
+    participant C as お客様
+    participant R as 受付ロボット
+    participant S as 入館システム
+    participant T as 担当者
+    C->>R: 行き先を伝える
+    R->>S: 予約を問い合わせる
+    S-->>R: 予約あり
+    R->>T: 来客を知らせる
+    R->>C: 入館カードを渡す
+=== sequence
+生徒が先生に質問をメールで送る。先生は教科の主任に確認を頼み、主任が答えを返す。先生はその答えを生徒に返信する。
+---
+sequenceDiagram
+    participant S as 生徒
+    participant T as 先生
+    participant H as 主任
+    S->>T: 質問をメールで送る
+    T->>H: 確認を頼む
+    H-->>T: 答え
+    T-->>S: 返信
+=== sequence
+レジが在庫サーバーに商品の価格を問い合わせる。在庫サーバーは価格を返す。レジはポイントサーバーに会員番号を送り、ポイントサーバーが残りポイントを返す。
+---
+sequenceDiagram
+    participant R as レジ
+    participant Z as 在庫サーバー
+    participant P as ポイントサーバー
+    R->>Z: 商品の価格を問い合わせる
+    Z-->>R: 価格
+    R->>P: 会員番号を送る
+    P-->>R: 残りポイント
+=== sequence
+利用者がアプリで送金を指示する。アプリは銀行のAPIに送金を依頼する。残高が足りれば銀行のAPIは完了を返し、アプリは利用者に完了を表示する。足りなければエラーを返し、アプリは残高不足を表示する。
+---
+sequenceDiagram
+    participant U as 利用者
+    participant A as アプリ
+    participant B as 銀行のAPI
+    U->>A: 送金を指示
+    A->>B: 送金を依頼
+    alt 残高が足りる
+        B-->>A: 完了
+        A-->>U: 完了を表示
+    else 足りない
+        B-->>A: エラー
+        A-->>U: 残高不足を表示
+    end
+=== sequence
+1. 発注者が設計事務所に図面を依頼する
+2. 設計事務所が発注者に図面の案を送る
+3. 発注者が設計事務所に修正を伝える
+4. 設計事務所が発注者に最終の図面を納める
+---
+sequenceDiagram
+    participant O as 発注者
+    participant D as 設計事務所
+    O->>D: 図面を依頼
+    D->>O: 図面の案を送る
+    O->>D: 修正を伝える
+    D->>O: 最終の図面を納める
+=== sequence
+運転手が運行管理者に出発を報告する。運行管理者は配送先に到着予定を連絡する。配送先が受け取りの準備ができたと返すと、運行管理者は運転手にそのまま向かうよう伝える。
+---
+sequenceDiagram
+    participant D as 運転手
+    participant M as 運行管理者
+    participant R as 配送先
+    D->>M: 出発を報告
+    M->>R: 到着予定を連絡
+    R-->>M: 受け取りの準備ができた
+    M->>D: そのまま向かうよう伝える
+=== sequence
+スマートウォッチがスマホに心拍数を送る。スマホは健康アプリのサーバーにまとめて送信し、サーバーは分析の結果を返す。異常があるとき、サーバーはかかりつけ医にも通知する。
+---
+sequenceDiagram
+    participant W as スマートウォッチ
+    participant P as スマホ
+    participant S as サーバー
+    participant D as かかりつけ医
+    W->>P: 心拍数を送る
+    P->>S: まとめて送信
+    S-->>P: 分析の結果
+    opt 異常がある
+        S->>D: 通知
+    end
+=== sequence
+記者 → デスク: 原稿を提出
+デスク → 校閲: 確認を依頼
+校閲 → デスク: 直しを返す
+デスク → 記者: 修正を指示
+---
+sequenceDiagram
+    participant K as 記者
+    participant D as デスク
+    participant C as 校閲
+    K->>D: 原稿を提出
+    D->>C: 確認を依頼
+    C-->>D: 直しを返す
+    D->>K: 修正を指示
+=== sequence
+入居者が管理人に鍵の紛失を届ける。管理人は鍵屋に交換を頼み、鍵屋が作業の日時を答える。管理人は入居者に日時を伝え、交換が終わると鍵屋が管理人に請求書を渡す。
+---
+sequenceDiagram
+    participant T as 入居者
+    participant M as 管理人
+    participant K as 鍵屋
+    T->>M: 鍵の紛失を届ける
+    M->>K: 交換を頼む
+    K-->>M: 作業の日時
+    M->>T: 日時を伝える
+    K->>M: 請求書を渡す
+=== sequence
+・顧客が営業に値引きを求める
+・営業が上司に値引きの許可を求める
+・上司が営業に上限を伝える
+・営業が顧客に新しい価格を示す
+---
+sequenceDiagram
+    participant C as 顧客
+    participant S as 営業
+    participant B as 上司
+    C->>S: 値引きを求める
+    S->>B: 値引きの許可を求める
+    B-->>S: 上限を伝える
+    S->>C: 新しい価格を示す
+=== sequence
+券売機がサーバーに座席の空きを問い合わせる。サーバーが空いている席を返すと、利用客が席を選ぶ。券売機はサーバーに席の確保を頼み、確保できたら利用客に切符を出す。
+---
+sequenceDiagram
+    participant U as 利用客
+    participant V as 券売機
+    participant S as サーバー
+    V->>S: 座席の空きを問い合わせる
+    S-->>V: 空いている席
+    U->>V: 席を選ぶ
+    V->>S: 席の確保を頼む
+    S-->>V: 確保できた
+    V->>U: 切符を出す
+=== sequence
+上長が部下に報告書の作成を頼む。部下は経理に数字を問い合わせ、経理が数字を返す。部下が報告書を上長に出すと、上長は役員に送る。
+---
+sequenceDiagram
+    participant B as 上長
+    participant S as 部下
+    participant K as 経理
+    participant Y as 役員
+    B->>S: 報告書の作成を頼む
+    S->>K: 数字を問い合わせる
+    K-->>S: 数字
+    S->>B: 報告書を出す
+    B->>Y: 送る
+=== sequence
+ドローンが基地局に現在地を送る。基地局は管制システムに飛行の許可を求める。許可が出れば管制システムは経路を返し、基地局がドローンに経路を送る。出なければ基地局はドローンに待機を命じる。
+---
+sequenceDiagram
+    participant D as ドローン
+    participant B as 基地局
+    participant C as 管制システム
+    D->>B: 現在地を送る
+    B->>C: 飛行の許可を求める
+    alt 許可が出る
+        C-->>B: 経路
+        B->>D: 経路を送る
+    else 出ない
+        B->>D: 待機を命じる
+    end
+=== sequence
+読者が書店のサイトで本を注文する。サイトは出版社に在庫を確認し、出版社が在庫ありと答える。サイトは運送会社に配送を頼み、読者に発送のお知らせを送る。
+---
+sequenceDiagram
+    participant R as 読者
+    participant W as サイト
+    participant P as 出版社
+    participant U as 運送会社
+    R->>W: 本を注文
+    W->>P: 在庫を確認
+    P-->>W: 在庫あり
+    W->>U: 配送を頼む
+    W->>R: 発送のお知らせ
+=== sequence
+監督がコーチに練習メニューを相談する。コーチはトレーナーに選手の体調を聞き、トレーナーが状態を答える。コーチは監督にメニューの案を出し、監督が選手たちに伝える。
+---
+sequenceDiagram
+    participant K as 監督
+    participant C as コーチ
+    participant T as トレーナー
+    participant P as 選手たち
+    K->>C: 練習メニューを相談
+    C->>T: 選手の体調を聞く
+    T-->>C: 状態
+    C->>K: メニューの案
+    K->>P: 伝える
+=== sequence
+端末が認証サーバーに証明書を送る。認証サーバーは証明書を検証し、有効なら接続を許可する。無効なら拒否を返し、管理コンソールに記録を送る。
+---
+sequenceDiagram
+    participant T as 端末
+    participant A as 認証サーバー
+    participant M as 管理コンソール
+    T->>A: 証明書を送る
+    A->>A: 証明書を検証
+    alt 有効
+        A-->>T: 接続を許可
+    else 無効
+        A-->>T: 拒否
+        A->>M: 記録を送る
+    end
+=== sequence
+幹事が参加者に日程の候補を送る。参加者は都合のよい日を幹事に返す。幹事は店に予約を入れ、店が予約の確認を返す。幹事は参加者に日時と場所を知らせる。
+---
+sequenceDiagram
+    participant K as 幹事
+    participant P as 参加者
+    participant S as 店
+    K->>P: 日程の候補を送る
+    P-->>K: 都合のよい日
+    K->>S: 予約を入れる
+    S-->>K: 予約の確認
+    K->>P: 日時と場所を知らせる
+=== sequence
+注文アプリ → 厨房プリンター: 注文票を印刷
+注文アプリ → 在庫システム: 材料を引き落とし
+在庫システム → 注文アプリ: 残りわずかの警告
+注文アプリ → 店長: 仕入れを提案
+---
+sequenceDiagram
+    participant A as 注文アプリ
+    participant P as 厨房プリンター
+    participant Z as 在庫システム
+    participant M as 店長
+    A->>P: 注文票を印刷
+    A->>Z: 材料を引き落とし
+    Z-->>A: 残りわずかの警告
+    A->>M: 仕入れを提案
+=== sequence
+患者が受付に診察券を出す。受付は電子カルテに来院を登録する。看護師が電子カルテで順番を確かめ、患者を診察室に呼ぶ。
+---
+sequenceDiagram
+    participant P as 患者
+    participant R as 受付
+    participant E as 電子カルテ
+    participant N as 看護師
+    P->>R: 診察券を出す
+    R->>E: 来院を登録
+    N->>E: 順番を確かめる
+    N->>P: 診察室に呼ぶ
+=== sequence
+翻訳者が編集者に訳文を送る。編集者は気になる点を翻訳者に質問し、翻訳者が説明を返す。編集者は著者に最終確認を依頼し、著者が承諾を返す。
+---
+sequenceDiagram
+    participant T as 翻訳者
+    participant E as 編集者
+    participant A as 著者
+    T->>E: 訳文を送る
+    E->>T: 気になる点を質問
+    T-->>E: 説明
+    E->>A: 最終確認を依頼
+    A-->>E: 承諾

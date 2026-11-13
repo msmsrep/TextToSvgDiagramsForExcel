@@ -5,7 +5,8 @@
 The model builder only reads Qwen3.5 in its original layout (the image-and-text
 model), while train.py saves the text part. So the trained text weights are put back
 into a copy of the base checkpoint (same weight names), then the builder makes an
-int4 CPU model from the text part. The folder gets text-to-mermaid.json, which tells
+int4 CPU model from the text part (k_quant, block size 16: the plain int4 conversion
+loses accuracy, see README.md). The folder gets text-to-mermaid.json, which tells
 the app to send the text alone (MermaidPrompt.TunedMarker).
 """
 
@@ -54,6 +55,9 @@ def main() -> int:
     parser.add_argument("--out", required=True, help="the ONNX model folder to make")
     parser.add_argument("--work", help="where to put the full checkpoint (default: next to merged)")
     parser.add_argument("--max-positions", type=int, default=4096, help="the longest conversation, in tokens, the model can take")
+    parser.add_argument("--precision", default="int4", choices=("int4", "int8"))
+    parser.add_argument("--options", nargs="*", default=["algo_config=k_quant", "block_size=16"],
+                        help="builder options for the int4 conversion, as key=value (see README.md for what was measured)")
     args = parser.parse_args()
 
     merged = Path(args.merged)
@@ -69,10 +73,10 @@ def main() -> int:
 
     out = Path(args.out)
     subprocess.run([sys.executable, "-m", "onnxruntime_genai.models.builder", "-i", str(work), "-o", str(out),
-                    "-p", "int4", "-e", "cpu", "-c", str(work.parent / "cache"),
-                    "--extra_options", "int4_accuracy_level=4", "text_only=true", "exclude_mtp=true"], check=True)
+                    "-p", args.precision, "-e", "cpu", "-c", str(work.parent / "cache"),
+                    "--extra_options", "accuracy_level=4", "text_only=true", "exclude_mtp=true", *args.options], check=True)
     log = merged.parent / "log.json"
-    info = {"task": "text-to-mermaid", "base": Path(args.base).name}
+    info = {"task": "text-to-mermaid", "base": Path(args.base).name, "precision": args.precision, "options": args.options}
     if log.exists():
         info["training"] = json.loads(log.read_text(encoding="utf-8"))
     (out / MARKER).write_text(json.dumps(info, ensure_ascii=False, indent=2), encoding="utf-8")

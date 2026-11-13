@@ -1,6 +1,6 @@
 # TextToMermaidEval
 
-文章から Mermaid を作る処理を `cases.ja.json`（日本語 100 件）で測るツール。ルールベース（`src/core/textToMermaid.ts`）と、ONNX Runtime GenAI で動かすローカルモデル（`src/TextToSvgDiagramsForExcel.Generation`）を比べる。
+文章から Mermaid を作る処理を `cases.ja.json`（日本語 150 件）で測るツール。ルールベース（`src/core/textToMermaid.ts`）と、ONNX Runtime GenAI で動かすローカルモデル（`src/TextToSvgDiagramsForExcel.Generation`）を比べる。
 
 - コードの検証は `scripts/mermaid-validate.mjs`（Node で `mermaid.parse`）を標準入出力でつないで行う。サーバーは立てず、外へ通信もしない。
 - 結果は `desktop/out/eval/<日時>.json`（生成したコードとモデルの回答全文）と `.md`（表）に保存する。
@@ -12,10 +12,10 @@
 dotnet run --project desktop/tools/TextToMermaidEval
 
 # ローカルモデルも測る（作り直しは最大 2 回）
-dotnet run --project desktop/tools/TextToMermaidEval -c Release -- --model desktop/models/mermaid-0.8b-jaen --repairs 2
+dotnet run --project desktop/tools/TextToMermaidEval -c Release -- --model desktop/models/mermaid-0.8b-jaen2 --repairs 2
 ```
 
-使うモデルは、この用途に学習させた `mermaid-0.8b-jaen`（作り方は `desktop/tools/MermaidTraining/README.md`）。フォルダに `text-to-mermaid.json` があれば、指示や例を付けずに文章だけを送る。
+使うモデルは、この用途に学習させた `mermaid-0.8b-jaen2`（作り方は `desktop/tools/MermaidTraining/README.md`）。フォルダに `text-to-mermaid.json` があれば、指示や例を付けずに文章だけを送る。
 
 ## 指標
 
@@ -23,11 +23,16 @@ dotnet run --project desktop/tools/TextToMermaidEval -c Release -- --model deskt
 |---|---|
 | valid | mermaid が読めたコードの数 |
 | valid & right type | そのうち期待した図の種類（flowchart / sequence / gantt）のもの |
+| structure | 種類が合ったうえで、文章にある分岐（フローチャート）、参加者（シーケンス図）、作業（ガント）が、ケースに書いた数以上あるものの数。分岐は、2 つ以上の行き先へ矢印が出ているノードを数える |
 | valid on 1st try | 作り直しなしで読めた数 |
 | keyword recall | 期待する語（`keywords`）がコードに含まれた割合。内容の目安で、分岐の正しさまでは見ない |
 | avg s / max s | 1 件あたりの時間（作り直しを含む） |
 
-分岐や並びの正しさは自動では測れないため、`.json` のコードを描画して目で確かめる。
+`structure` は数が足りているかを見るだけで、分岐の向きや並びの正しさまでは見ない。そこは `.json` のコードを描画して目で確かめる。
+
+- `--kind given` を付けると、ケースの図の種類を指定して作らせる（アプリで種類を選んだときと同じ）。付けなければ種類もモデルが選ぶ。
+- 学習済みのモデルの作り直しは、同じ依頼を温度 0.7 でもう一度出す（毎回結果が変わる）。モデルそのものを比べるときは `--repairs 0` にする。アプリは最大 2 回作り直させる。
+- ケースは 150 件（フローチャート 82、シーケンス 48、ガント 20）。2026-11-13 に足した 50 件は、小さいモデルが種類を取り違えやすい文章（システムや担当者が出てくる手順、機器の動き、状態の移り変わり、矢印や箇条書き、手順のように読めるやり取り）。
 
 ## モデルの用意（`desktop/models/`、Git の管理外）
 

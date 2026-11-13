@@ -45,9 +45,7 @@ public sealed class LocalTextModel(string folder, Func<string, Task<ParseResult>
             var generator = new MermaidGenerator(model, CheckAsync)
             {
                 Tuned = tuned,
-                // A tuned model has not learned to fix its answers and gives the same one
-                // again, so asking costs time for nothing; the editor shows the error instead.
-                MaxRepairs = tuned ? 0 : 2,
+                MaxRepairs = 2,
             };
             result = await generator.GenerateAsync(text, kind, cancellationToken);
         }

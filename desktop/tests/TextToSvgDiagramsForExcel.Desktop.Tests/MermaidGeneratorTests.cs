@@ -70,10 +70,12 @@ public class MermaidGeneratorTests
     {
         private readonly Queue<string> _answers = new(answers);
         public List<IReadOnlyList<ChatMessage>> Asked { get; } = [];
+        public List<double> Temperatures { get; } = [];
 
-        public Task<string> CompleteAsync(IReadOnlyList<ChatMessage> messages, int maxTokens, Func<string, bool>? stopWhen, CancellationToken cancellationToken)
+        public Task<string> CompleteAsync(IReadOnlyList<ChatMessage> messages, int maxTokens, Func<string, bool>? stopWhen, CancellationToken cancellationToken, double temperature)
         {
             Asked.Add(messages.ToList());
+            Temperatures.Add(temperature);
             return Task.FromResult(_answers.Dequeue());
         }
     }
@@ -109,6 +111,19 @@ public class MermaidGeneratorTests
         var retry = model.Asked[1];
         Assert.Equal(new ChatMessage(ChatRole.Assistant, "```mermaid\nflowchart TD\n  BUG\n```"), retry[^2]);
         Assert.Contains("Parse error on line 2", retry[^1].Text);
+    }
+
+    [Fact]
+    public async Task AsksATunedModelTheSameThingAgainWithChance()
+    {
+        var model = new ScriptedModel("```mermaid\nflowchart TD\n  BUG\n```", "```mermaid\nflowchart TD\n  A-->B\n```");
+
+        var result = await new MermaidGenerator(model, s_validIfNoBug) { Tuned = true }.GenerateAsync("text", "flowchart");
+
+        Assert.True(result.Valid);
+        Assert.Equal("flowchart TD\n  A-->B", result.Code);
+        Assert.Equal([0, 0.7], model.Temperatures);
+        Assert.Equal(new ChatMessage(ChatRole.User, "text\n\n(Use a flowchart.)"), Assert.Single(model.Asked[1]));
     }
 
     [Fact]

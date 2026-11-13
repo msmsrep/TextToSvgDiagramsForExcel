@@ -14,18 +14,26 @@ public sealed record GenerationResult(string Code, bool Valid, IReadOnlyList<Att
 
 /// <summary>
 /// Turns text into Mermaid code with a model, checks the code, and on an error
-/// shows the error to the model and asks again (design §14).
+/// asks again (design §14): a general model is shown the error, a tuned model gets
+/// the same request with some chance in its choice of words.
 /// </summary>
 public sealed class MermaidGenerator(IChatModel model, Func<string, CancellationToken, Task<CodeCheck>> check)
 {
     /// <summary>Answers longer than this are cut off (a diagram of about 40 nodes fits).</summary>
     public int MaxTokens { get; init; } = 768;
 
-    /// <summary>How many times an invalid answer is sent back to be fixed.</summary>
+    /// <summary>How many times the model is asked again after an invalid answer.</summary>
     public int MaxRepairs { get; init; } = 2;
 
     /// <summary>True for a model tuned for this task: it gets the text without instructions or examples.</summary>
     public bool Tuned { get; init; }
+
+    /// <summary>
+    /// The temperature of a tuned model's retries. It has not learned to fix an answer and
+    /// without chance would repeat it; its slips are small (one wrong token), so another
+    /// draw of the same request usually works.
+    /// </summary>
+    public double RetryTemperature { get; init; } = 0.7;
 
     public async Task<GenerationResult> GenerateAsync(string text, string kind, CancellationToken cancellationToken = default)
     {
@@ -34,7 +42,8 @@ public sealed class MermaidGenerator(IChatModel model, Func<string, Cancellation
         while (true)
         {
             var started = DateTime.UtcNow;
-            var answer = await model.CompleteAsync(messages, MaxTokens, MermaidPrompt.IsComplete, cancellationToken);
+            var temperature = Tuned && attempts.Count > 0 ? RetryTemperature : 0;
+            var answer = await model.CompleteAsync(messages, MaxTokens, MermaidPrompt.IsComplete, cancellationToken, temperature);
             var code = MermaidPrompt.ExtractCode(answer);
             var result = string.IsNullOrWhiteSpace(code)
                 ? new CodeCheck(false, Message: "The answer has no Mermaid code.")
@@ -49,8 +58,11 @@ public sealed class MermaidGenerator(IChatModel model, Func<string, Cancellation
             {
                 return new GenerationResult(code, result.Valid, attempts);
             }
-            messages.Add(new ChatMessage(ChatRole.Assistant, $"```mermaid\n{code}\n```"));
-            messages.Add(MermaidPrompt.Repair(result.Message ?? ""));
+            if (!Tuned)
+            {
+                messages.Add(new ChatMessage(ChatRole.Assistant, $"```mermaid\n{code}\n```"));
+                messages.Add(MermaidPrompt.Repair(result.Message ?? ""));
+            }
         }
     }
 }

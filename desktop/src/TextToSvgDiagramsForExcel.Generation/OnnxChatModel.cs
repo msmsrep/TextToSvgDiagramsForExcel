@@ -34,12 +34,13 @@ public sealed class OnnxChatModel : IChatModel, IDisposable
         IReadOnlyList<ChatMessage> messages,
         int maxTokens,
         Func<string, bool>? stopWhen = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        double temperature = 0)
     {
         await _gate.WaitAsync(cancellationToken);
         try
         {
-            return await Task.Run(() => Generate(_format.Render(messages), maxTokens, stopWhen, cancellationToken), cancellationToken);
+            return await Task.Run(() => Generate(_format.Render(messages), maxTokens, stopWhen, temperature, cancellationToken), cancellationToken);
         }
         finally
         {
@@ -47,13 +48,18 @@ public sealed class OnnxChatModel : IChatModel, IDisposable
         }
     }
 
-    private string Generate(string prompt, int maxTokens, Func<string, bool>? stopWhen, CancellationToken cancellationToken)
+    private string Generate(string prompt, int maxTokens, Func<string, bool>? stopWhen, double temperature, CancellationToken cancellationToken)
     {
         using var sequences = _tokenizer.Encode(prompt);
         using var options = new GeneratorParams(_model);
         options.SetSearchOption("max_length", sequences[0].Length + maxTokens);
-        // Greedy decoding: the same text gives the same code.
-        options.SetSearchOption("do_sample", false);
+        // Greedy decoding by default: the same text gives the same code.
+        options.SetSearchOption("do_sample", temperature > 0);
+        if (temperature > 0)
+        {
+            options.SetSearchOption("temperature", temperature);
+            options.SetSearchOption("top_p", 0.9);
+        }
         using var generator = new Generator(_model, options);
         generator.AppendTokenSequences(sequences);
         using var stream = _tokenizer.CreateStream();
