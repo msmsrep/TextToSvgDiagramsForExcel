@@ -1,0 +1,185 @@
+=== flowchart
+A task starts in To Do. When someone picks it up it moves to In Progress. From there it moves to Review when the work is finished. A reviewer either moves it to Done or sends it back to In Progress.
+---
+flowchart TD
+    A["To Do"] -->|"Someone picks it up"| B["In Progress"]
+    B -->|"Work is finished"| C["Review"]
+    C -->|"Approved"| D["Done"]
+    C -->|"Sent back"| B
+=== flowchart
+The traffic light at the crossing is red for cars by default. When a car arrives at the sensor, the light turns green for thirty seconds, then yellow for three seconds, then red again.
+---
+flowchart TD
+    A["Red"] -->|"Car arrives at the sensor"| B["Green for thirty seconds"]
+    B --> C["Yellow for three seconds"]
+    C --> A
+=== flowchart
+A connection is Closed at first. Calling connect makes it Connecting. If the handshake succeeds it becomes Open; if it fails it goes back to Closed. An Open connection becomes Closed when either side hangs up.
+---
+flowchart TD
+    A["Closed"] -->|"connect"| B["Connecting"]
+    B -->|"Handshake succeeds"| C["Open"]
+    B -->|"Handshake fails"| A
+    C -->|"Either side hangs up"| A
+=== flowchart
+The coffee machine is idle until a button is pressed. It then grinds the beans, heats the water, and brews. If the water tank is empty, it shows a warning instead of brewing and returns to idle.
+---
+flowchart TD
+    A["Idle"] -->|"Button is pressed"| B{"Water tank empty?"}
+    B -->|"Yes"| C["Show a warning"]
+    C --> A
+    B -->|"No"| D["Grind the beans"]
+    D --> E["Heat the water"]
+    E --> F["Brew"]
+    F --> A
+=== flowchart
+A library book is Available. When borrowed it becomes On Loan. If it is not returned by the due date it becomes Overdue. Returning the book, on time or late, makes it Available again. A book that is lost is marked Lost.
+---
+flowchart TD
+    A["Available"] -->|"Borrowed"| B["On Loan"]
+    B -->|"Not returned by the due date"| C["Overdue"]
+    B -->|"Returned"| A
+    C -->|"Returned"| A
+    C --> D["Lost"]
+=== flowchart
+The garage door is closed. Pressing the remote opens it. If nothing passes through for one minute, it closes by itself. If the safety beam is broken while closing, the door opens again.
+---
+flowchart TD
+    A["Closed"] -->|"Remote is pressed"| B["Open"]
+    B -->|"Nothing passes for one minute"| C["Closing"]
+    C -->|"Safety beam is broken"| B
+    C --> A
+=== flowchart
+The dishwasher runs four phases in order: pre-wash, main wash, rinse, and dry. If the door is opened during any phase, the machine pauses, and it resumes the same phase when the door is closed.
+---
+flowchart TD
+    A["Pre-wash"] --> B["Main wash"]
+    B --> C["Rinse"]
+    C --> D["Dry"]
+    A -->|"Door is opened"| E["Paused"]
+    B -->|"Door is opened"| E
+    C -->|"Door is opened"| E
+    D -->|"Door is opened"| E
+=== flowchart
+A support case is New when it is created. An agent's first reply makes it Open. While waiting for the customer it is Pending. When the customer answers it is Open again. The agent marks it Solved, and after four days without a reply it is Closed.
+---
+flowchart TD
+    A["New"] -->|"Agent's first reply"| B["Open"]
+    B -->|"Waiting for the customer"| C["Pending"]
+    C -->|"Customer answers"| B
+    B -->|"Agent marks it"| D["Solved"]
+    D -->|"Four days without a reply"| E["Closed"]
+=== flowchart
+The smoke detector checks the air every ten seconds. If smoke is detected, the alarm sounds until the test button is held for three seconds. Once a day it also checks the battery, and it beeps every minute when the battery is low.
+---
+flowchart TD
+    A["Check the air every ten seconds"] --> B{"Smoke detected?"}
+    B -->|"Yes"| C["Sound the alarm"]
+    C --> D["Test button held for three seconds"]
+    D --> A
+    B -->|"No"| E{"Battery low?"}
+    E -->|"Yes"| F["Beep every minute"]
+    E -->|"No"| A
+=== flowchart
+The robot vacuum starts cleaning at ten. When the battery drops below 15%, it returns to the dock and charges. When the battery is full, it continues where it stopped. When the whole floor is done, it returns to the dock and switches off.
+---
+flowchart TD
+    A["Start cleaning at ten"] --> B{"Battery below 15%?"}
+    B -->|"Yes"| C["Return to the dock and charge"]
+    C --> D["Continue where it stopped"]
+    D --> B
+    B -->|"No"| E{"Whole floor done?"}
+    E -->|"No"| B
+    E -->|"Yes"| F["Return to the dock"]
+    F --> G["Switch off"]
+=== flowchart
+An invoice is created as a Draft. Sending it makes it Sent. When the money arrives it becomes Paid. If the due date passes without payment it becomes Overdue, and an Overdue invoice that is paid becomes Paid. A Draft can also be deleted.
+---
+flowchart TD
+    A["Draft"] -->|"Sending"| B["Sent"]
+    B -->|"Money arrives"| C["Paid"]
+    B -->|"Due date passes"| D["Overdue"]
+    D -->|"Paid"| C
+    A --> E["Deleted"]
+=== flowchart
+The sprinkler controller checks the soil sensor at 5 a.m. If the soil is wet, it skips watering. If rain is forecast for today, it also skips. Otherwise it waters each zone for ten minutes, one zone after another.
+---
+flowchart TD
+    A["Check the soil sensor at 5 a.m."] --> B{"Soil wet?"}
+    B -->|"Yes"| C["Skip watering"]
+    B -->|"No"| D{"Rain forecast for today?"}
+    D -->|"Yes"| C
+    D -->|"No"| E["Water each zone for ten minutes"]
+=== flowchart
+The laptop is running. Closing the lid puts it to sleep. After two hours asleep it hibernates. Opening the lid wakes it from sleep, and pressing the power button wakes it from hibernation.
+---
+flowchart TD
+    A["Running"] -->|"Lid is closed"| B["Sleep"]
+    B -->|"Two hours asleep"| C["Hibernation"]
+    B -->|"Lid is opened"| A
+    C -->|"Power button is pressed"| A
+=== flowchart
+The ATM waits for a card. After the card is inserted it asks for the PIN. Three wrong PINs and the card is kept. With the right PIN it shows the menu, dispenses the cash, and returns the card.
+---
+flowchart TD
+    A["Wait for a card"] --> B["Ask for the PIN"]
+    B --> C{"PIN right?"}
+    C -->|"Yes"| D["Show the menu"]
+    D --> E["Dispense the cash"]
+    E --> F["Return the card"]
+    C -->|"No"| G{"Three wrong PINs?"}
+    G -->|"Yes"| H["Keep the card"]
+    G -->|"No"| B
+=== flowchart
+The oven preheats to the set temperature and beeps. Baking starts when the door is closed with food inside. When the timer ends, the heating turns off and the fan keeps running until the oven is below 60 degrees.
+---
+flowchart TD
+    A["Preheat to the set temperature"] --> B["Beep"]
+    B --> C["Baking starts"]
+    C --> D["Timer ends"]
+    D --> E["Heating turns off"]
+    E --> F["Fan runs until the oven is below 60 degrees"]
+=== flowchart
+A parcel is Registered when the label is printed. It becomes In Transit when the courier collects it. At the local depot it becomes Out for Delivery. It ends as Delivered, or as Returned to Sender after two failed attempts.
+---
+flowchart TD
+    A["Registered"] -->|"Courier collects it"| B["In Transit"]
+    B -->|"At the local depot"| C["Out for Delivery"]
+    C --> D["Delivered"]
+    C -->|"Two failed attempts"| E["Returned to Sender"]
+=== flowchart
+The pump turns on when the tank level falls below 20%. It runs until the level reaches 90% and then turns off. If the pump runs for more than fifteen minutes without the level rising, it stops and raises a fault.
+---
+flowchart TD
+    A["Tank level below 20%"] --> B["Pump turns on"]
+    B --> C{"Level reaches 90%?"}
+    C -->|"Yes"| D["Pump turns off"]
+    C -->|"No"| E{"Fifteen minutes without the level rising?"}
+    E -->|"Yes"| F["Stop and raise a fault"]
+    E -->|"No"| C
+=== flowchart
+A user account is Pending until the email is confirmed, and then Active. An admin can suspend an Active account, and can reactivate a Suspended one. Any account can be Deleted on request.
+---
+flowchart TD
+    A["Pending"] -->|"Email is confirmed"| B["Active"]
+    B -->|"Admin suspends"| C["Suspended"]
+    C -->|"Admin reactivates"| B
+    A --> D["Deleted"]
+    B --> D
+    C --> D
+=== flowchart
+The turnstile is locked. Inserting a valid ticket unlocks it. Pushing through locks it again. An invalid ticket is returned and the turnstile stays locked.
+---
+flowchart TD
+    A["Locked"] --> B{"Ticket valid?"}
+    B -->|"Yes"| C["Unlocked"]
+    C -->|"Pushing through"| A
+    B -->|"No"| D["Return the ticket"]
+    D --> A
+=== flowchart
+The air conditioner has three modes. In Cool mode it runs the compressor until the room reaches the target. In Fan mode it only moves air. In Auto mode it switches between Cool and Fan depending on the temperature. The remote cycles through the modes: Cool, Fan, Auto, and back to Cool.
+---
+flowchart TD
+    A["Cool"] -->|"Remote"| B["Fan"]
+    B -->|"Remote"| C["Auto"]
+    C -->|"Remote"| A

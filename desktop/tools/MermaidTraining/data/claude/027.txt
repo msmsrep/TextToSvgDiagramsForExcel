@@ -202,7 +202,6 @@ sequenceDiagram
     participant A as 認証サーバー
     participant M as 管理コンソール
     T->>A: 証明書を送る
-    A->>A: 証明書を検証
     alt 有効
         A-->>T: 接続を許可
     else 無効

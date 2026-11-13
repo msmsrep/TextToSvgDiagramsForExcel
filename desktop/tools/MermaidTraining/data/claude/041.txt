@@ -1,0 +1,230 @@
+=== gantt
+Q3 roadmap (2027)
+- Search redesign: Jul 5 to Jul 30
+- Payments v2: Jul 19 to Aug 27
+- Mobile beta: Aug 30 to Sep 24
+---
+gantt
+    title Q3 roadmap
+    dateFormat YYYY-MM-DD
+    section Roadmap
+    Search redesign :a1, 2027-07-05, 26d
+    Payments v2 :a2, 2027-07-19, 40d
+    Mobile beta :a3, 2027-08-30, 26d
+=== gantt
+Thanksgiving dinner prep, 2027. Order the turkey on Nov 15. Shop for groceries on Nov 22 and 23. Bake pies on Nov 24. Dinner is on Nov 25.
+---
+gantt
+    title Thanksgiving dinner prep
+    dateFormat YYYY-MM-DD
+    section Prep
+    Order the turkey :a1, 2027-11-15, 1d
+    Shop for groceries :a2, 2027-11-22, 2d
+    Bake pies :a3, 2027-11-24, 1d
+    Dinner :milestone, a4, 2027-11-25, 0d
+=== gantt
+Booking system. Design: 2027-03-01, 2 weeks. Backend and frontend start together after design; backend takes 4 weeks and frontend takes 3 weeks. Testing: 2 weeks after backend.
+---
+gantt
+    title Booking system
+    dateFormat YYYY-MM-DD
+    section Design
+    Design :a1, 2027-03-01, 14d
+    section Build
+    Backend :b1, after a1, 28d
+    Frontend :b2, after a1, 21d
+    section Test
+    Testing :c1, after b1, 14d
+=== gantt
+Yoga studio opening. Lease signing on 2027-01-15. Renovation for 30 days from 2027-01-18. Hire instructors for 3 weeks from 2027-02-01. Grand opening on 2027-03-01.
+---
+gantt
+    title Yoga studio opening
+    dateFormat YYYY-MM-DD
+    section Studio
+    Lease signing :milestone, a1, 2027-01-15, 0d
+    Renovation :a2, 2027-01-18, 30d
+    Hire instructors :a3, 2027-02-01, 21d
+    Grand opening :milestone, a4, 2027-03-01, 0d
+=== gantt
+Machine maintenance shutdown, 2027-12-27 to 2027-12-31: drain fluids on the 27th, replace bearings on the 28th and 29th, refill and test on the 30th, restart on the 31st.
+---
+gantt
+    title Machine maintenance shutdown
+    dateFormat YYYY-MM-DD
+    section Shutdown
+    Drain fluids :a1, 2027-12-27, 1d
+    Replace bearings :a2, 2027-12-28, 2d
+    Refill and test :a3, 2027-12-30, 1d
+    Restart :milestone, a4, 2027-12-31, 0d
+=== gantt
+Sales kickoff planning. Agenda: 1 week from 2027-01-04. Speaker invitations: 2 weeks after the agenda. Slide deck: 2 weeks after the agenda. Rehearsal: 2 days after the slide deck. Kickoff: 2027-02-08.
+---
+gantt
+    title Sales kickoff planning
+    dateFormat YYYY-MM-DD
+    section Planning
+    Agenda :a1, 2027-01-04, 7d
+    Speaker invitations :a2, after a1, 14d
+    Slide deck :a3, after a1, 14d
+    Rehearsal :a4, after a3, 2d
+    Kickoff :milestone, a5, 2027-02-08, 0d
+=== gantt
+Vaccination campaign. North district: 10 days from 2027-10-04. South district: 10 days after the north district. East district: 10 days after the south district. The final report is due on 2027-11-15.
+---
+gantt
+    title Vaccination campaign
+    dateFormat YYYY-MM-DD
+    section Districts
+    North district :a1, 2027-10-04, 10d
+    South district :a2, after a1, 10d
+    East district :a3, after a2, 10d
+    section Report
+    Final report :milestone, a4, 2027-11-15, 0d
+=== gantt
+Home solar install. Site survey on 2027-05-10 (1 day). Permit approval takes 3 weeks after the survey. Panel installation: 2 days after the permit. Grid inspection: 1 day after installation.
+---
+gantt
+    title Home solar install
+    dateFormat YYYY-MM-DD
+    section Install
+    Site survey :a1, 2027-05-10, 1d
+    Permit approval :a2, after a1, 21d
+    Panel installation :a3, after a2, 2d
+    Grid inspection :a4, after a3, 1d
+=== gantt
+Hackathon weekend: team formation on Friday 2027-09-17, hacking on the 18th and 19th, demos on 2027-09-20.
+---
+gantt
+    title Hackathon weekend
+    dateFormat YYYY-MM-DD
+    section Hackathon
+    Team formation :a1, 2027-09-17, 1d
+    Hacking :a2, 2027-09-18, 2d
+    Demos :milestone, a3, 2027-09-20, 0d
+=== gantt
+Annual budget cycle. Departments submit requests from 2027-09-01 to 2027-09-30. Finance consolidates for 2 weeks after that. The board reviews for 1 week after consolidation. The budget is approved on 2027-11-01.
+---
+gantt
+    title Annual budget cycle
+    dateFormat YYYY-MM-DD
+    section Budget
+    Departments submit requests :a1, 2027-09-01, 30d
+    Finance consolidates :a2, after a1, 14d
+    Board reviews :a3, after a2, 7d
+    Budget approved :milestone, a4, 2027-11-01, 0d
+=== gantt
+Data center move. Preparation: inventory for 5 days from 2027-03-08, then label cables for 3 days after the inventory. Move: shut down for 1 day on 2027-03-20, transport for 1 day after the shutdown, power up for 2 days after the transport.
+---
+gantt
+    title Data center move
+    dateFormat YYYY-MM-DD
+    section Preparation
+    Inventory :a1, 2027-03-08, 5d
+    Label cables :a2, after a1, 3d
+    section Move
+    Shut down :b1, 2027-03-20, 1d
+    Transport :b2, after b1, 1d
+    Power up :b3, after b2, 2d
+=== gantt
+Language course: beginner level for 8 weeks from 2027-01-11, intermediate level for 8 weeks after that, advanced level for 8 weeks after intermediate. The final exam is on 2027-06-30.
+---
+gantt
+    title Language course
+    dateFormat YYYY-MM-DD
+    section Course
+    Beginner level :a1, 2027-01-11, 56d
+    Intermediate level :a2, after a1, 56d
+    Advanced level :a3, after a2, 56d
+    Final exam :milestone, a4, 2027-06-30, 0d
+=== gantt
+Magazine issue 42 (2027). Articles due on April 9. Editing from April 12 to April 20. Layout from April 21 to April 27. To the printer on April 28.
+---
+gantt
+    title Magazine issue 42
+    dateFormat YYYY-MM-DD
+    section Issue 42
+    Articles due :milestone, a1, 2027-04-09, 0d
+    Editing :a2, 2027-04-12, 9d
+    Layout :a3, 2027-04-21, 7d
+    To the printer :milestone, a4, 2027-04-28, 0d
+=== gantt
+Clinical trial phases. Recruitment: 2027-02-01, 60 days. Treatment: 90 days after recruitment. Follow-up: 30 days after treatment. Analysis: 45 days after follow-up.
+---
+gantt
+    title Clinical trial phases
+    dateFormat YYYY-MM-DD
+    section Trial
+    Recruitment :a1, 2027-02-01, 60d
+    Treatment :a2, after a1, 90d
+    Follow-up :a3, after a2, 30d
+    Analysis :a4, after a3, 45d
+=== gantt
+Kitchen garden year (2027): sow indoors from Mar 1 to Mar 14, harden off from Apr 19 to Apr 30, plant out from May 3 to May 7, and harvest from Jul 12 to Sep 17.
+---
+gantt
+    title Kitchen garden year
+    dateFormat YYYY-MM-DD
+    section Garden
+    Sow indoors :a1, 2027-03-01, 14d
+    Harden off :a2, 2027-04-19, 12d
+    Plant out :a3, 2027-05-03, 5d
+    Harvest :a4, 2027-07-12, 68d
+=== gantt
+Website migration checklist with dates. Content freeze: 2027-06-21. Export content: 2 days from 2027-06-22. Import and fix links: 4 days after the export. DNS switch: 2027-06-30.
+---
+gantt
+    title Website migration
+    dateFormat YYYY-MM-DD
+    section Migration
+    Content freeze :milestone, a1, 2027-06-21, 0d
+    Export content :a2, 2027-06-22, 2d
+    Import and fix links :a3, after a2, 4d
+    DNS switch :milestone, a4, 2027-06-30, 0d
+=== gantt
+Painting schedule. Team A paints floor 1 and then floor 2, 4 days each, starting 2027-08-09. Team B paints floor 3 and then floor 4, 4 days each, starting the same day. The final inspection takes 1 day after both teams finish.
+---
+gantt
+    title Painting schedule
+    dateFormat YYYY-MM-DD
+    section Team A
+    Floor 1 :a1, 2027-08-09, 4d
+    Floor 2 :a2, after a1, 4d
+    section Team B
+    Floor 3 :b1, 2027-08-09, 4d
+    Floor 4 :b2, after b1, 4d
+    section Inspection
+    Final inspection :c1, after a2 b2, 1d
+=== gantt
+Charity run. Registration opens on 2027-03-01 and stays open for 6 weeks. Route marking: 2 days from 2027-04-15. Race day: 2027-04-18.
+---
+gantt
+    title Charity run
+    dateFormat YYYY-MM-DD
+    section Run
+    Registration :a1, 2027-03-01, 42d
+    Route marking :a2, 2027-04-15, 2d
+    Race day :milestone, a3, 2027-04-18, 0d
+=== gantt
+Firmware release 2.4: feature freeze on 2027-07-12, bug fixing for 10 days from then, release candidate testing for 5 days after bug fixing, release on 2027-07-30.
+---
+gantt
+    title Firmware release 2.4
+    dateFormat YYYY-MM-DD
+    section Release 2.4
+    Feature freeze :milestone, a1, 2027-07-12, 0d
+    Bug fixing :a2, 2027-07-12, 10d
+    Release candidate testing :a3, after a2, 5d
+    Release :milestone, a4, 2027-07-30, 0d
+=== gantt
+Museum exhibition, 2027. Loan agreements: Jan 11 to Feb 5. Transport of works: Feb 15 to Feb 19. Installation: Feb 22 to Mar 5. Opening: Mar 9.
+---
+gantt
+    title Museum exhibition
+    dateFormat YYYY-MM-DD
+    section Preparation
+    Loan agreements :a1, 2027-01-11, 26d
+    Transport of works :a2, 2027-02-15, 5d
+    Installation :a3, 2027-02-22, 12d
+    section Opening
+    Opening :milestone, a4, 2027-03-09, 0d

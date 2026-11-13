@@ -1,6 +1,6 @@
 """Measures a trained model before it is made into ONNX (train.py's <out>/merged).
 
-    python eval_merged.py desktop/out/mermaid-0.8b/merged [--kind given]
+    python eval_merged.py desktop/out/mermaid-0.8b/merged [--kind given] [--cases <cases.en.json>]
 
 The same cases and the same requests as TextToMermaidEval (no repairs), but in
 PyTorch at full precision. Comparing the two tells whether a wrong answer comes from
@@ -28,11 +28,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("model")
     parser.add_argument("--kind", choices=("auto", "given"), default="auto")
+    parser.add_argument("--cases", default=str(EVAL_CASES), help="the cases to measure (default: cases.ja.json)")
     parser.add_argument("--max-new-tokens", type=int, default=768)
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = parser.parse_args()
 
-    cases = json.loads(EVAL_CASES.read_text(encoding="utf-8"))
+    cases = json.loads(Path(args.cases).read_text(encoding="utf-8"))
     tokenizer = AutoTokenizer.from_pretrained(args.model)
     dtype = torch.bfloat16 if args.device == "cuda" else torch.float32
     model = AutoModelForCausalLM.from_pretrained(args.model, dtype=dtype).to(args.device).eval()

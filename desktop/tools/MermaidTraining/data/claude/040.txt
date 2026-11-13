@@ -1,0 +1,230 @@
+=== gantt
+Office move. Pack the archive from 2027-03-01 for 4 days. Move the furniture for 2 days after that. Set up the network for 3 days after the furniture. The first day in the new office is 2027-03-15.
+---
+gantt
+    title Office move
+    dateFormat YYYY-MM-DD
+    section Move
+    Pack the archive :a1, 2027-03-01, 4d
+    Move the furniture :a2, after a1, 2d
+    Set up the network :a3, after a2, 3d
+    First day in the new office :milestone, a4, 2027-03-15, 0d
+=== gantt
+Garden project: build raised beds May 3 to May 7, 2027; fill with soil May 10 to May 11; plant seedlings May 12 to May 14.
+---
+gantt
+    title Garden project
+    dateFormat YYYY-MM-DD
+    section Garden
+    Build raised beds :a1, 2027-05-03, 5d
+    Fill with soil :a2, 2027-05-10, 2d
+    Plant seedlings :a3, 2027-05-12, 3d
+=== gantt
+Book launch. Editing: 2027-01-04 to 2027-01-29. Cover design: 2027-01-18 to 2027-01-29. Printing: three weeks from 2027-02-01. Launch party: 2027-03-05.
+---
+gantt
+    title Book launch
+    dateFormat YYYY-MM-DD
+    section Production
+    Editing :a1, 2027-01-04, 26d
+    Cover design :a2, 2027-01-18, 12d
+    Printing :a3, 2027-02-01, 21d
+    section Launch
+    Launch party :milestone, a4, 2027-03-05, 0d
+=== gantt
+Training plan for the half marathon, starting 2027-06-07: base building for 4 weeks, then speed work for 3 weeks, then a 1-week taper. Race day is 2027-08-02.
+---
+gantt
+    title Half marathon training plan
+    dateFormat YYYY-MM-DD
+    section Training
+    Base building :a1, 2027-06-07, 28d
+    Speed work :a2, after a1, 21d
+    Taper :a3, after a2, 7d
+    Race day :milestone, a4, 2027-08-02, 0d
+=== gantt
+ERP rollout. Requirements workshop: 5 days from 2027-09-06. Configuration: 20 days after the workshop. Data migration and user training run in parallel after configuration, for 10 days and 5 days. Go-live is on 2027-10-25.
+---
+gantt
+    title ERP rollout
+    dateFormat YYYY-MM-DD
+    section Rollout
+    Requirements workshop :a1, 2027-09-06, 5d
+    Configuration :a2, after a1, 20d
+    Data migration :a3, after a2, 10d
+    User training :a4, after a2, 5d
+    Go-live :milestone, a5, 2027-10-25, 0d
+=== gantt
+Film shoot schedule. Pre-production: casting from 2027-02-01 for 10 days and location scouting from 2027-02-01 for 7 days. Production: shooting for 15 days from 2027-02-15. Post-production: editing for 20 days after shooting.
+---
+gantt
+    title Film shoot schedule
+    dateFormat YYYY-MM-DD
+    section Pre-production
+    Casting :a1, 2027-02-01, 10d
+    Location scouting :a2, 2027-02-01, 7d
+    section Production
+    Shooting :b1, 2027-02-15, 15d
+    section Post-production
+    Editing :c1, after b1, 20d
+=== gantt
+Exam revision, 2027: maths Apr 5 to 9, physics Apr 12 to 16, chemistry Apr 19 to 23. The mock exam is on Apr 26.
+---
+gantt
+    title Exam revision
+    dateFormat YYYY-MM-DD
+    section Revision
+    Maths :a1, 2027-04-05, 5d
+    Physics :a2, 2027-04-12, 5d
+    Chemistry :a3, 2027-04-19, 5d
+    Mock exam :milestone, a4, 2027-04-26, 0d
+=== gantt
+Trade show plan. Design the booth: 2 weeks from 2027-08-02. Build the booth: 10 days after the design. Ship to the venue: 3 days after the build. The show opens on 2027-09-06.
+---
+gantt
+    title Trade show plan
+    dateFormat YYYY-MM-DD
+    section Booth
+    Design the booth :a1, 2027-08-02, 14d
+    Build the booth :a2, after a1, 10d
+    Ship to the venue :a3, after a2, 3d
+    section Show
+    Show opens :milestone, a4, 2027-09-06, 0d
+=== gantt
+Bathroom remodel starting 2027-04-12. Remove old tiles (2 days), plumbing (3 days), tiling (4 days), install fixtures (2 days), one after another.
+---
+gantt
+    title Bathroom remodel
+    dateFormat YYYY-MM-DD
+    section Remodel
+    Remove old tiles :a1, 2027-04-12, 2d
+    Plumbing :a2, after a1, 3d
+    Tiling :a3, after a2, 4d
+    Install fixtures :a4, after a3, 2d
+=== gantt
+Quarterly report: collect figures from 2027-07-01 to 2027-07-07, write the draft for 5 days after that, management review for 3 days after the draft, and publish on 2027-07-20.
+---
+gantt
+    title Quarterly report
+    dateFormat YYYY-MM-DD
+    section Report
+    Collect figures :a1, 2027-07-01, 7d
+    Write the draft :a2, after a1, 5d
+    Management review :a3, after a2, 3d
+    Publish :milestone, a4, 2027-07-20, 0d
+=== gantt
+Wedding countdown. Send invitations: 2027-03-01, 1 week. Choose the menu: 2027-03-15, 5 days. Dress fittings: 2027-04-05, 10 days. Wedding day: 2027-05-08.
+---
+gantt
+    title Wedding countdown
+    dateFormat YYYY-MM-DD
+    section Preparation
+    Send invitations :a1, 2027-03-01, 7d
+    Choose the menu :a2, 2027-03-15, 5d
+    Dress fittings :a3, 2027-04-05, 10d
+    section Wedding
+    Wedding day :milestone, a4, 2027-05-08, 0d
+=== gantt
+Server upgrade plan. Hardware delivery: 14 days from 2027-11-01. Install the servers for 3 days after delivery. Migrate services for 5 days after installation. Decommission old servers for 2 days after migration.
+---
+gantt
+    title Server upgrade plan
+    dateFormat YYYY-MM-DD
+    section Upgrade
+    Hardware delivery :a1, 2027-11-01, 14d
+    Install the servers :a2, after a1, 3d
+    Migrate services :a3, after a2, 5d
+    Decommission old servers :a4, after a3, 2d
+=== gantt
+App localization. Extract strings: 3 days from 2027-05-17. Translation into German and translation into French both take 10 days after extraction. Review: 4 days after both translations. Release: 2027-06-14.
+---
+gantt
+    title App localization
+    dateFormat YYYY-MM-DD
+    section Localization
+    Extract strings :a1, 2027-05-17, 3d
+    Translation into German :a2, after a1, 10d
+    Translation into French :a3, after a1, 10d
+    Review :a4, after a2 a3, 4d
+    Release :milestone, a5, 2027-06-14, 0d
+=== gantt
+Harvest season plan, 2027. Field A: pick field A from Sep 6 to Sep 17. Field B: pick field B from Sep 13 to Sep 24. Winery: pressing from Sep 8 to Sep 28, and bottling for 5 days from Nov 1.
+---
+gantt
+    title Harvest season plan
+    dateFormat YYYY-MM-DD
+    section Field A
+    Pick field A :a1, 2027-09-06, 12d
+    section Field B
+    Pick field B :b1, 2027-09-13, 12d
+    section Winery
+    Pressing :c1, 2027-09-08, 21d
+    Bottling :c2, 2027-11-01, 5d
+=== gantt
+Research grant timeline. Write the proposal for 3 weeks from 2027-01-11. Internal review for 1 week after that. Submit on 2027-02-10. The decision is expected on 2027-05-03.
+---
+gantt
+    title Research grant timeline
+    dateFormat YYYY-MM-DD
+    section Proposal
+    Write the proposal :a1, 2027-01-11, 21d
+    Internal review :a2, after a1, 7d
+    Submit :milestone, a3, 2027-02-10, 0d
+    section Decision
+    Decision expected :milestone, a4, 2027-05-03, 0d
+=== gantt
+School play. Auditions: 3 days from 2027-09-13. Rehearsals: 6 weeks from 2027-09-20. Set building: 2 weeks from 2027-10-11. Dress rehearsal on 2027-11-03. Opening night on 2027-11-05.
+---
+gantt
+    title School play
+    dateFormat YYYY-MM-DD
+    section Preparation
+    Auditions :a1, 2027-09-13, 3d
+    Rehearsals :a2, 2027-09-20, 42d
+    Set building :a3, 2027-10-11, 14d
+    section Performance
+    Dress rehearsal :milestone, a4, 2027-11-03, 0d
+    Opening night :milestone, a5, 2027-11-05, 0d
+=== gantt
+Tax season to-do, 2027: gather receipts from Jan 4 to Jan 15, meet the accountant on Jan 20, and file the return by Feb 1.
+---
+gantt
+    title Tax season to-do
+    dateFormat YYYY-MM-DD
+    section Taxes
+    Gather receipts :a1, 2027-01-04, 12d
+    Meet the accountant :a2, 2027-01-20, 1d
+    File the return :milestone, a3, 2027-02-01, 0d
+=== gantt
+Road resurfacing, Main Street. Mill the old surface: 2027-06-14, 3 days. Repair the base: 4 days, after milling. Lay new asphalt: 3 days, after the repair. Paint the lines: 1 day, after the asphalt.
+---
+gantt
+    title Road resurfacing, Main Street
+    dateFormat YYYY-MM-DD
+    section Works
+    Mill the old surface :a1, 2027-06-14, 3d
+    Repair the base :a2, after a1, 4d
+    Lay new asphalt :a3, after a2, 3d
+    Paint the lines :a4, after a3, 1d
+=== gantt
+Onboarding week for new engineers, starting Monday 2027-02-01: laptop setup on day one, a codebase tour for the next 2 days, then a starter task for 2 days.
+---
+gantt
+    title Onboarding week for new engineers
+    dateFormat YYYY-MM-DD
+    section Onboarding
+    Laptop setup :a1, 2027-02-01, 1d
+    Codebase tour :a2, after a1, 2d
+    Starter task :a3, after a2, 2d
+=== gantt
+Product photo shoot. Book the studio from 2027-10-04 to 2027-10-05. Prepare the samples from 2027-10-04 to 2027-10-08. Shoot on 2027-10-11 and 2027-10-12. Retouching for 5 days after the shoot.
+---
+gantt
+    title Product photo shoot
+    dateFormat YYYY-MM-DD
+    section Preparation
+    Book the studio :a1, 2027-10-04, 2d
+    Prepare the samples :a2, 2027-10-04, 5d
+    section Shoot
+    Shoot :b1, 2027-10-11, 2d
+    Retouching :b2, after b1, 5d

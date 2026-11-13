@@ -1,0 +1,209 @@
+=== flowchart
+The technician tightens the bolt and measures the torque. If the torque is too low, the technician tightens it again and measures once more. When the torque is right, the part moves to painting.
+---
+flowchart TD
+    A["Tighten the bolt"] --> B["Measure the torque"]
+    B --> C{"Torque too low?"}
+    C -->|"Yes"| A
+    C -->|"No"| D["Move the part to painting"]
+=== flowchart
+The script asks for a number. If the input is not a number, it prints an error and asks again. If the number is negative, it prints "must be positive" and asks again. Otherwise it saves the number and exits.
+---
+flowchart TD
+    A["Ask for a number"] --> B{"Input is a number?"}
+    B -->|"No"| C["Print an error"]
+    C --> A
+    B -->|"Yes"| D{"Negative?"}
+    D -->|"Yes"| E["Print 'must be positive'"]
+    E --> A
+    D -->|"No"| F["Save the number"]
+    F --> G["Exit"]
+=== flowchart
+Before the truck leaves, the driver checks the tires. If a tire is flat, it is changed before anything else. Then the driver checks the fuel. If the tank is less than half full, the driver refuels. After that the truck leaves.
+---
+flowchart TD
+    A["Check the tires"] --> B{"A tire is flat?"}
+    B -->|"Yes"| C["Change the tire"]
+    C --> D["Check the fuel"]
+    B -->|"No"| D
+    D --> E{"Tank less than half full?"}
+    E -->|"Yes"| F["Refuel"]
+    F --> G["Truck leaves"]
+    E -->|"No"| G
+=== flowchart
+A member wants to borrow a tool. First the clerk checks whether the membership is active. If it is not, the member is asked to renew. If it is, the clerk checks whether the tool is available. An available tool is handed over; otherwise the member is put on the waiting list.
+---
+flowchart TD
+    A["Member wants to borrow a tool"] --> B{"Membership active?"}
+    B -->|"No"| C["Ask the member to renew"]
+    B -->|"Yes"| D{"Tool available?"}
+    D -->|"Yes"| E["Hand over the tool"]
+    D -->|"No"| F["Put the member on the waiting list"]
+=== flowchart
+The teacher reads out a question. A student answers. If the answer is wrong, the next student tries. This continues until someone answers correctly, and then the teacher moves on to the next question.
+---
+flowchart TD
+    A["Teacher reads out a question"] --> B["A student answers"]
+    B --> C{"Answer correct?"}
+    C -->|"No"| D["Next student tries"]
+    D --> C
+    C -->|"Yes"| E["Move on to the next question"]
+    E --> A
+=== flowchart
+The crawler takes a URL from the queue. If the page was already visited, it skips it. Otherwise it downloads the page, extracts the links and adds them to the queue. It repeats until the queue is empty.
+---
+flowchart TD
+    A["Take a URL from the queue"] --> B{"Already visited?"}
+    B -->|"No"| C["Download the page"]
+    C --> D["Extract the links"]
+    D --> E["Add the links to the queue"]
+    E --> F{"Queue empty?"}
+    B -->|"Yes"| F
+    F -->|"No"| A
+    F -->|"Yes"| G["Stop"]
+=== flowchart
+The cook tastes the soup. If it needs salt, a pinch is added and the soup is tasted again. Once the taste is right, the soup simmers for ten more minutes and is served.
+---
+flowchart TD
+    A["Taste the soup"] --> B{"Needs salt?"}
+    B -->|"Yes"| C["Add a pinch of salt"]
+    C --> A
+    B -->|"No"| D["Simmer for ten more minutes"]
+    D --> E["Serve"]
+=== flowchart
+A shipment arrives at customs. The officer checks the paperwork. If documents are missing, the importer has to provide them before anything else happens. With complete paperwork, the officer decides whether to inspect the goods. Inspected goods that pass, and goods that are not inspected, are released.
+---
+flowchart TD
+    A["Shipment arrives at customs"] --> B["Officer checks the paperwork"]
+    B --> C{"Documents missing?"}
+    C -->|"Yes"| D["Importer provides the documents"]
+    D --> B
+    C -->|"No"| E{"Inspect the goods?"}
+    E -->|"Yes"| F{"Goods pass?"}
+    F -->|"Yes"| G["Release the goods"]
+    E -->|"No"| G
+=== flowchart
+The employee swipes a card at the door. If the card is unknown, the door stays locked. If the card is known, the system checks the time. During working hours the door opens. Outside working hours it opens only for cards with night access.
+---
+flowchart TD
+    A["Employee swipes a card"] --> B{"Card known?"}
+    B -->|"No"| C["Door stays locked"]
+    B -->|"Yes"| D{"During working hours?"}
+    D -->|"Yes"| E["Door opens"]
+    D -->|"No"| F{"Night access?"}
+    F -->|"Yes"| E
+    F -->|"No"| C
+=== flowchart
+The installer downloads the update and verifies the signature. If the signature is invalid, the file is deleted and downloaded again. With a valid signature, the update is installed and the computer restarts.
+---
+flowchart TD
+    A["Download the update"] --> B["Verify the signature"]
+    B --> C{"Signature valid?"}
+    C -->|"No"| D["Delete the file"]
+    D --> A
+    C -->|"Yes"| E["Install the update"]
+    E --> F["Restart the computer"]
+=== flowchart
+The buyer makes an offer on the house. The seller can accept, refuse, or make a counteroffer. After a counteroffer the buyer decides whether to raise the offer or walk away. Once an offer is accepted, the lawyers draw up the contract.
+---
+flowchart TD
+    A["Buyer makes an offer"] --> B{"Seller's answer?"}
+    B -->|"Accept"| C["Lawyers draw up the contract"]
+    B -->|"Refuse"| D["No deal"]
+    B -->|"Counteroffer"| E{"Buyer raises the offer?"}
+    E -->|"Yes"| A
+    E -->|"No"| D
+=== flowchart
+Each night the job reads the list of users. For every user it checks the last login. Users who have not logged in for a year get a warning email. Users who were already warned thirty days ago are deleted. The job ends after the last user.
+---
+flowchart TD
+    A["Read the next user"] --> B{"No login for a year?"}
+    B -->|"Yes"| C{"Warned thirty days ago?"}
+    C -->|"Yes"| D["Delete the user"]
+    C -->|"No"| E["Send a warning email"]
+    B -->|"No"| F{"Last user?"}
+    D --> F
+    E --> F
+    F -->|"No"| A
+    F -->|"Yes"| G["End the job"]
+=== flowchart
+The referee checks the video. If the ball crossed the line, the goal counts. If it did not, play continues. If the video is unclear, the referee's original decision stands.
+---
+flowchart TD
+    A["Referee checks the video"] --> B{"Ball crossed the line?"}
+    B -->|"Yes"| C["Goal counts"]
+    B -->|"No"| D["Play continues"]
+    B -->|"Unclear"| E["Original decision stands"]
+=== flowchart
+The pharmacist receives a prescription. The stock is checked before the drug is prepared. If the drug is out of stock, it is ordered and the customer is asked to come back tomorrow. If it is in stock, the pharmacist prepares it, explains the dose and takes payment.
+---
+flowchart TD
+    A["Pharmacist receives a prescription"] --> B{"Drug in stock?"}
+    B -->|"Yes"| C["Prepare the drug"]
+    C --> D["Explain the dose"]
+    D --> E["Take payment"]
+    B -->|"No"| F["Order the drug"]
+    F --> G["Ask the customer to come back tomorrow"]
+=== flowchart
+The sensor is calibrated in three rounds. In each round the technician takes a reading and compares it with the reference. If the difference is above 1%, the offset is adjusted. After the third round a certificate is printed.
+---
+flowchart TD
+    A["Take a reading"] --> B["Compare with the reference"]
+    B --> C{"Difference above 1%?"}
+    C -->|"Yes"| D["Adjust the offset"]
+    D --> E{"Third round done?"}
+    C -->|"No"| E
+    E -->|"No"| A
+    E -->|"Yes"| F["Print a certificate"]
+=== flowchart
+A student asks to change courses. The request is refused after the second week of term. Within the first two weeks, the office checks whether the new course has free places. If it has, the change is made; if it is full, the student goes on the waiting list.
+---
+flowchart TD
+    A["Student asks to change courses"] --> B{"After the second week of term?"}
+    B -->|"Yes"| C["Refuse the request"]
+    B -->|"No"| D{"New course has free places?"}
+    D -->|"Yes"| E["Make the change"]
+    D -->|"No"| F["Put the student on the waiting list"]
+=== flowchart
+The baker proofs the dough for an hour and then presses it with a finger. If the dent springs back quickly, the dough proofs for another fifteen minutes and is tested again. If the dent stays, the dough goes into the oven.
+---
+flowchart TD
+    A["Proof the dough for an hour"] --> B["Press it with a finger"]
+    B --> C{"Dent springs back quickly?"}
+    C -->|"Yes"| D["Proof for another fifteen minutes"]
+    D --> B
+    C -->|"No"| E["Put the dough into the oven"]
+=== flowchart
+The game shows a card. If the player guesses the word, they score a point and the next card is shown. If they pass, the card goes to the bottom of the deck. The round ends when the timer runs out.
+---
+flowchart TD
+    A["Show a card"] --> B{"Player guesses the word?"}
+    B -->|"Yes"| C["Score a point"]
+    B -->|"Pass"| D["Card goes to the bottom of the deck"]
+    C --> E{"Timer ran out?"}
+    D --> E
+    E -->|"No"| A
+    E -->|"Yes"| F["Round ends"]
+=== flowchart
+The landlord receives a rental application. A credit check is run first. Applicants who fail it are turned down. For those who pass, the landlord calls the previous landlord for a reference. With a good reference the lease is signed; with a bad one the applicant is asked for a larger deposit.
+---
+flowchart TD
+    A["Landlord receives a rental application"] --> B["Run a credit check"]
+    B --> C{"Passes the credit check?"}
+    C -->|"No"| D["Turn down the applicant"]
+    C -->|"Yes"| E["Call the previous landlord for a reference"]
+    E --> F{"Good reference?"}
+    F -->|"Yes"| G["Sign the lease"]
+    F -->|"No"| H["Ask for a larger deposit"]
+=== flowchart
+The printer takes a job from the queue. If it is out of paper, it shows a message and waits until paper is loaded. Then it prints the job. If more jobs are waiting it takes the next one; otherwise it goes to sleep.
+---
+flowchart TD
+    A["Take a job from the queue"] --> B{"Out of paper?"}
+    B -->|"Yes"| C["Show a message"]
+    C --> D["Wait until paper is loaded"]
+    D --> E["Print the job"]
+    B -->|"No"| E
+    E --> F{"More jobs waiting?"}
+    F -->|"Yes"| A
+    F -->|"No"| G["Go to sleep"]

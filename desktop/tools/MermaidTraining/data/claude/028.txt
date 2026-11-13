@@ -1,0 +1,180 @@
+=== flowchart
+A visitor signs in at reception. If they have an appointment, the receptionist prints a badge and calls the host. If not, the visitor is asked to wait while the receptionist checks with the office manager.
+---
+flowchart TD
+    A["Visitor signs in at reception"] --> B{"Has an appointment?"}
+    B -->|"Yes"| C["Print a badge"]
+    C --> D["Call the host"]
+    B -->|"No"| E["Ask the visitor to wait"]
+    E --> F["Check with the office manager"]
+=== flowchart
+The cashier scans the items. If the customer has a loyalty card, points are added. The customer pays, and the cashier hands over the receipt.
+---
+flowchart TD
+    A["Cashier scans the items"] --> B{"Has a loyalty card?"}
+    B -->|"Yes"| C["Add points"]
+    C --> D["Customer pays"]
+    B -->|"No"| D
+    D --> E["Hand over the receipt"]
+=== flowchart
+A tenant reports a repair. The landlord decides whether it is urgent. Urgent repairs are fixed the same day by the emergency plumber; the others are scheduled for the following week.
+---
+flowchart TD
+    A["Tenant reports a repair"] --> B{"Urgent?"}
+    B -->|"Yes"| C["Emergency plumber fixes it the same day"]
+    B -->|"No"| D["Schedule for the following week"]
+=== flowchart
+Students submit the essay online. Late submissions lose ten points. The teacher grades each essay and returns it with comments.
+---
+flowchart TD
+    A["Students submit the essay online"] --> B{"Late?"}
+    B -->|"Yes"| C["Take off ten points"]
+    C --> D["Teacher grades the essay"]
+    B -->|"No"| D
+    D --> E["Return it with comments"]
+=== flowchart
+A package arrives at the depot and is weighed. Packages over 30 kg go to the freight line; lighter ones go to the parcel line. Both lines end at the loading dock.
+---
+flowchart TD
+    A["Package arrives at the depot"] --> B["Weigh the package"]
+    B --> C{"Over 30 kg?"}
+    C -->|"Yes"| D["Freight line"]
+    C -->|"No"| E["Parcel line"]
+    D --> F["Loading dock"]
+    E --> F
+=== flowchart
+Travel request: the employee fills in the form. If the trip is abroad, the director must sign it; otherwise the team lead signs. After signing, the travel desk books the tickets.
+---
+flowchart TD
+    A["Employee fills in the form"] --> B{"Trip abroad?"}
+    B -->|"Yes"| C["Director signs"]
+    B -->|"No"| D["Team lead signs"]
+    C --> E["Travel desk books the tickets"]
+    D --> E
+=== flowchart
+The nurse measures the patient's temperature. With a fever, the patient is sent to the isolation room and seen by a doctor. Without one, the patient waits in the main waiting room.
+---
+flowchart TD
+    A["Nurse measures the temperature"] --> B{"Fever?"}
+    B -->|"Yes"| C["Send to the isolation room"]
+    C --> D["Seen by a doctor"]
+    B -->|"No"| E["Wait in the main waiting room"]
+=== flowchart
+A customer calls to cancel a subscription. The agent offers a discount. If the customer accepts, the plan is updated. If the customer declines, the subscription is cancelled and a confirmation email goes out.
+---
+flowchart TD
+    A["Customer calls to cancel a subscription"] --> B["Agent offers a discount"]
+    B --> C{"Customer accepts?"}
+    C -->|"Yes"| D["Update the plan"]
+    C -->|"No"| E["Cancel the subscription"]
+    E --> F["Send a confirmation email"]
+=== flowchart
+Quality check on the bottling line: each bottle is checked for its fill level. Underfilled bottles are removed and recycled. Good bottles are capped, labeled and packed.
+---
+flowchart TD
+    A["Check the fill level of the bottle"] --> B{"Underfilled?"}
+    B -->|"Yes"| C["Remove the bottle"]
+    C --> D["Recycle"]
+    B -->|"No"| E["Cap"]
+    E --> F["Label"]
+    F --> G["Pack"]
+=== flowchart
+When a new lead comes in, the sales rep calls within one day. If the lead answers and is interested, a demo is booked. If there is no answer, the rep tries again two days later, and after three tries the lead is marked as cold.
+---
+flowchart TD
+    A["New lead comes in"] --> B["Sales rep calls within one day"]
+    B --> C{"Lead answers?"}
+    C -->|"Yes"| D{"Interested?"}
+    D -->|"Yes"| E["Book a demo"]
+    C -->|"No"| F{"Three tries?"}
+    F -->|"Yes"| G["Mark the lead as cold"]
+    F -->|"No"| H["Try again two days later"]
+    H --> C
+=== flowchart
+The librarian scans the returned book. If it is overdue, a fine is charged. Then, if someone has reserved the book, it goes to the hold shelf; otherwise it is put back on the shelf.
+---
+flowchart TD
+    A["Librarian scans the returned book"] --> B{"Overdue?"}
+    B -->|"Yes"| C["Charge a fine"]
+    C --> D{"Reserved by someone?"}
+    B -->|"No"| D
+    D -->|"Yes"| E["Put on the hold shelf"]
+    D -->|"No"| F["Put back on the shelf"]
+=== flowchart
+Before a flight, the crew checks the weather. If there is a storm on the route, the flight is delayed and the passengers are informed. Otherwise boarding starts.
+---
+flowchart TD
+    A["Crew checks the weather"] --> B{"Storm on the route?"}
+    B -->|"Yes"| C["Delay the flight"]
+    C --> D["Inform the passengers"]
+    B -->|"No"| E["Start boarding"]
+=== flowchart
+A donation is received and recorded. If it is over $250, a tax receipt is mailed. Every donor then gets a thank-you email.
+---
+flowchart TD
+    A["Donation is received"] --> B["Record the donation"]
+    B --> C{"Over $250?"}
+    C -->|"Yes"| D["Mail a tax receipt"]
+    D --> E["Send a thank-you email"]
+    C -->|"No"| E
+=== flowchart
+The editor receives a photo. Is it sharp enough? If not, ask the photographer for another one. If yes, crop it, add a caption, and place it on the page.
+---
+flowchart TD
+    A["Editor receives a photo"] --> B{"Sharp enough?"}
+    B -->|"No"| C["Ask the photographer for another one"]
+    C --> A
+    B -->|"Yes"| D["Crop it"]
+    D --> E["Add a caption"]
+    E --> F["Place it on the page"]
+=== flowchart
+On Friday, employees submit their timesheets. The supervisor checks the hours. If the overtime is more than 10 hours, HR must also approve. Approved timesheets go to payroll.
+---
+flowchart TD
+    A["Employees submit their timesheets"] --> B["Supervisor checks the hours"]
+    B --> C{"Overtime more than 10 hours?"}
+    C -->|"Yes"| D["HR approves"]
+    D --> E["Send to payroll"]
+    C -->|"No"| E
+=== flowchart
+Thirty days before a membership expires, the gym emails a reminder. If the member renews, the card is extended for a year. If not, the card is deactivated on the expiry date.
+---
+flowchart TD
+    A["Email a reminder thirty days before expiry"] --> B{"Member renews?"}
+    B -->|"Yes"| C["Extend the card for a year"]
+    B -->|"No"| D["Deactivate the card on the expiry date"]
+=== flowchart
+A driver reports an accident to the fleet manager. If anyone is injured, emergency services are called first. Then photos are taken, the insurer is informed, and the vehicle is towed to the workshop.
+---
+flowchart TD
+    A["Driver reports an accident"] --> B{"Anyone injured?"}
+    B -->|"Yes"| C["Call emergency services"]
+    C --> D["Take photos"]
+    B -->|"No"| D
+    D --> E["Inform the insurer"]
+    E --> F["Tow the vehicle to the workshop"]
+=== flowchart
+Catering order: the client picks a menu. For more than 50 guests, the chef hires extra staff. The kitchen prepares the food and the van delivers it.
+---
+flowchart TD
+    A["Client picks a menu"] --> B{"More than 50 guests?"}
+    B -->|"Yes"| C["Chef hires extra staff"]
+    C --> D["Kitchen prepares the food"]
+    B -->|"No"| D
+    D --> E["Van delivers it"]
+=== flowchart
+The bakery checks the flour stock each evening. If there are fewer than five bags, the baker orders more from the mill. Then the dough for the next day is prepared.
+---
+flowchart TD
+    A["Check the flour stock each evening"] --> B{"Fewer than five bags?"}
+    B -->|"Yes"| C["Order more from the mill"]
+    C --> D["Prepare the dough for the next day"]
+    B -->|"No"| D
+=== flowchart
+Warranty claim: the customer brings in the device with the receipt. If the warranty has expired, a paid repair is offered. If it is still valid, the device is repaired for free and returned within a week.
+---
+flowchart TD
+    A["Customer brings in the device with the receipt"] --> B{"Warranty still valid?"}
+    B -->|"Yes"| C["Repair for free"]
+    C --> D["Return within a week"]
+    B -->|"No"| E["Offer a paid repair"]

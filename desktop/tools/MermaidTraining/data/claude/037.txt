@@ -1,0 +1,235 @@
+=== sequence
+A homeowner asks a contractor for a quote. The contractor asks the supplier for material prices, and the supplier sends a price list. The contractor sends the quote to the homeowner, and the homeowner accepts it.
+---
+sequenceDiagram
+    participant H as Homeowner
+    participant C as Contractor
+    participant S as Supplier
+    H->>C: Ask for a quote
+    C->>S: Ask for material prices
+    S-->>C: Price list
+    C-->>H: Quote
+    H->>C: Accept
+=== sequence
+The student asks the advisor to approve a course plan. The advisor checks the requirements with the registrar, and the registrar confirms that they are met. The advisor signs the plan and returns it to the student.
+---
+sequenceDiagram
+    participant S as Student
+    participant A as Advisor
+    participant R as Registrar
+    S->>A: Ask to approve a course plan
+    A->>R: Check the requirements
+    R-->>A: Requirements are met
+    A-->>S: Signed plan
+=== sequence
+A reporter pitches a story to the editor. The editor asks the legal team whether it is safe to publish. Legal replies with two changes. The editor passes the changes to the reporter, and the reporter sends back the final text.
+---
+sequenceDiagram
+    participant R as Reporter
+    participant E as Editor
+    participant L as Legal team
+    R->>E: Pitch a story
+    E->>L: Is it safe to publish?
+    L-->>E: Two changes
+    E->>R: Pass on the changes
+    R-->>E: Final text
+=== sequence
+Maya asks Tom to cover her shift on Saturday. Tom agrees. Maya tells the manager about the swap, and the manager updates the rota and confirms to both of them.
+---
+sequenceDiagram
+    participant M as Maya
+    participant T as Tom
+    participant G as Manager
+    M->>T: Ask to cover the Saturday shift
+    T-->>M: Agree
+    M->>G: Tell about the swap
+    G-->>M: Confirm
+    G->>T: Confirm
+=== sequence
+The tenant emails the property manager about a leaking tap. The property manager calls the plumber and gives the address. The plumber fixes the tap and sends the bill to the property manager, who forwards it to the owner.
+---
+sequenceDiagram
+    participant T as Tenant
+    participant M as Property manager
+    participant P as Plumber
+    participant O as Owner
+    T->>M: Email about a leaking tap
+    M->>P: Call and give the address
+    P->>M: Bill
+    M->>O: Forward the bill
+=== sequence
+A customer orders a custom cake from the bakery clerk. The clerk passes the design to the decorator. The decorator sends a photo of the finished cake to the clerk, and the clerk texts the customer that it is ready for pickup.
+---
+sequenceDiagram
+    participant C as Customer
+    participant K as Bakery clerk
+    participant D as Decorator
+    C->>K: Order a custom cake
+    K->>D: Pass the design
+    D-->>K: Photo of the finished cake
+    K->>C: Text that it is ready for pickup
+=== sequence
+The project manager asks the designer for mockups. The designer delivers them, and the project manager shows them to the client. The client requests a darker color scheme. The project manager relays the request to the designer.
+---
+sequenceDiagram
+    participant P as Project manager
+    participant D as Designer
+    participant C as Client
+    P->>D: Ask for mockups
+    D-->>P: Mockups
+    P->>C: Show the mockups
+    C-->>P: Request a darker color scheme
+    P->>D: Relay the request
+=== sequence
+A passenger tells the check-in agent that a bag is missing. The agent files a report with the baggage office. The baggage office finds the bag in Madrid and informs the agent, and the agent tells the passenger that it will arrive tomorrow.
+---
+sequenceDiagram
+    participant P as Passenger
+    participant A as Check-in agent
+    participant B as Baggage office
+    P->>A: A bag is missing
+    A->>B: File a report
+    B-->>A: Bag found in Madrid
+    A-->>P: It will arrive tomorrow
+=== sequence
+The coach sends the match schedule to the team captain. The captain shares it with the players. Two players reply that they cannot come, and the captain reports this to the coach.
+---
+sequenceDiagram
+    participant C as Coach
+    participant T as Team captain
+    participant P as Players
+    C->>T: Match schedule
+    T->>P: Share the schedule
+    P-->>T: Two players cannot come
+    T->>C: Report
+=== sequence
+An investor asks the financial advisor to buy 100 shares. The advisor places the order with the broker. The broker executes it on the exchange and receives a fill. The broker confirms to the advisor, and the advisor informs the investor.
+---
+sequenceDiagram
+    participant I as Investor
+    participant A as Financial advisor
+    participant B as Broker
+    participant E as Exchange
+    I->>A: Ask to buy 100 shares
+    A->>B: Place the order
+    B->>E: Execute
+    E-->>B: Fill
+    B-->>A: Confirm
+    A-->>I: Inform
+=== sequence
+The parent calls the school secretary to report that the child is sick. The secretary informs the class teacher. The teacher sends the homework to the parent by email.
+---
+sequenceDiagram
+    participant P as Parent
+    participant S as School secretary
+    participant T as Class teacher
+    P->>S: Report that the child is sick
+    S->>T: Inform
+    T->>P: Homework by email
+=== sequence
+A shop owner asks the accountant to prepare the tax return. The accountant requests the bank statements from the owner. The owner sends them. The accountant files the return with the tax office, and the tax office sends an acknowledgment to the accountant.
+---
+sequenceDiagram
+    participant O as Shop owner
+    participant A as Accountant
+    participant T as Tax office
+    O->>A: Ask to prepare the tax return
+    A->>O: Request the bank statements
+    O-->>A: Bank statements
+    A->>T: File the return
+    T-->>A: Acknowledgment
+=== sequence
+The bride asks the wedding planner for a florist. The planner asks two florists for offers. Both send their offers, and the planner recommends the cheaper one to the bride.
+---
+sequenceDiagram
+    participant B as Bride
+    participant P as Wedding planner
+    participant X as First florist
+    participant Y as Second florist
+    B->>P: Ask for a florist
+    P->>X: Ask for an offer
+    P->>Y: Ask for an offer
+    X-->>P: Offer
+    Y-->>P: Offer
+    P-->>B: Recommend the cheaper one
+=== sequence
+A citizen submits a passport application at the counter. The clerk sends the photo to the verification unit. The unit approves the photo. The clerk forwards the application to the printing center, and the printing center mails the passport to the citizen.
+---
+sequenceDiagram
+    participant C as Citizen
+    participant K as Clerk
+    participant V as Verification unit
+    participant P as Printing center
+    C->>K: Submit a passport application
+    K->>V: Send the photo
+    V-->>K: Approve
+    K->>P: Forward the application
+    P->>C: Mail the passport
+=== sequence
+The site foreman orders concrete from the plant. The plant dispatcher assigns a truck driver. The driver calls the foreman ten minutes before arriving, and after unloading gets the delivery note signed by the foreman.
+---
+sequenceDiagram
+    participant F as Site foreman
+    participant D as Plant dispatcher
+    participant T as Truck driver
+    F->>D: Order concrete
+    D->>T: Assign the delivery
+    T->>F: Call ten minutes before arriving
+    T->>F: Delivery note to sign
+    F-->>T: Signed note
+=== sequence
+The author sends a manuscript to the literary agent. The agent submits it to a publisher. The publisher makes an offer to the agent. The agent discusses the offer with the author, and the author accepts.
+---
+sequenceDiagram
+    participant A as Author
+    participant L as Literary agent
+    participant P as Publisher
+    A->>L: Manuscript
+    L->>P: Submit the manuscript
+    P-->>L: Offer
+    L->>A: Discuss the offer
+    A-->>L: Accept
+=== sequence
+The patient asks the pharmacist for a refill. The pharmacist calls the doctor's office for a new prescription. The office faxes it over, and the pharmacist hands the medicine to the patient.
+---
+sequenceDiagram
+    participant P as Patient
+    participant F as Pharmacist
+    participant D as Doctor's office
+    P->>F: Ask for a refill
+    F->>D: Ask for a new prescription
+    D-->>F: Fax the prescription
+    F-->>P: Medicine
+=== sequence
+A volunteer signs up with the event coordinator. The coordinator sends the volunteer's name to the security desk for a badge. Security emails the badge to the volunteer and tells the coordinator it is done.
+---
+sequenceDiagram
+    participant V as Volunteer
+    participant C as Event coordinator
+    participant S as Security desk
+    V->>C: Sign up
+    C->>S: Send the name for a badge
+    S->>V: Email the badge
+    S-->>C: Done
+=== sequence
+The customer tells the mechanic about a strange noise. The mechanic orders a new belt from the parts store. The parts store delivers the belt the same afternoon. The mechanic calls the customer when the car is ready.
+---
+sequenceDiagram
+    participant C as Customer
+    participant M as Mechanic
+    participant P as Parts store
+    C->>M: Tell about a strange noise
+    M->>P: Order a new belt
+    P-->>M: Deliver the belt
+    M->>C: Call when the car is ready
+=== sequence
+The team lead asks the developer for an estimate. The developer says five days. The team lead reports the estimate to the product owner, and the product owner approves the work.
+---
+sequenceDiagram
+    participant T as Team lead
+    participant D as Developer
+    participant P as Product owner
+    T->>D: Ask for an estimate
+    D-->>T: Five days
+    T->>P: Report the estimate
+    P-->>T: Approve the work

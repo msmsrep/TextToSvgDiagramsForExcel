@@ -30,6 +30,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[2]
 EVAL_CASES = REPO / "desktop" / "tools" / "TextToMermaidEval" / "cases.ja.json"
+EVAL_CASE_FILES = sorted(EVAL_CASES.parent.glob("cases.*.json"))  # every language
 VALIDATOR = REPO / "scripts" / "mermaid-validate.mjs"
 
 KIND_HINT = {"flowchart": "flowchart", "sequence": "sequenceDiagram", "gantt": "gantt chart"}
@@ -141,7 +142,38 @@ STYLING = re.compile(r"^\s*(?:style|classDef|class|linkStyle)\s.*$\n?", re.M)
 def tidy_code(code: str) -> str:
     """The code without styling lines and blank lines, so every pair looks the same."""
     code = STYLING.sub("", code)
-    return "\n".join(line.rstrip() for line in code.splitlines() if line.strip())
+    code = "\n".join(line.rstrip() for line in code.splitlines() if line.strip())
+    return drop_self_messages(code) or code
+
+
+SELF_MESSAGE = re.compile(r"^\s*(\w+)\s*(?:-->>|->>|--\)|-\)|--x|-x|-->|->)\s*\1\s*:.*$\n?", re.M)
+ANY_MESSAGE = re.compile(r"^\s*(\w+)\s*(?:-->>|->>|--\)|-\)|--x|-x|-->|->)\s*(\w+)\s*:", re.M)
+EMPTY_BLOCK = re.compile(r"^\s*(?:opt|loop)\b.*\n\s*end\s*$\n?", re.M)
+EMPTY_BRANCH = re.compile(r"^\s*(?:alt|else|par|and)\b.*\n\s*(?:else|and|end)\b", re.M)
+DECLARED = re.compile(r"^\s*(?:participant|actor)\s+(\w+).*$\n?", re.M)
+
+
+def has_self_message(code: str) -> bool:
+    return code.lstrip().startswith("sequenceDiagram") and bool(SELF_MESSAGE.search(code))
+
+
+def drop_self_messages(code: str) -> str | None:
+    """
+    A sequence diagram without messages from a participant to itself ("P->>P: 保存する"):
+    the diagrams show what passes between participants, not what each does inside.
+    Blocks and participants left empty go too. None when too little is left to keep
+    (fewer than two messages, or an alt / par with an empty branch); other code is returned as is.
+    """
+    if not has_self_message(code):
+        return code
+    code = SELF_MESSAGE.sub("", code)
+    while EMPTY_BLOCK.search(code):
+        code = EMPTY_BLOCK.sub("", code)
+    used = {name for m in ANY_MESSAGE.finditer(code) for name in m.groups()}
+    code = DECLARED.sub(lambda m: m.group(0) if m.group(1) in used else "", code).rstrip("\n")
+    if len(ANY_MESSAGE.findall(code)) < 2 or EMPTY_BRANCH.search(code):
+        return None
+    return code
 
 
 def matches_kind(kind: str, diagram_type: str | None) -> bool:
@@ -192,10 +224,11 @@ def bigrams(s: str) -> set[str]:
 
 def grounding(text: str, code: str) -> float:
     """How much of the labels' wording comes from the text (1 = all of it)."""
+    text = text.lower()  # "Approve the refund" comes from "the refund is approved"
     text_grams = bigrams(text)
     # A one-character label (私, A) has no bigrams: count it when the text has it.
     scores = [float(l in text) if len(re.sub(r"\s", "", l)) < 2 else len(bigrams(l) & text_grams) / len(bigrams(l))
-              for l in labels(code)]
+              for l in (label.lower() for label in labels(code))]
     return sum(scores) / len(scores) if scores else 0.0
 
 
@@ -206,6 +239,11 @@ def trigrams(s: str) -> set[str]:
 
 def jaccard(a: set[str], b: set[str]) -> float:
     return len(a & b) / len(a | b) if a and b else 0.0
+
+
+def eval_trigrams() -> list[set[str]]:
+    """The texts of the evaluation cases (all languages): pairs close to one are not used for training."""
+    return [trigrams(c["text"]) for path in EVAL_CASE_FILES for c in json.loads(path.read_text(encoding="utf-8"))]
 
 
 # --- mermaid.parse through Node -----------------------------------------------
@@ -296,7 +334,7 @@ def main() -> int:
 
     seeds = json.loads((HERE / "seeds.ja.json").read_text(encoding="utf-8"))
     specs = [s for s in plan(seeds, args.count, args.seed) if s["id"] not in done]
-    eval_grams = [trigrams(c["text"]) for c in json.loads(EVAL_CASES.read_text(encoding="utf-8"))]
+    eval_grams = eval_trigrams()
     kept_grams = [trigrams(r["text"]) for r in kept]
     print(f"{len(specs)} to make ({len(kept)} kept, {len(rejected)} rejected so far)", file=sys.stderr)
 

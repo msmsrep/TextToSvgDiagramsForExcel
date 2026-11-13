@@ -153,6 +153,13 @@ function skeleton(edges, labels, map) {
 const YES = /^(はい|yes|y|ok|true|○|可)$/;
 const NO = /^(いいえ|no|n|ng|false|×|不可)$/;
 const NEGATED = /ない|なけれ|なし|ません|なかっ/;
+const NEGATED_EN = /\b(not|no|never|without|cannot|none)\b|n't\b|\b(un|in|non-?)(valid|available|able|correct|complete|sufficient|paid|known|successful|approved|verified|eligible|used)|\b(missing|out of|fail\w*|reject\w*|den(y|ies|ied|ial)|declin\w*)\b/;
+
+/** Whether a condition or question is worded as a negative ("在庫がない", "not approved", "out of stock"). */
+function negated(text) {
+  const plain = (text ?? "").normalize("NFKC").toLowerCase();
+  return NEGATED.test(plain) || NEGATED_EN.test(plain);
+}
 
 /**
  * True or false when the two branch conditions ({label, question}) can be told apart;
@@ -171,13 +178,13 @@ function sameCondition(wanted, found) {
       return undefined;
     }
     // "不備がある？ はい" is "不備がない？ いいえ".
-    const flipped = NEGATED.test(wanted.question) !== NEGATED.test(found.question);
+    const flipped = negated(wanted.question) !== negated(found.question);
     return (answer(a) === answer(b)) !== flipped;
   }
   if (answer(a) || answer(b)) {
     return undefined;
   }
-  if (NEGATED.test(a) !== NEGATED.test(b)) {
+  if (negated(wanted.label) !== negated(found.label)) {
     return false;
   }
   const [x, y] = [content(a), content(b)];
@@ -266,6 +273,7 @@ function content(normalized) {
 /**
  * 0 to 1: the share of characters two labels have in common, in order. Hiragana is left out
  * when both labels have other characters, so "在庫を確認する" and "在庫確認" count as the same.
+ * Labels written in words with spaces between them (English) are compared word by word instead.
  */
 export function similarity(a, b) {
   let [x, y] = [normalize(a), normalize(b)];
@@ -275,9 +283,22 @@ export function similarity(a, b) {
   if (x === y) {
     return 1;
   }
+  const [wordsA, wordsB] = [words(a), words(b)];
+  if (wordsA && wordsB && (wordsA.length > 1 || wordsB.length > 1)) {
+    // "Sign up" and "Signup" are still the same.
+    return Math.max(wordSimilarity(wordsA, wordsB), characterRatio(x, y) >= 0.9 ? 1 : 0);
+  }
   if (content(x) && content(y)) {
     [x, y] = [content(x), content(y)];
   }
+  const ratio = characterRatio(x, y);
+  // "アプリ" and "フードデリバリーのアプリ" name the same thing.
+  const [short, long] = x.length <= y.length ? [x, y] : [y, x];
+  return short.length >= 2 && long.includes(short) ? Math.max(ratio, 0.7) : ratio;
+}
+
+/** The share of characters two strings have in common, in order (0 to 1). */
+function characterRatio(x, y) {
   const row = new Array(y.length + 1).fill(0);
   for (let i = 1; i <= x.length; i++) {
     let diagonal = 0;
@@ -287,8 +308,75 @@ export function similarity(a, b) {
       diagonal = above;
     }
   }
-  const ratio = (2 * row[y.length]) / (x.length + y.length);
-  // "アプリ" and "フードデリバリーのアプリ" name the same thing.
-  const [short, long] = x.length <= y.length ? [x, y] : [y, x];
-  return short.length >= 2 && long.includes(short) ? Math.max(ratio, 0.7) : ratio;
+  return (2 * row[y.length]) / (x.length + y.length);
+}
+
+const JAPANESE = /[぀-ヿ㐀-鿿]/;
+const STOP_WORDS = new Set(("a an the to of is are be it its this that these those for and or in on at by with from into as "
+  + "then if do does has have will their them they he she his her").split(" "));
+
+/**
+ * The words of a label written with spaces between words, without the small words and
+ * without endings ("Checks the stock" → check, stock). undefined for Japanese labels.
+ */
+function words(text) {
+  const plain = (text ?? "").normalize("NFKC").toLowerCase().replace(/<br\s*\/?>/g, " ").replace(/['’]/g, "");
+  if (JAPANESE.test(plain)) {
+    return undefined;
+  }
+  const all = plain.match(/[\p{L}\p{N}]+/gu) ?? [];
+  if (all.length === 0) {
+    return undefined;
+  }
+  const kept = all.filter((w) => !STOP_WORDS.has(w));
+  return (kept.length > 0 ? kept : all).map(stem);
+}
+
+/** A word without its ending: checks, checked and checking are all "check". */
+function stem(word) {
+  let w = word;
+  if (w.length > 4 && w.endsWith("ies")) {
+    w = w.slice(0, -3) + "y";
+  } else if (w.length > 4 && /(s|x|z|ch|sh)es$/.test(w)) {
+    w = w.slice(0, -2);
+  } else if (w.length > 3 && w.endsWith("s") && !w.endsWith("ss")) {
+    w = w.slice(0, -1);
+  }
+  if (w.length > 5 && w.endsWith("ing")) {
+    w = w.slice(0, -3);
+  } else if (w.length > 4 && w.endsWith("ed")) {
+    w = w.slice(0, -2);
+  } else if (w.length > 4 && w.endsWith("e")) {
+    w = w.slice(0, -1);
+  }
+  // shipp(ed) → ship
+  return w.length > 3 && w.at(-1) === w.at(-2) && !"lsz".includes(w.at(-1)) ? w.slice(0, -1) : w;
+}
+
+/** approv(e) and approval, notif(y) and notified: the same word when most of the longer one is shared. */
+function sameWord(a, b) {
+  if (a === b) {
+    return true;
+  }
+  let shared = 0;
+  while (shared < a.length && shared < b.length && a[shared] === b[shared]) {
+    shared++;
+  }
+  return shared >= Math.max(4, Math.ceil(0.7 * Math.max(a.length, b.length)));
+}
+
+/** 0 to 1: the share of words two labels have in common, in any order ("Check stock", "Stock check"). */
+function wordSimilarity(a, b) {
+  const left = [...b];
+  let hits = 0;
+  for (const w of a) {
+    const at = left.findIndex((other) => sameWord(w, other));
+    if (at >= 0) {
+      left.splice(at, 1);
+      hits++;
+    }
+  }
+  const ratio = (2 * hits) / (a.length + b.length);
+  // "App" and "Food delivery app" name the same thing.
+  return hits === Math.min(a.length, b.length) ? Math.max(ratio, 0.7) : ratio;
 }

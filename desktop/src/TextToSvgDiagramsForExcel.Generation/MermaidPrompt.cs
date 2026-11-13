@@ -125,6 +125,16 @@ public static partial class MermaidPrompt
         _ => true,
     };
 
+    /// <summary>The kind (flowchart, sequence or gantt) the code's first line names, or null.</summary>
+    public static string? KindOf(string code)
+    {
+        var first = code.TrimStart().Split('\n')[0].Trim();
+        return first.StartsWith("flowchart", StringComparison.Ordinal) || first.StartsWith("graph", StringComparison.Ordinal) ? "flowchart"
+            : first.StartsWith("sequenceDiagram", StringComparison.Ordinal) ? "sequence"
+            : first.StartsWith("gantt", StringComparison.Ordinal) ? "gantt"
+            : null;
+    }
+
     [GeneratedRegex(@"```[a-zA-Z]*[^\S\n]*\n(.*?)```", RegexOptions.Singleline)]
     private static partial Regex CodeBlock();
 

@@ -1,4 +1,4 @@
-// Measures text-to-Mermaid on a set of cases (cases.ja.json):
+// Measures text-to-Mermaid on a set of cases (cases.ja.json, or cases.en.json with --cases):
 //   dotnet run --project desktop/tools/TextToMermaidEval -- [--model <folder>] [--repairs 2] [--kind auto|given] [--cases <file>] [--references <file>] [--out <folder>]
 //   dotnet run --project desktop/tools/TextToMermaidEval -- --rescore <saved .json>
 // --kind given asks the model for each case's diagram type, as when the user picks one in the app.
@@ -19,7 +19,9 @@ var outDir = options.GetValueOrDefault("out") ?? Path.Combine(repoRoot, "desktop
 var json = new JsonSerializerOptions(JsonSerializerDefaults.Web) { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 var cases = JsonSerializer.Deserialize<List<Case>>(File.ReadAllText(casesPath), json)!;
 var given = options.GetValueOrDefault("kind") == "given";
-var references = References.Load(options.GetValueOrDefault("references") ?? Path.Combine(Path.GetDirectoryName(casesPath)!, "references.ja.txt"));
+// cases.en.json goes with references.en.txt.
+var references = References.Load(options.GetValueOrDefault("references")
+    ?? Path.Combine(Path.GetDirectoryName(Path.GetFullPath(casesPath))!, Path.GetFileNameWithoutExtension(casesPath).Replace("cases", "references") + ".txt"));
 Console.OutputEncoding = Encoding.UTF8;
 
 using var mermaid = new MermaidHelper(repoRoot);

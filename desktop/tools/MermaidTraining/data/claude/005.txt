@@ -6,7 +6,6 @@ sequenceDiagram
     participant K as 工務店
     participant P as 塗装業者
     C->>K: 外壁塗装の見積もりを依頼
-    K->>K: 現地を調査
     K-->>C: 見積書
     C->>K: 同意
     K->>P: 工事を発注
@@ -22,7 +21,6 @@ sequenceDiagram
     E-->>P: 空いている日
     P-->>R: 空いている日を伝える
     R->>P: 日程を決める
-    P->>P: 会議室を予約
 === sequence
 担当者が翻訳会社に原稿を送って翻訳を依頼する。翻訳会社は翻訳者に割り振り、翻訳者が訳文を納品する。翻訳会社はチェッカーに確認させてから担当者に納品する。
 ---
@@ -57,7 +55,6 @@ sequenceDiagram
     participant I as 保険会社
     A->>D: 申込書を書く
     D->>I: 申し込みを送る
-    I->>I: 告知内容を審査
     I-->>A: 保険証券を郵送
 === sequence
 住民がマイナポータルで転出届を出すと、旧住所の役所に届が送られる。役所は内容を確認して受理し、住民に受理のメールを送る。住民は新住所の役所に転入届を出す。
@@ -69,7 +66,6 @@ sequenceDiagram
     participant N as 新住所の役所
     R->>M: 転出届を出す
     M->>O: 届を送る
-    O->>O: 内容を確認して受理
     O-->>R: 受理のメール
     R->>N: 転入届を出す
 === sequence
@@ -94,7 +90,6 @@ sequenceDiagram
     U->>W: 本を予約
     W->>S: 予約を登録
     C->>S: 返却された本
-    S->>S: 取り置きを登録
     S-->>U: ご用意できましたとメール
     U->>C: 受け取る
 === sequence
@@ -106,7 +101,6 @@ sequenceDiagram
     participant E as 電子カルテ
     participant D as 主治医
     L->>C: 検体を送る
-    C->>C: 分析
     C-->>L: 結果の電子データ
     L->>E: 結果を取り込む
     E->>D: 通知
@@ -135,7 +129,6 @@ sequenceDiagram
     participant K as かご
     U->>B: 押す
     B->>C: 呼び出しを送る
-    C->>C: いちばん近いかごを選ぶ
     C->>K: 3階へ動かす
     K-->>C: 到着
     C->>K: ドアを開ける
@@ -171,8 +164,6 @@ sequenceDiagram
     participant D as ドローン
     participant U as 受取人
     S->>D: 配送ルートを送る
-    D->>D: 荷物を積んで飛び立つ
-    D->>D: 荷物を降ろす
     D-->>S: 配送完了を報告
     S->>U: 到着を通知
 === sequence
@@ -183,7 +174,6 @@ sequenceDiagram
     participant C as クラウド
     participant A as アプリ
     R->>C: 部屋の地図をアップロード
-    C->>C: 地図を保存
     C->>A: 最新の地図
     A->>C: 立入禁止エリアを設定
     C->>R: 反映
@@ -319,7 +309,6 @@ sequenceDiagram
     C->>K: 完了ボタンを押す
     K->>T: 配膳を知らせる
     T->>H: 配膳の通知
-    H->>H: 客席に運ぶ
 === sequence
 開発者がステージング環境へのデプロイをチャットボットに頼む。チャットボットはCIサーバーにデプロイを依頼し、CIサーバーはデプロイを終えると結果をチャットボットに返す。チャットボットはチャンネルに結果を投稿する。
 ---
@@ -329,6 +318,5 @@ sequenceDiagram
     participant C as CIサーバー
     D->>B: ステージングへのデプロイを依頼
     B->>C: デプロイを依頼
-    C->>C: デプロイ
     C-->>B: 結果
     B-->>D: チャンネルに結果を投稿

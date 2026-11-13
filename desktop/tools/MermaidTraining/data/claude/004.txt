@@ -7,7 +7,6 @@ sequenceDiagram
     participant S as 店舗システム
     U->>A: 注文
     A->>S: 注文を送る
-    S->>S: 在庫を引き当てる
     S-->>A: 受付完了
     A-->>U: 配達時間を表示
 === sequence
@@ -85,7 +84,6 @@ sequenceDiagram
     participant S as スマホ
     C->>T: QRコードを見せる
     T->>P: 支払いを要求
-    P->>P: 残高を確認
     P-->>T: 決済完了
     P-->>S: 支払い完了の通知
 === sequence
@@ -136,7 +134,6 @@ sequenceDiagram
     participant C as CDN
     V->>P: 再生ボタンを押す
     P->>S: 動画を要求
-    S->>S: 視聴権限を確かめる
     S-->>P: CDNのURL
     P->>C: 動画を読み込む
     C-->>P: 動画データ
@@ -169,7 +166,6 @@ sequenceDiagram
     participant S as ポイントシステム
     M->>P: 買い物
     P->>S: 購入金額を送る
-    S->>S: 100円につき1ポイント付与
     S-->>P: 付与後の残高
     P-->>M: レシートに残高を印字
 === sequence
@@ -209,7 +205,6 @@ sequenceDiagram
     participant S as 勤怠サーバー
     E->>R: タイムカードをかざす
     R->>S: 打刻データを送る
-    S->>S: 出勤時刻を記録
     S-->>R: おはようございますと表示
 === sequence
 来訪者がゲートで顔をカメラに向けると、ゲートは顔認証サーバーに画像を送る。顔認証サーバーが登録者と一致したと返せばゲートが開き、一致しなければ警備員室に通知する。
@@ -237,7 +232,6 @@ sequenceDiagram
     participant J as 迷惑メールフォルダ
     participant I as 受信トレイ
     M->>F: メールを渡す
-    F->>F: スコアを計算
     F-->>M: 判定結果
     alt 迷惑メール
         M->>J: 入れる
@@ -252,7 +246,6 @@ sequenceDiagram
     participant S as ショップのサーバー
     participant C as お客様
     P->>S: Webhook
-    S->>S: 注文を支払い済みに更新
     S-->>P: 200
     S->>C: 注文確定のメール
 === sequence
@@ -269,7 +262,6 @@ sequenceDiagram
     W-->>U: 受け付けました
     K->>Q: ジョブを取り出す
     Q-->>K: ジョブ
-    K->>K: 処理
     K->>D: 結果を書き込む
 === sequence
 社員が勤怠アプリを開くと、アプリは認証基盤にリダイレクトする。社員が認証基盤でログインすると、認証基盤はIDトークンを発行してアプリに戻す。アプリはトークンを検証して社員の画面を表示する。
@@ -282,7 +274,6 @@ sequenceDiagram
     A-->>E: 認証基盤にリダイレクト
     E->>I: ログイン
     I-->>A: IDトークン
-    A->>A: トークンを検証
     A-->>E: 社員の画面を表示
 === sequence
 ショップの画面でカード番号を入力すると、ブラウザは決済代行会社に直接カード番号を送り、トークンを受け取る。ブラウザはそのトークンをショップのサーバーに送り、サーバーはトークンを使って決済代行会社に課金を依頼する。
@@ -328,7 +319,6 @@ sequenceDiagram
     participant B as バイヤー
     participant L as 物流センター
     S->>B: 追加の発注を申請
-    B->>B: 予算を確認
     B-->>S: 承認
     B->>L: 出荷を指示
     L->>S: 商品を届ける

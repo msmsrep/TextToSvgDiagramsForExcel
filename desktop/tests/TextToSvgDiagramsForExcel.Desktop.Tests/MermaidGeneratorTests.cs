@@ -127,6 +127,42 @@ public class MermaidGeneratorTests
     }
 
     [Fact]
+    public async Task AsksATunedModelForTheTypeItChoseThenWithChance()
+    {
+        var model = new ScriptedModel("```mermaid\ngantt\n  BUG\n```", "```mermaid\ngantt\n  BUG\n```", "```mermaid\ngantt\n  title x\n```");
+
+        var result = await new MermaidGenerator(model, s_validIfNoBug) { Tuned = true }.GenerateAsync("text", "auto");
+
+        Assert.True(result.Valid);
+        Assert.Equal([0, 0, 0.7], model.Temperatures);
+        Assert.Equal(new ChatMessage(ChatRole.User, "text"), Assert.Single(model.Asked[0]));
+        Assert.Equal(new ChatMessage(ChatRole.User, "text\n\n(Use a gantt chart.)"), Assert.Single(model.Asked[1]));
+        Assert.Equal(model.Asked[1], model.Asked[2]);
+    }
+
+    [Fact]
+    public async Task AsksATunedModelAgainWithChanceWhenTheAnswerNamesNoType()
+    {
+        var model = new ScriptedModel("```mermaid\nBUG\n```", "```mermaid\nflowchart TD\n  A-->B\n```");
+
+        var result = await new MermaidGenerator(model, s_validIfNoBug) { Tuned = true }.GenerateAsync("text", "auto");
+
+        Assert.True(result.Valid);
+        Assert.Equal([0, 0.7], model.Temperatures);
+        Assert.Equal(new ChatMessage(ChatRole.User, "text"), Assert.Single(model.Asked[1]));
+    }
+
+    [Theory]
+    [InlineData("flowchart TD\n A-->B", "flowchart")]
+    [InlineData("graph LR\n A-->B", "flowchart")]
+    [InlineData("  sequenceDiagram\n A->>B: x", "sequence")]
+    [InlineData("gantt\n title x", "gantt")]
+    [InlineData("pie\n \"a\": 1", null)]
+    [InlineData("", null)]
+    public void TellsTheKindFromTheFirstLine(string code, string? kind) =>
+        Assert.Equal(kind, MermaidPrompt.KindOf(code));
+
+    [Fact]
     public async Task GivesUpAfterTheRepairLimitWithTheLastCode()
     {
         var model = new ScriptedModel("```\nflowchart TD\nBUG 1\n```", "```\nflowchart TD\nBUG 2\n```");

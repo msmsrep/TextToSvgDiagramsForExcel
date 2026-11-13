@@ -45,9 +45,7 @@ sequenceDiagram
     participant E as EC担当
     participant S as 撮影会社
     E->>S: 商品と撮影指示書を送る
-    S->>S: 撮影
     S->>E: 画像をアップロード
-    E->>E: 確認
     alt 撮り直しが必要
         E->>S: 撮り直しを依頼
     else OK
@@ -72,7 +70,6 @@ sequenceDiagram
     participant M as マッチングサーバー
     participant G as ゲームサーバー
     P->>M: マッチングを開始
-    M->>M: 同じくらいの強さのプレイヤーを探す
     M->>G: 部屋を作らせる
     G-->>M: 部屋の接続先
     M-->>P: 部屋の接続先を送る
@@ -88,7 +85,6 @@ sequenceDiagram
     S->>U: ワンタイムパスワード
     U->>A: 入力
     A->>S: ワンタイムパスワード
-    S->>S: 振込を実行
     S-->>A: 受付番号
 === sequence
 救急隊が患者の状態を病院の救急外来に電話で伝え、受け入れを依頼する。救急外来の医師が受け入れを決めると救急隊は搬送を始め、到着したら医師に患者を引き継ぐ。
@@ -98,7 +94,6 @@ sequenceDiagram
     participant D as 救急外来の医師
     Q->>D: 患者の状態を伝えて受け入れを依頼
     D-->>Q: 受け入れを決める
-    Q->>Q: 搬送
     Q->>D: 患者を引き継ぐ
 === sequence
 社員が福利厚生サイトで保養所を予約する。サイトは保養所に予約を連絡し、保養所は空き部屋を確保して確認書を社員に送る。利用後、保養所は料金を給与天引き用のデータとして人事に送る。
@@ -110,7 +105,6 @@ sequenceDiagram
     participant J as 人事
     E->>W: 保養所を予約
     W->>H: 予約を連絡
-    H->>H: 空き部屋を確保
     H->>E: 確認書
     H->>J: 給与天引き用のデータ
 === sequence
@@ -125,7 +119,6 @@ sequenceDiagram
     S->>T: 弁当を発注
     T->>H: 発注データ
     H->>F: 発注データ
-    F->>F: 夜中に製造
     F->>C: 出荷
     C->>S: 朝に配送
 === sequence
@@ -148,7 +141,6 @@ sequenceDiagram
     participant S as 学生
     participant K as 教務システム
     S->>K: 履修登録
-    K->>K: 定員を確認
     alt 空きがある
         K-->>S: 登録を確定
     else 満員
@@ -164,8 +156,6 @@ sequenceDiagram
     participant M as 抽出機
     C->>P: カフェラテを選ぶ
     P->>M: 指示
-    M->>M: エスプレッソを抽出
-    M->>M: ミルクを加える
     M-->>P: できあがり
     P-->>C: お取りください
 === sequence
@@ -176,7 +166,6 @@ sequenceDiagram
     participant A as アカウント管理サービス
     participant S as セッション
     U->>A: パスワードを変更
-    A->>A: 新しいパスワードを保存
     A->>S: 他の端末のセッションを無効
     A->>U: 変更のお知らせをメール
 === sequence
@@ -186,12 +175,9 @@ sequenceDiagram
     participant C as 観客
     participant S as チケットサイト
     C->>S: 座席を選ぶ
-    S->>S: 座席を10分間確保
-    alt 10分以内に支払い
+    opt 10分以内に支払い
         C->>S: 支払い
         S-->>C: 電子チケットを発行
-    else 支払いが終わらない
-        S->>S: 確保を解除
     end
 === sequence
 キッチンのスマートスピーカーに「タイマー3分」と言うと、スピーカーはタイマーを始める。3分たつとスピーカーはアラームを鳴らし、利用者が「止めて」と言うとアラームを止める。
@@ -200,10 +186,8 @@ sequenceDiagram
     participant U as 利用者
     participant S as スマートスピーカー
     U->>S: タイマー3分
-    S->>S: タイマーを始める
     S-->>U: アラーム
     U->>S: 止めて
-    S->>S: アラームを止める
 === sequence
 鉄道の運行管理センターが大雨で運転見合わせを決めると、各駅と車両の乗務員に指令を出す。各駅は駅の放送と掲示で利用者に知らせ、公式アプリにも運行情報が配信される。
 ---
@@ -228,7 +212,6 @@ sequenceDiagram
     loop 1時間ごと
         P->>C: 発電量
     end
-    C->>C: 1日の発電量を集計
     C->>A: グラフで表示
 === sequence
 病院の受付で再来受付機に診察券を入れると、受付機は電子カルテに来院を登録し、受付票を印刷する。診察室の前の表示板には、順番が近づくと受付番号が表示される。
@@ -261,7 +244,6 @@ sequenceDiagram
     participant U as ユーザー
     participant M as 監視サービス
     U->>M: アラートの条件を設定
-    M->>M: 条件を保存
     loop 条件を満たすたび
         M->>U: メール
         M->>U: SMS
@@ -275,7 +257,6 @@ sequenceDiagram
     participant L as 担当弁護士
     participant S as システム
     C->>J: 法律相談の予約
-    J->>J: 担当弁護士を決める
     J->>L: 依頼
     L->>S: 利益相反を確認
     S-->>L: 問題なし
@@ -292,7 +273,6 @@ sequenceDiagram
     A-->>M: 確認結果
     M-->>E: 印刷待ちのジョブの一覧
     E->>M: ジョブを選ぶ
-    M->>M: 印刷
 === sequence
 テレビ局の制作部が出演者の事務所に出演を依頼する。事務所は本人のスケジュールを確認して回答し、出演が決まると制作部が台本を事務所に送る。
 ---

@@ -1,0 +1,819 @@
+=== flow-refund-request
+flowchart TD
+    A["Customer submits a refund request"] --> B{"Purchased within 30 days?"}
+    B -->|"Yes"| C["Approve the refund"]
+    C --> D["Return the money to the card"]
+    B -->|"No"| E["Decline the request"]
+    E --> F["Notify the customer"]
+=== flow-pr-merge
+flowchart TD
+    A["Pull request is opened"] --> B["CI runs the tests"]
+    B --> C{"Tests pass?"}
+    C -->|"No"| D["Author fixes the code and pushes again"]
+    D --> B
+    C -->|"Yes"| E["Reviewer reads the change"]
+    E --> F{"Reviewer approves?"}
+    F -->|"Yes"| G["Merge the pull request"]
+    F -->|"No"| H["Author makes the requested changes"]
+    H --> E
+=== flow-purchase-approval
+flowchart TD
+    A["Purchase request"] --> B{"Amount?"}
+    B -->|"Under $500"| C["Approve automatically"]
+    B -->|"$500 to $5,000"| D["Manager's approval"]
+    B -->|"Above $5,000"| E["Finance director's approval"]
+    C --> F["Send to purchasing"]
+    D --> F
+    E --> F
+    F --> G["Place the order"]
+=== flow-job-application
+flowchart TD
+    A["Applicant sends a CV"] --> B["HR screens the CV"]
+    B --> C{"Suitable?"}
+    C -->|"Yes"| D["Phone interview"]
+    C -->|"No"| R["Send a rejection email"]
+    D --> E{"Passed?"}
+    E -->|"Yes"| F["On-site interview"]
+    E -->|"No"| R
+    F --> G{"Hiring manager makes an offer?"}
+    G -->|"Yes"| H["Make an offer"]
+    G -->|"No"| R
+=== flow-incident-response
+flowchart TD
+    A["Alert fires"] --> B["On-call engineer acknowledges it"]
+    B --> C["Check the dashboard"]
+    C --> D{"False alarm?"}
+    D -->|"Yes"| E["Close the alert"]
+    D -->|"No"| F["Open an incident channel"]
+    F --> G["Fix the problem"]
+    G --> H["Write a postmortem"]
+=== flow-invoice-matching
+flowchart TD
+    A["Accounts payable receives an invoice"] --> B["Match it against the purchase order"]
+    B --> C{"Amounts match?"}
+    C -->|"Yes"| D["Schedule for payment on the next payment run"]
+    C -->|"No"| E["Send back to the supplier for correction"]
+=== flow-vacation-request
+flowchart TD
+    A["Employee enters a vacation request"] --> B["Manager reviews it"]
+    B --> C{"Approved?"}
+    C -->|"Yes"| D["Deduct the days from the balance"]
+    D --> E["Update the team calendar"]
+    C -->|"No"| F["Tell the employee the reason"]
+=== flow-support-ticket
+flowchart TD
+    A["New support ticket"] --> B{"Duplicate?"}
+    B -->|"Yes"| C["Merge into the existing ticket"]
+    B -->|"No"| D["Give the ticket a priority"]
+    D --> E{"Urgent?"}
+    E -->|"Yes"| F["Assign to the on-call agent"]
+    E -->|"No"| G["Put into the queue"]
+=== flow-loan-check
+flowchart TD
+    A["Check the credit score"] --> B{"Score below 600?"}
+    B -->|"Yes"| C["Reject"]
+    B -->|"No"| D["Verify the income"]
+    D --> E{"Income sufficient?"}
+    E -->|"Yes"| F["Approve the loan"]
+    E -->|"No"| G["Ask for a guarantor"]
+=== flow-onboarding
+flowchart TD
+    A["HR sends the contract"] --> B["IT prepares a laptop and accounts"]
+    B --> C["Manager assigns a buddy"]
+    C --> D["New hire attends orientation"]
+=== flow-publish-article
+flowchart TD
+    A["Writer drafts an article"] --> B["Submit to the editor"]
+    B --> C{"Editor approves?"}
+    C -->|"No"| D["Writer revises"]
+    D --> B
+    C -->|"Yes"| E["Proofread"]
+    E --> F["Publish"]
+=== flow-stock-reorder
+flowchart TD
+    A["Check the stock level every morning"] --> B{"Below the reorder point?"}
+    B -->|"Yes"| C["Create a purchase order"]
+    C --> D["Email the supplier"]
+    B -->|"No"| E["Wait until the next check"]
+=== flow-signup-verify
+flowchart TD
+    A["User fills in the sign-up form"] --> B{"Email address already registered?"}
+    B -->|"Yes"| C["Show an error"]
+    B -->|"No"| D["Create the account"]
+    D --> E["Send a verification email"]
+    E --> F["User clicks the link"]
+    F --> G["Activate the account"]
+=== flow-deploy-pipeline
+flowchart TD
+    A["Merge to main"] --> B["Build a Docker image"]
+    B --> C["Deploy to staging"]
+    C --> D["Run smoke tests"]
+    D --> E{"Smoke tests pass?"}
+    E -->|"Yes"| F["Release manager approves"]
+    F --> G["Deploy to production"]
+    E -->|"No"| H["Stop the deployment"]
+    H --> I["Notify the team in Slack"]
+=== flow-password-reset
+flowchart TD
+    A["Click 'Forgot password'"] --> B["Enter an email address"]
+    B --> C{"Address belongs to an account?"}
+    C -->|"Yes"| D["Email a reset link"]
+    D --> E["Open the link"]
+    E --> F{"Link expired?"}
+    F -->|"No"| G["Set a new password"]
+    F -->|"Yes"| H["Request a new link"]
+=== flow-backup-job
+flowchart TD
+    A["Start at 2 a.m."] --> B["Dump the database"]
+    B --> C["Compress the dump"]
+    C --> D["Upload to object storage"]
+    D --> E{"Upload succeeded?"}
+    E -->|"Yes"| F["Delete backups older than 30 days"]
+    E -->|"No"| G{"Retried three times?"}
+    G -->|"No"| D
+    G -->|"Yes"| H["Page the administrator"]
+=== flow-order-fulfillment
+flowchart TD
+    A["Warehouse receives an order"] --> B{"Item out of stock?"}
+    B -->|"Yes"| C["Put the order on hold"]
+    C --> D["Customer service contacts the buyer"]
+    B -->|"No"| E["Picker collects the items"]
+    E --> F["Packer boxes them"]
+    F --> G["Hand to the courier"]
+=== flow-expense-report
+flowchart TD
+    A["Upload receipts to the expense tool"] --> B{"Receipt over the daily limit?"}
+    B -->|"Yes"| C["Manual check by the finance team"]
+    B -->|"No"| D["Approval by the manager"]
+    C --> E["Reimburse with the next payroll"]
+    D --> E
+=== flow-spam-filter
+flowchart TD
+    A["Scan incoming mail for viruses"] --> B{"Infected?"}
+    B -->|"Yes"| C["Delete the message"]
+    B -->|"No"| D["Score with the spam filter"]
+    D --> E{"Score above 5?"}
+    E -->|"Yes"| F["Move to the junk folder"]
+    E -->|"No"| G["Deliver to the inbox"]
+=== flow-chat-routing
+flowchart TD
+    A["Visitor opens the chat widget"] --> B["Bot asks what the question is about"]
+    B --> C{"Topic?"}
+    C -->|"Billing"| D["Billing team"]
+    C -->|"Technical"| E["Support"]
+    C -->|"Other"| F["General queue"]
+    D --> G{"Agent available?"}
+    E --> G
+    F --> G
+    G -->|"No"| H["Offer a callback"]
+=== flow-vending-machine
+flowchart TD
+    A["Insert coins"] --> B["Choose a drink"]
+    B --> C{"Amount enough?"}
+    C -->|"No"| D["Show the missing amount"]
+    D --> A
+    C -->|"Yes"| E{"Drink sold out?"}
+    E -->|"Yes"| F["Return the coins"]
+    E -->|"No"| G["Drop the drink"]
+    G --> H["Give change"]
+=== flow-order-states
+flowchart TD
+    A["Pending"] -->|"Payment is confirmed"| B["Paid"]
+    B -->|"Leaves the warehouse"| C["Shipped"]
+    C -->|"Arrival"| D["Delivered"]
+    A --> E["Cancelled"]
+    B --> E
+=== flow-thermostat
+flowchart TD
+    A["Read the room temperature every minute"] --> B{"Temperature?"}
+    B -->|"Below 19 degrees"| C["Turn the heater on"]
+    B -->|"Above 22 degrees"| D["Turn the heater off"]
+    B -->|"In between"| E["Leave the heater as it is"]
+=== flow-elevator-door
+flowchart TD
+    A["Elevator arrives"] --> B["Door opens"]
+    B --> C["Stay open for five seconds"]
+    C --> D["Door starts to close"]
+    D --> E{"Sensor detects someone in the doorway?"}
+    E -->|"Yes"| B
+    E -->|"No"| F["Door is fully closed"]
+    F --> G["Elevator moves"]
+=== flow-document-status
+flowchart TD
+    A["Draft"] -->|"Author submits"| B["In Review"]
+    B -->|"Reviewer approves"| C["Published"]
+    B -->|"Reviewer returns"| A
+    C --> D["Archived"]
+=== flow-washer-cycle
+flowchart TD
+    A["Fill with water"] --> B["Wash for 30 minutes"]
+    B --> C["Drain"]
+    C --> D["Spin"]
+    D --> E{"Load unbalanced?"}
+    E -->|"Yes"| F["Stop and add water to redistribute the clothes"]
+    F --> D
+    E -->|"No"| G["Beep"]
+    G --> H["Unlock the door"]
+=== flow-pancakes
+flowchart TD
+    A["Mix flour, sugar and baking powder"] --> B["Whisk in milk and an egg"]
+    B --> C["Heat a pan"]
+    C --> D["Pour in some batter"]
+    D --> E["Flip when bubbles appear"]
+    E --> F["Serve with syrup"]
+=== flow-tea
+flowchart TD
+    A["Boil water"] --> B["Warm the pot"]
+    B --> C["Add one teaspoon of leaves per cup"]
+    C --> D["Pour in the water"]
+    D --> E["Steep for three minutes"]
+    E --> F["Pour through a strainer"]
+=== flow-flat-tire
+flowchart TD
+    A["Pull over"] --> B["Turn on the hazard lights"]
+    B --> C{"Have a spare?"}
+    C -->|"Yes"| D["Jack up the car"]
+    D --> E["Swap the wheel"]
+    E --> F["Drive to a garage"]
+    C -->|"No"| G["Call roadside assistance"]
+=== flow-plant-watering
+flowchart TD
+    A["Stick a finger into the soil"] --> B{"Feels dry?"}
+    B -->|"Yes"| C["Water the plant until water runs out of the bottom"]
+    B -->|"No"| D["Check again in two days"]
+=== flow-morning-run
+flowchart TD
+    A["Check the weather"] --> B{"Raining?"}
+    B -->|"Yes"| C["Do a workout indoors"]
+    B -->|"No"| D["Put on running shoes"]
+    D --> E["Warm up for five minutes"]
+    E --> F["Run for thirty minutes"]
+    C --> G["Stretch"]
+    F --> G
+=== flow-router-reset
+flowchart TD
+    A["Restart the router"] --> B["Wait two minutes"]
+    B --> C{"Works?"}
+    C -->|"Yes"| D["Done"]
+    C -->|"No"| E{"Cable loose?"}
+    E -->|"Yes"| F["Plug it in"]
+    E -->|"No"| G["Call the provider"]
+=== flow-arrow-pipeline
+flowchart TD
+    A["Lead"] --> B["Qualified"]
+    B --> C["Proposal"]
+    C --> D["Negotiation"]
+    D --> E["Won"]
+=== flow-arrow-branch
+flowchart TD
+    A["Submit form"] --> B["Validate input"]
+    B --> C{"Valid?"}
+    C -->|"Yes"| D["Save record"]
+    D --> E["Show confirmation"]
+    C -->|"No"| F["Show errors"]
+=== flow-numbered-setup
+flowchart TD
+    A["Clone the repository"] --> B["Install dependencies"]
+    B --> C["Copy .env.example to .env"]
+    C --> D["Run the migrations"]
+    D --> E["Start the dev server"]
+=== flow-bullets-release
+flowchart TD
+    A["Freeze the branch"] --> B["Run the full test suite"]
+    B --> C["Update the changelog"]
+    C --> D["Tag the release"]
+    D --> E["Announce in the team channel"]
+=== flow-arrow-loop
+flowchart TD
+    A["Plan"] --> B["Do"]
+    B --> C["Check"]
+    C --> D["Act"]
+    D --> A
+=== flow-numbered-gate
+flowchart TD
+    A["Scan the badge"] --> B{"Badge valid?"}
+    B -->|"Yes"| C["Open the gate"]
+    B -->|"No"| D["Call security"]
+    C --> E["Log the entry attempt"]
+    D --> E
+=== flow-org-chart
+flowchart TD
+    A["CEO"] --> B["CTO"]
+    A --> C["CFO"]
+    A --> D["VP of Sales"]
+    B --> E["Engineering"]
+    B --> F["IT"]
+    C --> G["Accounting"]
+=== flow-folder-tree
+flowchart TD
+    A["Repository"] --> B["app"]
+    A --> C["config"]
+    A --> D["tests"]
+    B --> E["models"]
+    B --> F["views"]
+=== flow-product-categories
+flowchart TD
+    A["Store"] --> B["Electronics"]
+    A --> C["Clothing"]
+    A --> D["Books"]
+    B --> E["Phones"]
+    B --> F["Laptops"]
+    C --> G["Men's"]
+    C --> H["Women's"]
+=== flow-site-map
+flowchart TD
+    A["Home"] --> B["Products"]
+    A --> C["Pricing"]
+    A --> D["Blog"]
+    B --> E["Features"]
+    B --> F["Integrations"]
+    C --> G["Contact sales"]
+=== flow-course-outline
+flowchart TD
+    A["Course"] --> B["Basics"]
+    A --> C["Data"]
+    A --> D["Deployment"]
+    B --> E["Syntax"]
+    B --> F["Functions"]
+    D --> G["Containers"]
+    D --> H["Monitoring"]
+=== flow-login-lockout
+flowchart TD
+    A["Enter a password"] --> B{"Correct?"}
+    B -->|"Yes"| C["Log the user in"]
+    B -->|"No"| D["Increase the failure count by one"]
+    D --> E{"Three failures?"}
+    E -->|"Yes"| F["Lock the account for 15 minutes"]
+    E -->|"No"| A
+=== flow-checkout
+flowchart TD
+    A["Checkout"] --> B{"Delivery or pickup?"}
+    B -->|"Delivery"| C["Enter an address"]
+    C --> D["Add the shipping fee"]
+    B -->|"Pickup"| E["Choose a store"]
+    D --> F["Pay"]
+    E --> F
+    F --> G["Email a receipt"]
+=== flow-bug-triage
+flowchart TD
+    A["Reproduce the reported bug"] --> B{"Reproduced?"}
+    B -->|"No"| C["Request more information from the reporter"]
+    B -->|"Yes"| D{"Severity?"}
+    D -->|"Critical"| E["Fix immediately"]
+    D -->|"Major"| F["Put into the current sprint"]
+    D -->|"Minor"| G["Put into the backlog"]
+=== flow-csv-import
+flowchart TD
+    A["Read the next row of the CSV file"] --> B{"Required fields present?"}
+    B -->|"No"| C["Write the row to an error file"]
+    B -->|"Yes"| D["Insert the row into the database"]
+    C --> E{"All rows processed?"}
+    D --> E
+    E -->|"No"| A
+    E -->|"Yes"| F["Email a summary"]
+=== flow-insurance-claim
+flowchart TD
+    A["Policyholder files a claim with photos"] --> B["Adjuster reviews it"]
+    B --> C{"Under $1,000?"}
+    C -->|"Yes"| D["Pay out the claim"]
+    C -->|"No"| E["Inspection"]
+    E --> F{"Paid or denied?"}
+    F -->|"Paid"| D
+    F -->|"Denied"| G["Deny the claim"]
+    G --> H["Appeal"]
+=== flow-feature-flag
+flowchart TD
+    A["Request arrives"] --> B{"Feature flag on?"}
+    B -->|"No"| C["Show the old checkout"]
+    B -->|"Yes"| D{"User on the beta list?"}
+    D -->|"Yes"| E["Show the new checkout"]
+    D -->|"No"| C
+=== flow-item-return
+flowchart TD
+    A["Customer prints a label"] --> B["Ship the item back"]
+    B --> C["Warehouse inspects it"]
+    C --> D{"Condition?"}
+    D -->|"Unused"| E["Issue a full refund"]
+    D -->|"Damaged"| F["Store credit for half the price"]
+=== seq-login-api
+sequenceDiagram
+    participant B as Browser
+    participant W as Web server
+    participant A as Auth service
+    B->>W: Username and password
+    W->>A: Verify the credentials
+    A-->>W: Token
+    W-->>B: Session cookie and home page
+=== seq-food-delivery
+sequenceDiagram
+    participant C as Customer
+    participant A as App
+    participant R as Restaurant
+    participant D as Courier
+    C->>A: Place an order
+    A->>R: Send the order
+    R-->>A: Confirm
+    A->>D: Ask to pick it up
+    D->>C: Deliver the food
+=== seq-card-payment
+sequenceDiagram
+    participant S as Shopper
+    participant M as Merchant
+    participant G as Payment gateway
+    participant B as Issuing bank
+    S->>M: Pay by card
+    M->>G: Send the charge
+    G->>B: Ask for authorization
+    B-->>G: Approve
+    G-->>M: Result
+    M-->>S: Confirmation
+=== seq-hotel-booking
+sequenceDiagram
+    participant G as Guest
+    participant A as Travel agent
+    participant H as Hotel
+    G->>A: Ask for a room
+    A->>H: Check availability
+    H-->>A: A room is free
+    A-->>G: Quote the price
+    G->>A: Confirm
+    A->>H: Book the room
+=== seq-code-review
+sequenceDiagram
+    participant D as Dana
+    participant L as Luis
+    D->>L: Ask to review the pull request
+    L-->>D: Comments
+    D->>L: Fixes pushed, ask to look again
+    L-->>D: Approve
+=== seq-cache-lookup
+sequenceDiagram
+    participant C as Client
+    participant A as API
+    participant R as Cache
+    participant D as Database
+    C->>A: Ask for a product
+    A->>R: Look up
+    alt Cache has it
+        R-->>A: Product
+    else Otherwise
+        A->>D: Query
+        D-->>A: Product
+        A->>R: Store the product
+    end
+    A-->>C: Product
+=== seq-clinic-appointment
+sequenceDiagram
+    participant P as Patient
+    participant R as Receptionist
+    participant C as Calendar system
+    P->>R: Ask to book an appointment
+    R->>C: Ask for free slots
+    C-->>R: Free slots
+    R-->>P: Offer a slot
+    P->>R: Accept
+    R->>C: Book the slot
+=== seq-payment-webhook
+sequenceDiagram
+    participant C as Customer
+    participant S as Stripe
+    participant B as Backend
+    participant D as Database
+    participant E as Email service
+    C->>S: Pay
+    S->>B: Webhook
+    B->>D: Mark the order as paid
+    B->>E: Ask to send a receipt
+    E->>C: Receipt
+=== seq-two-factor
+sequenceDiagram
+    participant U as User
+    participant A as App
+    participant S as Auth server
+    U->>A: Enter a password
+    A->>S: Ask to send a code
+    S->>U: Text the code
+    U->>A: Type the code
+    A->>S: Verify the code
+    S-->>A: Confirm
+=== seq-arrow-load-balancer
+sequenceDiagram
+    participant C as Client
+    participant L as Load balancer
+    participant A as App server
+    C->>L: HTTPS request
+    L->>A: Forward request
+    A-->>L: Response
+    L-->>C: Response
+=== seq-numbered-assignment
+sequenceDiagram
+    participant T as Teacher
+    participant S as Students
+    participant O as Office
+    T->>S: Post the assignment
+    S->>T: Submit their work
+    T->>S: Send grades
+    T->>O: Report the grades
+=== seq-ride-share
+sequenceDiagram
+    participant R as Rider
+    participant A as App
+    participant D as Driver
+    R->>A: Request a ride
+    A->>D: Offer the trip
+    D-->>A: Accept
+    A-->>R: Arrival time
+    A->>R: Charge
+    A->>D: Pay
+=== seq-purchase-order
+sequenceDiagram
+    participant B as Buyer
+    participant S as Supplier
+    participant W as Warehouse
+    B->>S: Purchase order
+    S-->>B: Confirm
+    S->>W: Ship the goods
+    W->>B: The goods have arrived
+    S->>B: Invoice
+    B->>S: Pay
+=== seq-social-login
+sequenceDiagram
+    participant U as User
+    participant A as App
+    participant G as Google
+    U->>A: Click 'Sign in with Google'
+    A-->>U: Redirect to Google
+    U->>G: Log in
+    G->>A: Authorization code
+    A->>G: Exchange the code
+    G-->>A: Access token
+=== seq-smart-home
+sequenceDiagram
+    participant M as Motion sensor
+    participant H as Hub
+    participant C as Camera
+    participant P as Owner's phone
+    M->>H: Report movement
+    H->>C: Ask for a snapshot
+    C-->>H: Image
+    H->>P: Alert with the image
+=== seq-library-hold
+sequenceDiagram
+    participant M as Member
+    participant L as Librarian
+    participant C as Catalog system
+    M->>L: Ask for a book
+    L->>C: Check the book
+    C-->>L: On loan
+    L->>C: Place a hold
+    L-->>M: Expected return date
+=== seq-ci-deploy
+sequenceDiagram
+    participant D as Developer
+    participant G as GitLab
+    participant R as Runner
+    participant S as Staging server
+    D->>G: Push a commit
+    G->>R: Trigger
+    R-->>G: Build succeeded
+    G->>S: Deploy the build
+    G-->>D: Notify
+=== seq-replacement
+sequenceDiagram
+    participant C as Customer
+    participant A as Support agent
+    participant W as Warehouse
+    C->>A: Email about a broken product
+    A->>W: Is a replacement in stock?
+    W-->>A: Confirm
+    A-->>C: A replacement is on its way
+    W->>C: Ship the replacement
+=== seq-parking-gate
+sequenceDiagram
+    participant D as Driver
+    participant G as Gate
+    participant S as Parking server
+    D->>G: Press the button
+    G->>S: Ask for a ticket number
+    S-->>G: Ticket number
+    G-->>D: Printed ticket
+=== seq-coupon
+sequenceDiagram
+    participant U as Shopper
+    participant S as Shop
+    U->>S: Add an item to the cart
+    S-->>U: Total
+    opt Shopper has a coupon
+        U->>S: Enter the coupon
+        S-->>U: Discounted total
+    end
+    U->>S: Check out
+    S-->>U: Confirmation
+=== seq-video-polling
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    participant W as Worker
+    C->>S: Upload a video
+    S->>W: Start a transcoding job
+    loop Every five seconds until the job is done
+        C->>S: Ask for the status
+        S-->>C: Status
+    end
+    W-->>S: Job finished
+    S->>C: Download link
+=== seq-interview-scheduling
+sequenceDiagram
+    participant R as Recruiter
+    participant C as Candidate
+    participant I as Interviewer
+    R->>C: Ask for available times
+    C-->>R: Three options
+    R->>I: Ask to pick one
+    I-->>R: Chosen time
+    R->>C: Calendar invite
+=== seq-order-services
+sequenceDiagram
+    participant G as Gateway
+    participant O as Order service
+    participant I as Inventory service
+    participant P as Payment service
+    G->>O: New order
+    O->>I: Reserve the items
+    I-->>O: OK
+    O->>P: Charge the card
+    P-->>O: OK
+    O-->>G: Order number
+=== seq-restaurant
+sequenceDiagram
+    participant G as Guest
+    participant W as Waiter
+    participant K as Kitchen
+    G->>W: Order a steak
+    W->>K: Pass the order
+    K-->>W: The steak is ready
+    W-->>G: Serve the steak
+    G->>W: Ask for the bill
+    W-->>G: Bill
+=== seq-blood-test
+sequenceDiagram
+    participant N as Nurse
+    participant P as Patient
+    participant L as Lab
+    participant D as Doctor
+    N->>P: Take a blood sample
+    N->>L: Send the sample
+    L->>D: Send the result
+    D->>P: Explain the result
+=== seq-bank-transfer
+sequenceDiagram
+    participant A as Alice
+    participant P as Banking app
+    participant X as Alice's bank
+    participant Y as Bob's bank
+    participant B as Bob
+    A->>P: Send $200 to Bob
+    P->>X: Submit the transfer
+    X->>Y: Send the money
+    Y->>B: Notify
+    X-->>P: Confirm the transfer
+    P-->>A: Receipt
+=== seq-shoe-size
+sequenceDiagram
+    participant C as Customer
+    participant A as Shop assistant
+    participant S as Stockroom
+    C->>A: Ask for a size 9 shoe
+    A->>S: Check
+    alt Stockroom has it
+        S-->>A: Shoe
+        A-->>C: Bring the shoe
+    else Not in stock
+        A-->>C: Offer to order it
+    end
+=== seq-arrow-document
+sequenceDiagram
+    participant U as User
+    participant A as App
+    participant S as Storage
+    U->>A: Open document
+    A->>S: Fetch file
+    S-->>A: File contents
+    A-->>U: Show document
+=== gantt-website
+gantt
+    title Website redesign plan
+    dateFormat YYYY-MM-DD
+    section Plan
+    Research :a1, 2027-03-01, 5d
+    Design :a2, after a1, 10d
+    Development :a3, after a2, 15d
+    Testing :a4, after a3, 5d
+    Launch :milestone, a5, 2027-04-20, 0d
+=== gantt-conference
+gantt
+    title Conference preparation
+    dateFormat YYYY-MM-DD
+    section Preparation
+    Book the venue :a1, 2027-01-11, 5d
+    Speaker submissions :a2, 2027-01-18, 21d
+    Ticket sales :a3, 2027-02-08, 26d
+    section Event
+    Conference :milestone, a4, 2027-03-12, 0d
+=== gantt-mobile-teams
+gantt
+    title Mobile app schedule
+    dateFormat YYYY-MM-DD
+    section iOS team
+    iOS screens :a1, 2027-05-03, 10d
+    iOS integration :a2, after a1, 5d
+    section Android team
+    Android screens :b1, 2027-05-03, 12d
+    Android integration :b2, after b1, 5d
+    section QA
+    QA :c1, after a2 b2, 7d
+=== gantt-thesis
+gantt
+    title Thesis timeline
+    dateFormat YYYY-MM-DD
+    section Thesis
+    Literature review :a1, 2027-09-06, 28d
+    Experiments :a2, after a1, 42d
+    Writing :a3, after a2, 28d
+    Submission deadline :milestone, a4, 2027-12-17, 0d
+=== gantt-house-move
+gantt
+    title Moving plan
+    dateFormat YYYY-MM-DD
+    section Move
+    Packing :a1, 2027-06-01, 7d
+    Cleaning the old flat :a2, after a1, 2d
+    Moving day :a3, 2027-06-12, 1d
+    Unpacking :a4, 2027-06-13, 5d
+=== gantt-campaign
+gantt
+    title Campaign schedule
+    dateFormat YYYY-MM-DD
+    section Content
+    Write blog posts :a1, 2027-02-01, 12d
+    Record videos :a2, 2027-02-08, 12d
+    section Ads
+    Set up ads :b1, 2027-02-15, 5d
+    Run ads :b2, after b1, 30d
+=== gantt-sprint
+gantt
+    title Sprint 14 schedule
+    dateFormat YYYY-MM-DD
+    section Sprint 14
+    Planning :a1, 2027-04-05, 1d
+    Development :a2, 2027-04-06, 8d
+    Regression testing :a3, after a2, 3d
+    Release :milestone, a4, 2027-04-19, 0d
+=== gantt-kitchen
+gantt
+    title Kitchen renovation
+    dateFormat YYYY-MM-DD
+    section Renovation
+    Demolition :a1, 2027-08-02, 3d
+    Plumbing :a2, after a1, 4d
+    Electrical work :a3, after a1, 4d
+    Cabinets :a4, after a2 a3, 5d
+    Painting :a5, after a4, 2d
+=== gantt-product-launch
+gantt
+    title Product launch plan
+    dateFormat YYYY-MM-DD
+    section Launch
+    Beta program :a1, 2027-03-01, 26d
+    Press kit :a2, 2027-03-15, 7d
+    Launch event :milestone, a3, 2027-04-02, 0d
+    Post-launch survey :a4, 2027-04-05, 14d
+=== gantt-db-migration
+gantt
+    title Database migration
+    dateFormat YYYY-MM-DD
+    section Migration
+    Schema design :a1, 2027-10-04, 5d
+    Write migration scripts :a2, after a1, 8d
+    Dry run on staging :a3, after a2, 3d
+    Production cutover :milestone, a4, 2027-10-30, 0d
+    Monitoring :a5, 2027-10-31, 7d
+=== gantt-course
+gantt
+    title Course schedule
+    dateFormat YYYY-MM-DD
+    section Course
+    Introduction :a1, 2027-01-11, 7d
+    Fundamentals :a2, after a1, 14d
+    Project :a3, after a2, 7d
+    Final presentations :milestone, a4, 2027-02-08, 0d
+=== gantt-audit
+gantt
+    title Audit timeline
+    dateFormat YYYY-MM-DD
+    section Audit
+    Kickoff meeting :milestone, a1, 2027-11-01, 0d
+    Document collection :a2, 2027-11-02, 10d
+    Fieldwork :a3, after a2, 15d
+    Draft report :a4, after a3, 5d
+    Final report :milestone, a5, 2027-12-10, 0d

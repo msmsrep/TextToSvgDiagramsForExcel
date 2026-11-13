@@ -1,0 +1,300 @@
+=== sequence
+The user asks the app to open a file. The app requests the file from the cloud drive. If the user has access, the drive returns the file and the app shows it. Otherwise the drive returns an error and the app shows an "access denied" message.
+---
+sequenceDiagram
+    participant U as User
+    participant A as App
+    participant D as Cloud drive
+    U->>A: Open a file
+    A->>D: Request the file
+    alt User has access
+        D-->>A: File
+        A-->>U: Show the file
+    else Otherwise
+        D-->>A: Error
+        A-->>U: Access denied
+    end
+=== sequence
+A guest asks the front desk for a late checkout. The front desk asks housekeeping whether the room is needed. If it is not needed, housekeeping agrees and the front desk confirms to the guest. If it is needed, the front desk offers the guest the lounge instead.
+---
+sequenceDiagram
+    participant G as Guest
+    participant F as Front desk
+    participant H as Housekeeping
+    G->>F: Ask for a late checkout
+    F->>H: Is the room needed?
+    alt Not needed
+        H-->>F: Agree
+        F-->>G: Confirm
+    else Needed
+        H-->>F: Room is needed
+        F-->>G: Offer the lounge instead
+    end
+=== sequence
+The app sends a login request to the server. The server checks the password with the user database. If the account has two-step verification turned on, the server asks the app for a code and the app sends it. The server then returns a session token.
+---
+sequenceDiagram
+    participant A as App
+    participant S as Server
+    participant D as User database
+    A->>S: Login request
+    S->>D: Check the password
+    D-->>S: OK
+    opt Two-step verification is on
+        S->>A: Ask for a code
+        A-->>S: Code
+    end
+    S-->>A: Session token
+=== sequence
+The installer asks the update server for the latest version. While the download is not complete, the installer requests the next chunk and the server sends it. When the download is complete, the installer reports success to the server.
+---
+sequenceDiagram
+    participant I as Installer
+    participant S as Update server
+    I->>S: Ask for the latest version
+    S-->>I: Version
+    loop Until the download is complete
+        I->>S: Request the next chunk
+        S-->>I: Chunk
+    end
+    I->>S: Report success
+=== sequence
+A customer asks the waiter whether the soup contains nuts. The waiter asks the chef. If it does, the chef says so and the waiter suggests another dish. If it does not, the waiter tells the customer it is safe.
+---
+sequenceDiagram
+    participant C as Customer
+    participant W as Waiter
+    participant K as Chef
+    C->>W: Does the soup contain nuts?
+    W->>K: Ask
+    alt Contains nuts
+        K-->>W: Yes
+        W-->>C: Suggest another dish
+    else No nuts
+        K-->>W: No
+        W-->>C: It is safe
+    end
+=== sequence
+The merchant sends a refund request to the payment provider. The provider asks the card network to reverse the charge. If the reversal succeeds, the network confirms and the provider tells the merchant the refund is done. If it fails, the provider tells the merchant to retry later.
+---
+sequenceDiagram
+    participant M as Merchant
+    participant P as Payment provider
+    participant N as Card network
+    M->>P: Refund request
+    P->>N: Reverse the charge
+    alt Reversal succeeds
+        N-->>P: Confirm
+        P-->>M: Refund is done
+    else Reversal fails
+        N-->>P: Failure
+        P-->>M: Retry later
+    end
+=== sequence
+The employee submits an expense claim to the manager. If the amount is above $1,000, the manager forwards it to the director and the director approves it. The manager then sends the claim to finance, and finance pays the employee.
+---
+sequenceDiagram
+    participant E as Employee
+    participant M as Manager
+    participant D as Director
+    participant F as Finance
+    E->>M: Expense claim
+    opt Amount above $1,000
+        M->>D: Forward the claim
+        D-->>M: Approve
+    end
+    M->>F: Send the claim
+    F->>E: Pay
+=== sequence
+The phone asks the weather service for the forecast every hour. The weather service returns the forecast. If rain is expected, the phone sends a notification to the user.
+---
+sequenceDiagram
+    participant P as Phone
+    participant W as Weather service
+    participant U as User
+    loop Every hour
+        P->>W: Ask for the forecast
+        W-->>P: Forecast
+        opt Rain is expected
+            P->>U: Notification
+        end
+    end
+=== sequence
+The customer asks the bank teller to withdraw $5,000. The teller checks the balance in the core system. If the balance is enough, the teller hands over the cash. If it is not, the teller tells the customer how much is available.
+---
+sequenceDiagram
+    participant C as Customer
+    participant T as Bank teller
+    participant S as Core system
+    C->>T: Withdraw $5,000
+    T->>S: Check the balance
+    S-->>T: Balance
+    alt Balance is enough
+        T-->>C: Cash
+    else Not enough
+        T-->>C: How much is available
+    end
+=== sequence
+The client sends a request to the API. If the client has sent too many requests, the API answers "429 Too Many Requests" and the client waits. Otherwise the API asks the backend, gets the data, and returns it to the client.
+---
+sequenceDiagram
+    participant C as Client
+    participant A as API
+    participant B as Backend
+    C->>A: Request
+    alt Too many requests
+        A-->>C: 429 Too Many Requests
+    else Otherwise
+        A->>B: Ask
+        B-->>A: Data
+        A-->>C: Data
+    end
+=== sequence
+The student uploads homework to the learning platform. The platform sends it to the plagiarism checker and gets a score back. If the score is high, the platform alerts the teacher. The platform tells the student that the upload was received.
+---
+sequenceDiagram
+    participant S as Student
+    participant P as Learning platform
+    participant C as Plagiarism checker
+    participant T as Teacher
+    S->>P: Upload homework
+    P->>C: Send the homework
+    C-->>P: Score
+    opt Score is high
+        P->>T: Alert
+    end
+    P-->>S: Upload received
+=== sequence
+The buyer makes an offer to the seller's agent. The agent takes the offer to the seller. The seller either accepts, and the agent tells the buyer the house is theirs, or names a higher price, which the agent passes back to the buyer.
+---
+sequenceDiagram
+    participant B as Buyer
+    participant A as Seller's agent
+    participant S as Seller
+    B->>A: Make an offer
+    A->>S: Take the offer
+    alt Seller accepts
+        S-->>A: Accept
+        A-->>B: The house is yours
+    else Seller names a higher price
+        S-->>A: Higher price
+        A-->>B: Pass on the higher price
+    end
+=== sequence
+The device asks the server for the time. For each of five rounds, the device sends a timestamp and the server replies with its own timestamp. Afterwards the device reports the measured offset to the monitoring server.
+---
+sequenceDiagram
+    participant D as Device
+    participant S as Server
+    participant M as Monitoring server
+    loop Five rounds
+        D->>S: Timestamp
+        S-->>D: Server's timestamp
+    end
+    D->>M: Measured offset
+=== sequence
+A caller asks the operator for the sales department. The operator rings the sales department. If someone picks up, the operator connects the caller. If nobody picks up, the operator offers to take a message.
+---
+sequenceDiagram
+    participant C as Caller
+    participant O as Operator
+    participant S as Sales department
+    C->>O: Ask for the sales department
+    O->>S: Ring
+    alt Someone picks up
+        S-->>O: Answer
+        O-->>C: Connect
+    else Nobody picks up
+        O-->>C: Offer to take a message
+    end
+=== sequence
+The shopper scans an item at the self-checkout. The self-checkout asks the price server for the price and shows it. If the item is alcohol, the self-checkout calls an attendant and the attendant approves the sale. The shopper pays at the self-checkout.
+---
+sequenceDiagram
+    participant S as Shopper
+    participant C as Self-checkout
+    participant P as Price server
+    participant A as Attendant
+    S->>C: Scan an item
+    C->>P: Ask for the price
+    P-->>C: Price
+    opt Item is alcohol
+        C->>A: Call
+        A-->>C: Approve the sale
+    end
+    S->>C: Pay
+=== sequence
+The orchestrator asks the worker to run a task. If the worker finishes, it returns the result. If the worker times out, the orchestrator asks a second worker, and the second worker returns the result.
+---
+sequenceDiagram
+    participant O as Orchestrator
+    participant W as Worker
+    participant X as Second worker
+    O->>W: Run a task
+    alt Worker finishes
+        W-->>O: Result
+    else Worker times out
+        O->>X: Run the task
+        X-->>O: Result
+    end
+=== sequence
+The traveler asks the airline app to change a flight. The app asks the booking system for alternatives and shows them. If the new flight costs more, the app asks the traveler to pay the difference and the traveler pays. The app confirms the new booking.
+---
+sequenceDiagram
+    participant T as Traveler
+    participant A as Airline app
+    participant B as Booking system
+    T->>A: Change a flight
+    A->>B: Ask for alternatives
+    B-->>A: Alternatives
+    A-->>T: Show the alternatives
+    opt New flight costs more
+        A->>T: Ask to pay the difference
+        T-->>A: Pay
+    end
+    A-->>T: Confirm the new booking
+=== sequence
+The intern sends a draft to the supervisor. The supervisor sends back comments, and the intern sends a new draft. This repeats until the supervisor is satisfied. Then the supervisor forwards the draft to the client.
+---
+sequenceDiagram
+    participant I as Intern
+    participant S as Supervisor
+    participant C as Client
+    loop Until the supervisor is satisfied
+        I->>S: Draft
+        S-->>I: Comments
+    end
+    S->>C: Forward the draft
+=== sequence
+The vending kiosk sends a card payment to the acquirer. The acquirer asks the issuer to authorize it. If the issuer declines, the acquirer returns "declined" and the kiosk asks the customer for another card. If the issuer approves, the kiosk dispenses the item to the customer.
+---
+sequenceDiagram
+    participant C as Customer
+    participant K as Vending kiosk
+    participant A as Acquirer
+    participant I as Issuer
+    K->>A: Card payment
+    A->>I: Authorize
+    alt Issuer declines
+        I-->>A: Decline
+        A-->>K: Declined
+        K->>C: Ask for another card
+    else Issuer approves
+        I-->>A: Approve
+        A-->>K: Approved
+        K->>C: Dispense the item
+    end
+=== sequence
+The resident reports a broken street light on the city app. The app creates a case in the works department. The works department assigns it to a crew. When the crew reports the repair, the works department closes the case and the app notifies the resident.
+---
+sequenceDiagram
+    participant R as Resident
+    participant A as City app
+    participant W as Works department
+    participant C as Crew
+    R->>A: Report a broken street light
+    A->>W: Create a case
+    W->>C: Assign the case
+    C-->>W: Report the repair
+    W->>A: Close the case
+    A->>R: Notify

@@ -17,6 +17,8 @@
   <ItemGroup>
     <None Include="cases.ja.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="references.ja.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="cases.en.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="references.en.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
