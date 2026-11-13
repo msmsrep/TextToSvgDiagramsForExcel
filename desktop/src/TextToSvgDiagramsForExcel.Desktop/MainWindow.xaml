@@ -52,6 +52,7 @@
                         </Style>
                     </MenuItem.ItemContainerStyle>
                 </MenuItem>
+                <MenuItem Header="{res:Loc Menu_FromText}" Command="{Binding FromTextCommand}" />
             </MenuItem>
             <MenuItem Header="{res:Loc Menu_Output}">
                 <MenuItem Header="{res:Loc Menu_InsertAs}" ItemsSource="{Binding Formats}" IsEnabled="{Binding IsExcelConnected}">

@@ -19,6 +19,9 @@ public sealed record CodeResult(string Code);
 
 public sealed record Template(string Id, string Name, string Code);
 
+/// <summary>A syntax check: the diagram type, or mermaid's error and the 0-based line it points to.</summary>
+public sealed record ParseResult(bool Valid, string? Type = null, string? Message = null, int? Line = null);
+
 /// <summary>A selected cell range, as tableToMermaid's TableData.</summary>
 public sealed record TableData(
     object[][] Values,

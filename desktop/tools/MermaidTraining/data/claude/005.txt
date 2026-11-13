@@ -1,0 +1,322 @@
+=== sequence
+施主が工務店に外壁塗装の見積もりを頼む。工務店は現地を調査してから見積書を出す。施主が見積もりに同意すると、工務店は塗装業者に工事を発注する。
+---
+sequenceDiagram
+    participant C as 施主
+    participant K as 工務店
+    participant P as 塗装業者
+    C->>K: 外壁塗装の見積もりを依頼
+    K-->>C: 見積書
+    C->>K: 同意
+    K->>P: 工事を発注
+=== sequence
+記者が広報部に取材を申し込む。広報部は担当役員に日程を確認し、役員の空いている日を記者に伝える。記者が日程を決めると広報部は会議室を予約する。
+---
+sequenceDiagram
+    participant R as 記者
+    participant P as 広報部
+    participant E as 担当役員
+    R->>P: 取材を申し込む
+    P->>E: 日程を確認
+    E-->>P: 空いている日
+    P-->>R: 空いている日を伝える
+    R->>P: 日程を決める
+=== sequence
+担当者が翻訳会社に原稿を送って翻訳を依頼する。翻訳会社は翻訳者に割り振り、翻訳者が訳文を納品する。翻訳会社はチェッカーに確認させてから担当者に納品する。
+---
+sequenceDiagram
+    participant T as 担当者
+    participant C as 翻訳会社
+    participant W as 翻訳者
+    participant K as チェッカー
+    T->>C: 原稿を送って翻訳を依頼
+    C->>W: 割り振る
+    W-->>C: 訳文を納品
+    C->>K: 確認を依頼
+    K-->>C: 確認済み
+    C-->>T: 納品
+=== sequence
+利用者が引っ越し一括見積もりサイトに荷物の量を入力すると、サイトは3社の引っ越し業者に依頼を流す。各業者はサイト経由で見積額を返し、サイトが利用者に一覧で見せる。
+---
+sequenceDiagram
+    participant U as 利用者
+    participant S as 一括見積もりサイト
+    participant M as 引っ越し業者
+    U->>S: 荷物の量を入力
+    S->>M: 依頼を流す
+    M-->>S: 見積額
+    S-->>U: 一覧で見せる
+=== sequence
+加入希望者が保険代理店で申込書を書く。代理店は保険会社に申し込みを送り、保険会社は告知内容を審査する。審査に通ると保険会社は保険証券を加入者に郵送する。
+---
+sequenceDiagram
+    participant A as 加入希望者
+    participant D as 保険代理店
+    participant I as 保険会社
+    A->>D: 申込書を書く
+    D->>I: 申し込みを送る
+    I-->>A: 保険証券を郵送
+=== sequence
+住民がマイナポータルで転出届を出すと、旧住所の役所に届が送られる。役所は内容を確認して受理し、住民に受理のメールを送る。住民は新住所の役所に転入届を出す。
+---
+sequenceDiagram
+    participant R as 住民
+    participant M as マイナポータル
+    participant O as 旧住所の役所
+    participant N as 新住所の役所
+    R->>M: 転出届を出す
+    M->>O: 届を送る
+    O-->>R: 受理のメール
+    R->>N: 転入届を出す
+=== sequence
+担任が連絡アプリで保護者に遠足のお知らせを送る。保護者は参加の可否を回答し、アプリが集計して担任に一覧を返す。
+---
+sequenceDiagram
+    participant T as 担任
+    participant A as 連絡アプリ
+    participant P as 保護者
+    T->>A: 遠足のお知らせを送る
+    A->>P: お知らせ
+    P->>A: 参加の可否を回答
+    A-->>T: 集計した一覧
+=== sequence
+利用者が図書館のサイトで本を予約する。返却された本がカウンターに戻ると、図書館システムが取り置きを登録し、利用者に「ご用意できました」とメールする。利用者がカウンターで受け取る。
+---
+sequenceDiagram
+    participant U as 利用者
+    participant W as 図書館のサイト
+    participant S as 図書館システム
+    participant C as カウンター
+    U->>W: 本を予約
+    W->>S: 予約を登録
+    C->>S: 返却された本
+    S-->>U: ご用意できましたとメール
+    U->>C: 受け取る
+=== sequence
+病院の検査室は検体を外部の検査センターに送る。検査センターが分析して結果を電子データで返すと、検査室は結果を電子カルテに取り込み、主治医に通知される。
+---
+sequenceDiagram
+    participant L as 検査室
+    participant C as 検査センター
+    participant E as 電子カルテ
+    participant D as 主治医
+    L->>C: 検体を送る
+    C-->>L: 結果の電子データ
+    L->>E: 結果を取り込む
+    E->>D: 通知
+=== sequence
+家の窓センサーが異常を検知すると、ホームセキュリティ機器が警備会社の監視センターに通報する。監視センターは契約者に電話で確認し、連絡がつかなければ警備員を現場に向かわせる。
+---
+sequenceDiagram
+    participant W as 窓センサー
+    participant H as ホームセキュリティ機器
+    participant C as 監視センター
+    participant K as 契約者
+    participant G as 警備員
+    W->>H: 異常を検知
+    H->>C: 通報
+    C->>K: 電話で確認
+    alt 連絡がつかない
+        C->>G: 現場に向かわせる
+    end
+=== sequence
+3階で利用者が呼び出しボタンを押すと、ボタンは制御盤に呼び出しを送る。制御盤はいちばん近いかごを選んで3階へ動かし、着いたらドアを開ける。
+---
+sequenceDiagram
+    participant U as 利用者
+    participant B as 呼び出しボタン
+    participant C as 制御盤
+    participant K as かご
+    U->>B: 押す
+    B->>C: 呼び出しを送る
+    C->>K: 3階へ動かす
+    K-->>C: 到着
+    C->>K: ドアを開ける
+=== sequence
+外出先でスマホアプリからエアコンをつける。アプリはメーカーのクラウドに操作を送り、クラウドは家のエアコンに運転開始を指示する。エアコンは運転状態をクラウドに返し、アプリに「運転中」と表示される。
+---
+sequenceDiagram
+    participant A as スマホアプリ
+    participant C as メーカーのクラウド
+    participant E as エアコン
+    A->>C: 操作を送る
+    C->>E: 運転開始を指示
+    E-->>C: 運転状態
+    C-->>A: 運転中と表示
+=== sequence
+車の診断装置が故障コードを検出すると、車載通信機がメーカーのサーバーに送る。サーバーは最寄りの販売店に点検の案内を依頼し、販売店がオーナーに電話する。
+---
+sequenceDiagram
+    participant D as 診断装置
+    participant T as 車載通信機
+    participant S as メーカーのサーバー
+    participant H as 販売店
+    participant O as オーナー
+    D->>T: 故障コード
+    T->>S: 送る
+    S->>H: 点検の案内を依頼
+    H->>O: 電話
+=== sequence
+配送管理システムがドローンに配送ルートを送る。ドローンは倉庫で荷物を積んで飛び立ち、目的地に着くと荷物を降ろして配送完了を報告する。配送管理システムは受取人に到着を通知する。
+---
+sequenceDiagram
+    participant S as 配送管理システム
+    participant D as ドローン
+    participant U as 受取人
+    S->>D: 配送ルートを送る
+    D-->>S: 配送完了を報告
+    S->>U: 到着を通知
+=== sequence
+ロボット掃除機が掃除を終えると、作った部屋の地図をクラウドにアップロードする。クラウドは地図を保存し、利用者のアプリに最新の地図を送る。利用者がアプリで立入禁止エリアを設定すると、クラウド経由で掃除機に反映される。
+---
+sequenceDiagram
+    participant R as ロボット掃除機
+    participant C as クラウド
+    participant A as アプリ
+    R->>C: 部屋の地図をアップロード
+    C->>A: 最新の地図
+    A->>C: 立入禁止エリアを設定
+    C->>R: 反映
+=== sequence
+・客がフロントに電話でタオルを頼む
+・フロントが客室係に連絡する
+・客室係が部屋にタオルを届ける
+・客室係がフロントに完了を報告する
+---
+sequenceDiagram
+    participant G as 客
+    participant F as フロント
+    participant H as 客室係
+    G->>F: タオルを頼む
+    F->>H: 連絡
+    H->>G: タオルを届ける
+    H-->>F: 完了を報告
+=== sequence
+営業が見積書を作って課長に確認を頼む。課長は値引き率が10%を超えていれば部長に回し、超えていなければその場で承認する。承認された見積書を営業が顧客に送る。
+---
+sequenceDiagram
+    participant S as 営業
+    participant K as 課長
+    participant B as 部長
+    participant C as 顧客
+    S->>K: 見積書の確認を依頼
+    alt 値引き率が10%を超える
+        K->>B: 回す
+        B-->>S: 承認
+    else 10%以下
+        K-->>S: 承認
+    end
+    S->>C: 見積書を送る
+=== sequence
+スマホのアプリがAPIサーバーにログイン要求を送る。APIサーバーはユーザーDBでパスワードを照合し、正しければアクセストークンを、誤っていれば401エラーを返す。
+---
+sequenceDiagram
+    participant A as アプリ
+    participant S as APIサーバー
+    participant D as ユーザーDB
+    A->>S: ログイン要求
+    S->>D: パスワードを照合
+    D-->>S: 照合結果
+    alt 正しい
+        S-->>A: アクセストークン
+    else 誤り
+        S-->>A: 401エラー
+    end
+=== sequence
+司会が会議を始めると、議事録アプリが音声を文字起こしサービスに送り続ける。会議が終わると、議事録アプリは要約サービスに全文を渡し、要約を参加者全員にメールする。
+---
+sequenceDiagram
+    participant H as 司会
+    participant A as 議事録アプリ
+    participant T as 文字起こしサービス
+    participant S as 要約サービス
+    participant P as 参加者
+    H->>A: 会議を始める
+    loop 会議中
+        A->>T: 音声を送る
+        T-->>A: 文字起こし
+    end
+    A->>S: 全文を渡す
+    S-->>A: 要約
+    A->>P: 要約をメール
+=== sequence
+部下が上司にチャットで休暇の相談をする。上司はチームのカレンダーを確認してから「その日は大丈夫」と返す。部下は勤怠システムで休暇を申請し、上司が承認する。
+---
+sequenceDiagram
+    participant S as 部下
+    participant B as 上司
+    participant K as チームのカレンダー
+    participant T as 勤怠システム
+    S->>B: 休暇の相談
+    B->>K: 確認
+    B-->>S: その日は大丈夫
+    S->>T: 休暇を申請
+    B->>T: 承認
+=== sequence
+Aさん → Bさん: 資料を送る
+Bさん → Cさん: レビューを依頼
+Cさん → Bさん: コメントを返す
+Bさん → Aさん: 修正点を伝える
+---
+sequenceDiagram
+    participant A as Aさん
+    participant B as Bさん
+    participant C as Cさん
+    A->>B: 資料を送る
+    B->>C: レビューを依頼
+    C-->>B: コメントを返す
+    B-->>A: 修正点を伝える
+=== sequence
+監視サーバーは30秒ごとにWebサーバーにヘルスチェックを送る。3回続けて応答がなければ、監視サーバーはロードバランサーにそのWebサーバーを外すよう指示し、担当者にメールする。
+---
+sequenceDiagram
+    participant M as 監視サーバー
+    participant W as Webサーバー
+    participant L as ロードバランサー
+    participant T as 担当者
+    loop 30秒ごと
+        M->>W: ヘルスチェック
+        W-->>M: 応答
+    end
+    opt 3回続けて応答がない
+        M->>L: Webサーバーを外す
+        M->>T: メール
+    end
+=== sequence
+お客様がカスタマーセンターに解約を申し出る。オペレーターは契約システムで契約内容を確認し、違約金がかかることを伝える。お客様が了承するとオペレーターは解約を登録し、契約システムが解約通知書を郵送する。
+---
+sequenceDiagram
+    participant C as お客様
+    participant O as オペレーター
+    participant S as 契約システム
+    C->>O: 解約を申し出る
+    O->>S: 契約内容を確認
+    S-->>O: 契約内容
+    O-->>C: 違約金がかかると伝える
+    C->>O: 了承
+    O->>S: 解約を登録
+    S->>C: 解約通知書を郵送
+=== sequence
+注文が入ると、レジ端末がキッチンディスプレイに注文を表示する。調理担当が料理を作り終えて完了ボタンを押すと、キッチンディスプレイはホールのタブレットに配膳を知らせ、ホール担当が客席に運ぶ。
+---
+sequenceDiagram
+    participant R as レジ端末
+    participant K as キッチンディスプレイ
+    participant C as 調理担当
+    participant T as ホールのタブレット
+    participant H as ホール担当
+    R->>K: 注文を表示
+    C->>K: 完了ボタンを押す
+    K->>T: 配膳を知らせる
+    T->>H: 配膳の通知
+=== sequence
+開発者がステージング環境へのデプロイをチャットボットに頼む。チャットボットはCIサーバーにデプロイを依頼し、CIサーバーはデプロイを終えると結果をチャットボットに返す。チャットボットはチャンネルに結果を投稿する。
+---
+sequenceDiagram
+    participant D as 開発者
+    participant B as チャットボット
+    participant C as CIサーバー
+    D->>B: ステージングへのデプロイを依頼
+    B->>C: デプロイを依頼
+    C-->>B: 結果
+    B-->>D: チャンネルに結果を投稿

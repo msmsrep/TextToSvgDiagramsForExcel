@@ -1,0 +1,632 @@
+[
+  {
+    "id": "flow-refund-request",
+    "type": "flowchart",
+    "text": "A customer submits a refund request. Support checks whether the purchase was made within 30 days. If it was, the refund is approved and the money is returned to the card. If not, the request is declined and the customer is notified.",
+    "keywords": ["refund", "30 days", "card", "declin"],
+    "branches": 1
+  },
+  {
+    "id": "flow-pr-merge",
+    "type": "flowchart",
+    "text": "When a pull request is opened, the CI runs the tests. If the tests fail, the author fixes the code and pushes again. If they pass, a reviewer reads the change. Once the reviewer approves, the pull request is merged; otherwise the author makes the requested changes and the review starts over.",
+    "keywords": ["pull request", "test", "review", "merge"],
+    "branches": 2
+  },
+  {
+    "id": "flow-purchase-approval",
+    "type": "flowchart",
+    "text": "Purchase requests under $500 are approved automatically. Requests from $500 to $5,000 need the manager's approval, and anything above $5,000 goes to the finance director. Approved requests are sent to purchasing, which places the order.",
+    "keywords": ["$500", "manager", "finance director", "purchasing", "order"],
+    "branches": 1
+  },
+  {
+    "id": "flow-job-application",
+    "type": "flowchart",
+    "text": "Applicants send a CV. HR screens it and invites suitable candidates to a phone interview. Those who pass go on to an on-site interview, and the hiring manager then decides whether to make an offer. Anyone who is turned down at any stage gets a rejection email.",
+    "keywords": ["CV", "phone interview", "on-site interview", "offer", "rejection"],
+    "branches": 3
+  },
+  {
+    "id": "flow-incident-response",
+    "type": "flowchart",
+    "text": "When an alert fires, the on-call engineer acknowledges it and checks the dashboard. If it is a false alarm, the alert is closed. If it is a real incident, the engineer opens an incident channel, fixes the problem, and writes a postmortem afterwards.",
+    "keywords": ["alert", "dashboard", "false alarm", "incident channel", "postmortem"],
+    "branches": 1
+  },
+  {
+    "id": "flow-invoice-matching",
+    "type": "flowchart",
+    "text": "Accounts payable receives an invoice and matches it against the purchase order. If the amounts match, the invoice is scheduled for payment on the next payment run. If they do not match, it is sent back to the supplier for correction.",
+    "keywords": ["invoice", "purchase order", "payment", "supplier"],
+    "branches": 1
+  },
+  {
+    "id": "flow-vacation-request",
+    "type": "flowchart",
+    "text": "An employee enters a vacation request in the HR system. The manager reviews it. If approved, the days are deducted from the employee's balance and the team calendar is updated. If rejected, the employee is told the reason.",
+    "keywords": ["vacation request", "manager", "balance", "calendar", "reason"],
+    "branches": 1
+  },
+  {
+    "id": "flow-support-ticket",
+    "type": "flowchart",
+    "text": "A new support ticket is first checked for duplicates. Duplicates are merged into the existing ticket. Otherwise the ticket is given a priority. Urgent tickets are assigned to the on-call agent right away, and the rest go into the queue.",
+    "keywords": ["duplicate", "merge", "priority", "on-call agent", "queue"],
+    "branches": 2
+  },
+  {
+    "id": "flow-loan-check",
+    "type": "flowchart",
+    "text": "The bank checks the applicant's credit score. A score below 600 is rejected. For scores of 600 or more, the bank verifies the income. If the income is sufficient the loan is approved; if not, the applicant is asked for a guarantor.",
+    "keywords": ["credit score", "600", "income", "guarantor"],
+    "branches": 2
+  },
+  {
+    "id": "flow-onboarding",
+    "type": "flowchart",
+    "text": "Onboarding a new hire: first HR sends the contract. Then IT prepares a laptop and accounts. Next the manager assigns a buddy. Finally, on the first day, the new hire attends orientation.",
+    "keywords": ["contract", "laptop", "buddy", "orientation"],
+    "branches": 0
+  },
+  {
+    "id": "flow-publish-article",
+    "type": "flowchart",
+    "text": "A writer drafts an article and submits it to the editor. The editor either approves it or sends it back with comments. The writer revises until the editor approves. Approved articles are proofread and then published.",
+    "keywords": ["draft", "editor", "revis", "proofread", "publish"],
+    "branches": 1
+  },
+  {
+    "id": "flow-stock-reorder",
+    "type": "flowchart",
+    "text": "Every morning the system checks the stock level of each item. If the stock is below the reorder point, it creates a purchase order and emails the supplier. Otherwise nothing happens until the next check.",
+    "keywords": ["stock level", "reorder point", "purchase order", "supplier"],
+    "branches": 1
+  },
+  {
+    "id": "flow-signup-verify",
+    "type": "flowchart",
+    "text": "The user fills in the sign-up form. The server checks whether the email address is already registered. If it is, an error is shown. If not, the server creates the account and sends a verification email. The account is activated when the user clicks the link.",
+    "keywords": ["sign-up form", "email", "error", "account", "verification"],
+    "branches": 1
+  },
+  {
+    "id": "flow-deploy-pipeline",
+    "type": "flowchart",
+    "text": "After a merge to main, the pipeline builds a Docker image and deploys it to staging. Smoke tests run against staging. If they pass, the release manager approves and the image is deployed to production. If they fail, the deployment stops and the team is notified in Slack.",
+    "keywords": ["Docker image", "staging", "smoke test", "production", "Slack"],
+    "branches": 1
+  },
+  {
+    "id": "flow-password-reset",
+    "type": "flowchart",
+    "text": "The user clicks 'Forgot password' and enters an email address. If the address belongs to an account, the system emails a reset link that is valid for one hour. The user opens the link and sets a new password. If the link has expired, the user has to request a new one.",
+    "keywords": ["Forgot password", "email", "reset link", "new password", "expired"],
+    "branches": 1
+  },
+  {
+    "id": "flow-backup-job",
+    "type": "flowchart",
+    "text": "A nightly job starts at 2 a.m. It dumps the database, compresses the dump, and uploads it to object storage. If the upload fails, it retries up to three times and then pages the administrator. On success it deletes backups older than 30 days.",
+    "keywords": ["2 a.m.", "dump", "compress", "upload", "administrator", "30 days"],
+    "branches": 1
+  },
+  {
+    "id": "flow-order-fulfillment",
+    "type": "flowchart",
+    "text": "The warehouse receives an order from the online shop. If an item is out of stock, the order is put on hold and customer service contacts the buyer. Otherwise a picker collects the items and a packer boxes them. Packed orders are handed to the courier.",
+    "keywords": ["order", "picker", "packer", "out of stock", "hold", "courier"],
+    "branches": 1
+  },
+  {
+    "id": "flow-expense-report",
+    "type": "flowchart",
+    "text": "Employees upload receipts to the expense tool. The tool flags any report with a receipt over the daily limit. Flagged reports go to the finance team for a manual check; the others are approved by the manager. Approved reports are reimbursed with the next payroll.",
+    "keywords": ["receipt", "daily limit", "finance team", "manager", "payroll"],
+    "branches": 1
+  },
+  {
+    "id": "flow-spam-filter",
+    "type": "flowchart",
+    "text": "Incoming mail is scanned for viruses. Infected messages are deleted. Clean messages are scored by the spam filter: a score above 5 goes to the junk folder, and everything else is delivered to the inbox.",
+    "keywords": ["virus", "delete", "spam", "junk folder", "inbox"],
+    "branches": 2
+  },
+  {
+    "id": "flow-chat-routing",
+    "type": "flowchart",
+    "text": "A visitor opens the chat widget. The bot asks what the question is about. Billing questions are routed to the billing team, technical questions to support, and everything else to the general queue. If no agent is available, the visitor is offered a callback.",
+    "keywords": ["chat widget", "billing", "support", "general queue", "callback"],
+    "branches": 1
+  },
+  {
+    "id": "flow-vending-machine",
+    "type": "flowchart",
+    "text": "Insert coins and choose a drink. If the amount is not enough, the machine shows the missing amount and waits for more coins. If the drink is sold out, it returns the coins. Otherwise it drops the drink and gives change.",
+    "keywords": ["coin", "drink", "sold out", "change"],
+    "branches": 2
+  },
+  {
+    "id": "flow-order-states",
+    "type": "flowchart",
+    "text": "An order starts as Pending. When payment is confirmed it becomes Paid, and when it leaves the warehouse it becomes Shipped. A Shipped order becomes Delivered on arrival. A Pending or Paid order can be Cancelled.",
+    "keywords": ["Pending", "Paid", "Shipped", "Delivered", "Cancelled"],
+    "branches": 2
+  },
+  {
+    "id": "flow-thermostat",
+    "type": "flowchart",
+    "text": "The thermostat reads the room temperature every minute. Below 19 degrees it turns the heater on. Above 22 degrees it turns the heater off. In between it leaves the heater as it is.",
+    "keywords": ["temperature", "19", "22", "heater"],
+    "branches": 1
+  },
+  {
+    "id": "flow-elevator-door",
+    "type": "flowchart",
+    "text": "The door opens when the elevator arrives. It stays open for five seconds and then starts to close. If the sensor detects someone in the doorway, the door opens again. Once the door is fully closed, the elevator moves.",
+    "keywords": ["door", "five seconds", "sensor", "elevator moves"],
+    "branches": 1
+  },
+  {
+    "id": "flow-document-status",
+    "type": "flowchart",
+    "text": "A document is a Draft until the author submits it, which makes it In Review. The reviewer can approve it, making it Published, or return it, making it a Draft again. Published documents can be Archived.",
+    "keywords": ["Draft", "In Review", "Published", "Archived"],
+    "branches": 1
+  },
+  {
+    "id": "flow-washer-cycle",
+    "type": "flowchart",
+    "text": "The washer fills with water, washes for 30 minutes, drains, and spins. If the load is unbalanced during the spin, it stops, adds water to redistribute the clothes, and spins again. When the spin finishes it beeps and unlocks the door.",
+    "keywords": ["fill", "wash", "drain", "spin", "unbalanced", "door"],
+    "branches": 1
+  },
+  {
+    "id": "flow-pancakes",
+    "type": "flowchart",
+    "text": "Mix flour, sugar and baking powder. Whisk in milk and an egg. Heat a pan and pour in some batter. Flip when bubbles appear. Serve with syrup.",
+    "keywords": ["flour", "milk", "pan", "flip", "syrup"],
+    "branches": 0
+  },
+  {
+    "id": "flow-tea",
+    "type": "flowchart",
+    "text": "Boil water. Warm the pot. Add one teaspoon of leaves per cup. Pour in the water and steep for three minutes. Pour through a strainer.",
+    "keywords": ["boil", "pot", "leaves", "steep", "strainer"],
+    "branches": 0
+  },
+  {
+    "id": "flow-flat-tire",
+    "type": "flowchart",
+    "text": "Flat tire: pull over and turn on the hazard lights. Check whether you have a spare. If you do, jack up the car, swap the wheel and drive to a garage. If not, call roadside assistance.",
+    "keywords": ["hazard lights", "spare", "jack", "garage", "roadside assistance"],
+    "branches": 1
+  },
+  {
+    "id": "flow-plant-watering",
+    "type": "flowchart",
+    "text": "Stick a finger into the soil. If it feels dry, water the plant until water runs out of the bottom. If it is still moist, check again in two days.",
+    "keywords": ["soil", "dry", "water", "two days"],
+    "branches": 1
+  },
+  {
+    "id": "flow-morning-run",
+    "type": "flowchart",
+    "text": "Check the weather. If it's raining, do a workout indoors. Otherwise put on running shoes, warm up for five minutes and run for thirty. Stretch afterwards either way.",
+    "keywords": ["weather", "indoors", "running shoes", "warm up", "stretch"],
+    "branches": 1
+  },
+  {
+    "id": "flow-router-reset",
+    "type": "flowchart",
+    "text": "No internet? Restart the router and wait two minutes. If it works, you're done. If it still doesn't, check whether the cable is loose. Plug it in if it is; otherwise call the provider.",
+    "keywords": ["router", "two minutes", "cable", "provider"],
+    "branches": 2
+  },
+  {
+    "id": "flow-arrow-pipeline",
+    "type": "flowchart",
+    "text": "Lead → Qualified → Proposal → Negotiation → Won",
+    "keywords": ["Lead", "Qualified", "Proposal", "Negotiation", "Won"],
+    "branches": 0
+  },
+  {
+    "id": "flow-arrow-branch",
+    "type": "flowchart",
+    "text": "Submit form -> Validate input -> valid? yes: Save record -> Show confirmation; no: Show errors",
+    "keywords": ["Submit form", "Validate", "Save record", "confirmation", "errors"],
+    "branches": 1
+  },
+  {
+    "id": "flow-numbered-setup",
+    "type": "flowchart",
+    "text": "1. Clone the repository\n2. Install dependencies\n3. Copy .env.example to .env\n4. Run the migrations\n5. Start the dev server",
+    "keywords": ["Clone", "dependencies", ".env", "migrations", "dev server"],
+    "branches": 0
+  },
+  {
+    "id": "flow-bullets-release",
+    "type": "flowchart",
+    "text": "Release checklist\n- Freeze the branch\n- Run the full test suite\n- Update the changelog\n- Tag the release\n- Announce in the team channel",
+    "keywords": ["Freeze", "test suite", "changelog", "Tag", "Announce"],
+    "branches": 0
+  },
+  {
+    "id": "flow-arrow-loop",
+    "type": "flowchart",
+    "text": "Plan -> Do -> Check -> Act -> Plan",
+    "keywords": ["Plan", "Do", "Check", "Act"],
+    "branches": 0
+  },
+  {
+    "id": "flow-numbered-gate",
+    "type": "flowchart",
+    "text": "1. Scan the badge\n2. If the badge is valid, open the gate\n3. If not, call security\n4. Log the entry attempt in both cases",
+    "keywords": ["badge", "gate", "security", "Log"],
+    "branches": 1
+  },
+  {
+    "id": "flow-org-chart",
+    "type": "flowchart",
+    "text": "The CEO has three direct reports: the CTO, the CFO and the VP of Sales. Engineering and IT report to the CTO. Accounting reports to the CFO.",
+    "keywords": ["CEO", "CTO", "CFO", "VP of Sales", "Engineering", "IT", "Accounting"],
+    "branches": 0
+  },
+  {
+    "id": "flow-folder-tree",
+    "type": "flowchart",
+    "text": "Repository layout\n- app\n  - models\n  - views\n- config\n- tests",
+    "keywords": ["app", "models", "views", "config", "tests"],
+    "branches": 0
+  },
+  {
+    "id": "flow-product-categories",
+    "type": "flowchart",
+    "text": "The store sells electronics, clothing and books. Electronics are split into phones and laptops. Clothing is split into men's and women's.",
+    "keywords": ["Electronics", "Clothing", "Books", "Phones", "Laptops", "Men", "Women"],
+    "branches": 0
+  },
+  {
+    "id": "flow-site-map",
+    "type": "flowchart",
+    "text": "Site map: Home links to Products, Pricing and Blog. Products has pages for Features and Integrations. Pricing has a Contact sales page.",
+    "keywords": ["Home", "Products", "Pricing", "Blog", "Features", "Integrations", "Contact sales"],
+    "branches": 0
+  },
+  {
+    "id": "flow-course-outline",
+    "type": "flowchart",
+    "text": "The course has three modules: Basics, Data and Deployment. Basics covers syntax and functions. Deployment covers containers and monitoring.",
+    "keywords": ["Basics", "Data", "Deployment", "Syntax", "Functions", "Containers", "Monitoring"],
+    "branches": 0
+  },
+  {
+    "id": "flow-login-lockout",
+    "type": "flowchart",
+    "text": "The user enters a password. If it is correct, the user is logged in. If it is wrong, the failure count goes up by one. After three failures the account is locked for 15 minutes; before that, the user can try again.",
+    "keywords": ["password", "logged in", "failure count", "locked", "15 minutes"],
+    "branches": 2
+  },
+  {
+    "id": "flow-checkout",
+    "type": "flowchart",
+    "text": "At checkout the customer chooses delivery or pickup. For delivery, they enter an address and the shipping fee is added. For pickup, they choose a store. Either way they then pay, and a receipt is emailed.",
+    "keywords": ["delivery", "pickup", "address", "shipping fee", "store", "receipt"],
+    "branches": 1
+  },
+  {
+    "id": "flow-bug-triage",
+    "type": "flowchart",
+    "text": "A reported bug is first reproduced. If it cannot be reproduced, more information is requested from the reporter. Reproduced bugs are rated by severity: critical bugs are fixed immediately, major bugs go into the current sprint, and minor ones go to the backlog.",
+    "keywords": ["reproduce", "more information", "critical", "sprint", "backlog"],
+    "branches": 2
+  },
+  {
+    "id": "flow-csv-import",
+    "type": "flowchart",
+    "text": "For each row in the CSV file, the importer checks the required fields. Rows with missing fields are written to an error file. Valid rows are inserted into the database. When all rows are processed, a summary is emailed.",
+    "keywords": ["row", "required fields", "error file", "database", "summary"],
+    "branches": 2
+  },
+  {
+    "id": "flow-insurance-claim",
+    "type": "flowchart",
+    "text": "The policyholder files a claim with photos. An adjuster reviews it. Claims under $1,000 are paid out directly. Larger claims require an inspection; after the inspection the claim is either paid or denied, and a denied claim can be appealed.",
+    "keywords": ["claim", "adjuster", "$1,000", "inspection", "denied", "appeal"],
+    "branches": 2
+  },
+  {
+    "id": "flow-feature-flag",
+    "type": "flowchart",
+    "text": "A request arrives. If the feature flag is off, the old checkout is shown. If it is on, the user is checked against the beta list: beta users see the new checkout, and everyone else sees the old one.",
+    "keywords": ["feature flag", "old checkout", "beta list", "new checkout"],
+    "branches": 2
+  },
+  {
+    "id": "flow-item-return",
+    "type": "flowchart",
+    "text": "To return an item, the customer prints a label and ships the item back. The warehouse inspects it. If it is unused, a full refund is issued. If it is damaged, the customer gets store credit for half the price.",
+    "keywords": ["label", "warehouse", "inspect", "full refund", "store credit"],
+    "branches": 1
+  },
+  {
+    "id": "seq-login-api",
+    "type": "sequence",
+    "text": "The browser sends the username and password to the web server. The web server asks the auth service to verify them. The auth service returns a token, and the web server sets a session cookie and returns the home page to the browser.",
+    "keywords": ["Browser", "Web server", "Auth service", "token", "cookie"],
+    "participants": 3
+  },
+  {
+    "id": "seq-food-delivery",
+    "type": "sequence",
+    "text": "The customer places an order in the app. The app sends the order to the restaurant, and the restaurant confirms it. The app then asks a courier to pick it up. The courier delivers the food to the customer.",
+    "keywords": ["Customer", "App", "Restaurant", "Courier", "order"],
+    "participants": 4
+  },
+  {
+    "id": "seq-card-payment",
+    "type": "sequence",
+    "text": "The shopper pays by card on the merchant's site. The merchant sends the charge to the payment gateway, which asks the issuing bank for authorization. The bank approves, the gateway returns the result to the merchant, and the merchant shows a confirmation to the shopper.",
+    "keywords": ["Shopper", "Merchant", "Payment gateway", "bank", "authoriz"],
+    "participants": 4
+  },
+  {
+    "id": "seq-hotel-booking",
+    "type": "sequence",
+    "text": "A guest asks the travel agent for a room. The agent checks availability with the hotel, and the hotel replies that a room is free. The agent quotes the price to the guest. The guest confirms, and the agent books the room with the hotel.",
+    "keywords": ["Guest", "Travel agent", "Hotel", "price", "book"],
+    "participants": 3
+  },
+  {
+    "id": "seq-code-review",
+    "type": "sequence",
+    "text": "Dana asks Luis to review her pull request. Luis leaves comments. Dana pushes fixes and asks Luis to look again. Luis approves.",
+    "keywords": ["Dana", "Luis", "review", "comments", "approve"],
+    "participants": 2
+  },
+  {
+    "id": "seq-cache-lookup",
+    "type": "sequence",
+    "text": "The client asks the API for a product. The API looks it up in the cache. If the cache has it, the cache returns the product. Otherwise the API queries the database, the database returns the product, and the API stores it in the cache. Finally the API returns the product to the client.",
+    "keywords": ["Client", "API", "Cache", "Database", "product"],
+    "participants": 4
+  },
+  {
+    "id": "seq-clinic-appointment",
+    "type": "sequence",
+    "text": "The patient calls the receptionist to book an appointment. The receptionist asks the calendar system for free slots, and the system returns them. The receptionist offers a slot to the patient, the patient accepts, and the receptionist books it in the calendar system.",
+    "keywords": ["Patient", "Receptionist", "Calendar system", "slot", "book"],
+    "participants": 3
+  },
+  {
+    "id": "seq-payment-webhook",
+    "type": "sequence",
+    "text": "The customer pays through Stripe. Stripe sends a webhook to our backend. The backend marks the order as paid in the database and asks the email service to send a receipt. The email service sends the receipt to the customer.",
+    "keywords": ["Customer", "Stripe", "Backend", "Database", "Email service", "receipt"],
+    "participants": 5
+  },
+  {
+    "id": "seq-two-factor",
+    "type": "sequence",
+    "text": "The user enters a password in the app. The app asks the auth server to send a code, and the auth server texts the code to the user. The user types the code into the app. The app verifies the code with the auth server, and the auth server confirms.",
+    "keywords": ["User", "App", "Auth server", "code", "password"],
+    "participants": 3
+  },
+  {
+    "id": "seq-arrow-load-balancer",
+    "type": "sequence",
+    "text": "Client -> Load balancer: HTTPS request\nLoad balancer -> App server: forward request\nApp server -> Load balancer: response\nLoad balancer -> Client: response",
+    "keywords": ["Client", "Load balancer", "App server", "request", "response"],
+    "participants": 3
+  },
+  {
+    "id": "seq-numbered-assignment",
+    "type": "sequence",
+    "text": "1. The teacher posts the assignment to the students.\n2. The students submit their work to the teacher.\n3. The teacher sends grades to the students.\n4. The teacher reports the grades to the office.",
+    "keywords": ["Teacher", "Students", "Office", "assignment", "grades"],
+    "participants": 3
+  },
+  {
+    "id": "seq-ride-share",
+    "type": "sequence",
+    "text": "The rider requests a ride in the app. The app offers the trip to a nearby driver. The driver accepts, and the app tells the rider the car's arrival time. After the trip, the app charges the rider and pays the driver.",
+    "keywords": ["Rider", "App", "Driver", "trip", "arrival time"],
+    "participants": 3
+  },
+  {
+    "id": "seq-purchase-order",
+    "type": "sequence",
+    "text": "The buyer sends a purchase order to the supplier. The supplier confirms it and ships the goods to the warehouse. The warehouse tells the buyer that the goods have arrived. The supplier sends an invoice to the buyer, and the buyer pays the supplier.",
+    "keywords": ["Buyer", "Supplier", "Warehouse", "purchase order", "invoice"],
+    "participants": 3
+  },
+  {
+    "id": "seq-social-login",
+    "type": "sequence",
+    "text": "The user clicks 'Sign in with Google' in the app. The app redirects the user to Google. The user logs in at Google, and Google sends an authorization code to the app. The app exchanges the code with Google for an access token.",
+    "keywords": ["User", "App", "Google", "authorization code", "access token"],
+    "participants": 3
+  },
+  {
+    "id": "seq-smart-home",
+    "type": "sequence",
+    "text": "The motion sensor reports movement to the hub. The hub asks the camera for a snapshot, and the camera returns the image. The hub sends an alert with the image to the owner's phone.",
+    "keywords": ["Motion sensor", "Hub", "Camera", "phone", "snapshot", "alert"],
+    "participants": 4
+  },
+  {
+    "id": "seq-library-hold",
+    "type": "sequence",
+    "text": "A member asks the librarian for a book. The librarian checks the catalog system, which answers that the book is on loan. The librarian places a hold in the catalog system and tells the member the expected return date.",
+    "keywords": ["Member", "Librarian", "Catalog system", "hold", "return date"],
+    "participants": 3
+  },
+  {
+    "id": "seq-ci-deploy",
+    "type": "sequence",
+    "text": "A developer pushes a commit to GitLab. GitLab triggers the runner. The runner builds the app and reports success to GitLab. GitLab then deploys the build to the staging server and notifies the developer.",
+    "keywords": ["Developer", "GitLab", "Runner", "Staging server", "commit", "build"],
+    "participants": 4
+  },
+  {
+    "id": "seq-replacement",
+    "type": "sequence",
+    "text": "A customer emails the support agent about a broken product. The agent asks the warehouse whether a replacement is in stock, and the warehouse confirms. The agent tells the customer that a replacement is on its way. The warehouse ships the replacement to the customer.",
+    "keywords": ["Customer", "Support agent", "Warehouse", "replacement", "stock"],
+    "participants": 3
+  },
+  {
+    "id": "seq-parking-gate",
+    "type": "sequence",
+    "text": "The driver presses the button at the gate. The gate asks the parking server for a ticket number, and the server returns one. The gate prints the ticket and hands it to the driver.",
+    "keywords": ["Driver", "Gate", "Parking server", "ticket"],
+    "participants": 3
+  },
+  {
+    "id": "seq-coupon",
+    "type": "sequence",
+    "text": "The shopper adds an item to the cart, and the shop shows the total. If the shopper has a coupon, the shopper enters it and the shop shows the discounted total. Then the shopper checks out, and the shop sends a confirmation.",
+    "keywords": ["Shopper", "Shop", "cart", "coupon", "total", "confirmation"],
+    "participants": 2
+  },
+  {
+    "id": "seq-video-polling",
+    "type": "sequence",
+    "text": "The client uploads a video to the server. The server starts a transcoding job on the worker. Every five seconds, until the job is done, the client asks the server for the status and the server answers. When the worker reports that the job is finished, the server sends the client the download link.",
+    "keywords": ["Client", "Server", "Worker", "video", "status", "download link"],
+    "participants": 3
+  },
+  {
+    "id": "seq-interview-scheduling",
+    "type": "sequence",
+    "text": "The recruiter asks the candidate for available times. The candidate replies with three options. The recruiter asks the interviewer to pick one, and the interviewer chooses. The recruiter sends the candidate a calendar invite.",
+    "keywords": ["Recruiter", "Candidate", "Interviewer", "times", "invite"],
+    "participants": 3
+  },
+  {
+    "id": "seq-order-services",
+    "type": "sequence",
+    "text": "The gateway sends a new order to the order service. The order service asks the inventory service to reserve the items, and the inventory service replies OK. Then the order service asks the payment service to charge the card, and the payment service replies OK. The order service returns the order number to the gateway.",
+    "keywords": ["Gateway", "Order service", "Inventory service", "Payment service", "reserve", "charge"],
+    "participants": 4
+  },
+  {
+    "id": "seq-restaurant",
+    "type": "sequence",
+    "text": "The guest orders a steak from the waiter. The waiter passes the order to the kitchen. When the steak is ready, the kitchen calls the waiter, and the waiter serves the guest. The guest asks for the bill, and the waiter brings it.",
+    "keywords": ["Guest", "Waiter", "Kitchen", "steak", "bill"],
+    "participants": 3
+  },
+  {
+    "id": "seq-blood-test",
+    "type": "sequence",
+    "text": "First the nurse takes a blood sample from the patient and sends it to the lab. Next the lab runs the test and sends the result to the doctor. Then the doctor explains the result to the patient.",
+    "keywords": ["Nurse", "Patient", "Lab", "Doctor", "blood sample", "result"],
+    "participants": 4
+  },
+  {
+    "id": "seq-bank-transfer",
+    "type": "sequence",
+    "text": "Alice tells her banking app to send $200 to Bob. The app submits the transfer to Alice's bank. Alice's bank sends the money to Bob's bank, and Bob's bank notifies Bob. Alice's bank confirms the transfer to the app, and the app shows Alice a receipt.",
+    "keywords": ["Alice", "Banking app", "Alice's bank", "Bob's bank", "Bob", "$200", "receipt"],
+    "participants": 5
+  },
+  {
+    "id": "seq-shoe-size",
+    "type": "sequence",
+    "text": "The customer asks the shop assistant for a size 9 shoe. The assistant checks with the stockroom. If the stockroom has it, the stockroom hands over the shoe and the assistant brings it to the customer. If not, the assistant offers the customer to order it.",
+    "keywords": ["Customer", "Shop assistant", "Stockroom", "size 9", "order"],
+    "participants": 3
+  },
+  {
+    "id": "seq-arrow-document",
+    "type": "sequence",
+    "text": "User → App: open document. App → Storage: fetch file. Storage → App: file contents. App → User: show document.",
+    "keywords": ["User", "App", "Storage", "document", "file"],
+    "participants": 3
+  },
+  {
+    "id": "gantt-website",
+    "type": "gantt",
+    "text": "Website redesign plan. Research starts on 2027-03-01 and takes 5 days. Design follows for 10 days, then development for 15 days. Testing takes 5 days after development. Launch is on 2027-04-20.",
+    "keywords": ["Research", "Design", "Development", "Testing", "Launch", "2027-03-01"],
+    "tasks": 5
+  },
+  {
+    "id": "gantt-conference",
+    "type": "gantt",
+    "text": "Conference preparation. Book the venue: Jan 11 to Jan 15, 2027. Speaker submissions: three weeks from Jan 18. Ticket sales: Feb 8 to Mar 5. The conference itself is on March 12, 2027.",
+    "keywords": ["venue", "speakers", "Ticket sales", "Conference", "2027-01-11"],
+    "tasks": 4
+  },
+  {
+    "id": "gantt-mobile-teams",
+    "type": "gantt",
+    "text": "Mobile app schedule. iOS team: iOS screens from 2027-05-03 for 10 days, then iOS integration for 5 days. Android team: Android screens from 2027-05-03 for 12 days, then Android integration for 5 days. QA starts when both integrations are finished and lasts 7 days.",
+    "keywords": ["iOS", "Android", "integration", "QA", "2027-05-03"],
+    "tasks": 5
+  },
+  {
+    "id": "gantt-thesis",
+    "type": "gantt",
+    "text": "Thesis timeline. Literature review for 4 weeks starting 2027-09-06. Experiments for 6 weeks after that. Writing for 4 weeks after the experiments. The submission deadline is 2027-12-17.",
+    "keywords": ["Literature review", "Experiments", "Writing", "Submission", "2027-09-06"],
+    "tasks": 4
+  },
+  {
+    "id": "gantt-house-move",
+    "type": "gantt",
+    "text": "Moving plan: packing from 2027-06-01 for 7 days, cleaning the old flat for 2 days after packing, moving day on 2027-06-12, and unpacking from 2027-06-13 for 5 days.",
+    "keywords": ["Packing", "Cleaning", "Moving day", "Unpacking", "2027-06-01"],
+    "tasks": 4
+  },
+  {
+    "id": "gantt-campaign",
+    "type": "gantt",
+    "text": "Campaign schedule. Content: write blog posts from 2027-02-01 to 2027-02-12 and record videos from 2027-02-08 to 2027-02-19. Ads: set up ads from 2027-02-15 for 5 days, then run ads for 30 days after the setup.",
+    "keywords": ["Content", "Ads", "blog posts", "videos", "2027-02-01"],
+    "tasks": 4
+  },
+  {
+    "id": "gantt-sprint",
+    "type": "gantt",
+    "text": "Sprint 14 schedule. Planning on 2027-04-05 for one day. Development for 8 days from 2027-04-06. Regression testing for 3 days after development. Release on 2027-04-19.",
+    "keywords": ["Planning", "Development", "Regression testing", "Release", "2027-04-05"],
+    "tasks": 4
+  },
+  {
+    "id": "gantt-kitchen",
+    "type": "gantt",
+    "text": "Kitchen renovation: demolition for 3 days from 2027-08-02, then plumbing and electrical work in parallel for 4 days each, cabinets for 5 days after both are done, and painting for 2 days at the end.",
+    "keywords": ["Demolition", "Plumbing", "Electrical", "Cabinets", "Painting", "2027-08-02"],
+    "tasks": 5
+  },
+  {
+    "id": "gantt-product-launch",
+    "type": "gantt",
+    "text": "Product launch plan. Beta program from March 1 to March 26, 2027. Press kit: one week starting March 15. Launch event: April 2. Post-launch survey: two weeks starting April 5.",
+    "keywords": ["Beta program", "Press kit", "Launch event", "survey", "2027-03-01"],
+    "tasks": 4
+  },
+  {
+    "id": "gantt-db-migration",
+    "type": "gantt",
+    "text": "Database migration. Schema design: 5 days from 2027-10-04. Write migration scripts: 8 days after the design. Dry run on staging: 3 days after the scripts. Production cutover: 2027-10-30. Monitoring: 7 days from 2027-10-31.",
+    "keywords": ["Schema design", "migration scripts", "Dry run", "cutover", "Monitoring", "2027-10-04"],
+    "tasks": 5
+  },
+  {
+    "id": "gantt-course",
+    "type": "gantt",
+    "text": "Course schedule starting 2027-01-11: one week of introduction, then two weeks of fundamentals, then a one-week project. Final presentations are on 2027-02-08.",
+    "keywords": ["Introduction", "Fundamentals", "Project", "presentations", "2027-01-11"],
+    "tasks": 4
+  },
+  {
+    "id": "gantt-audit",
+    "type": "gantt",
+    "text": "Audit timeline. Kickoff meeting on 2027-11-01. Document collection for 10 days from 2027-11-02. Fieldwork for 15 days after document collection. Draft report for 5 days after fieldwork. The final report is due on 2027-12-10.",
+    "keywords": ["Kickoff", "Document collection", "Fieldwork", "Draft report", "Final report", "2027-11-01"],
+    "tasks": 5
+  }
+]

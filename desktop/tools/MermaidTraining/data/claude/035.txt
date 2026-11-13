@@ -1,0 +1,233 @@
+=== flowchart
+Idea → Sketch → Prototype → User test → Launch
+---
+flowchart TD
+    A["Idea"] --> B["Sketch"]
+    B --> C["Prototype"]
+    C --> D["User test"]
+    D --> E["Launch"]
+=== flowchart
+Receive goods -> Inspect -> Shelve -> Update inventory
+---
+flowchart TD
+    A["Receive goods"] --> B["Inspect"]
+    B --> C["Shelve"]
+    C --> D["Update inventory"]
+=== flowchart
+Request -> Auth check -> ok? yes: Handler -> Response; no: 401 error
+---
+flowchart TD
+    A["Request"] --> B["Auth check"]
+    B --> C{"OK?"}
+    C -->|"Yes"| D["Handler"]
+    D --> E["Response"]
+    C -->|"No"| F["401 error"]
+=== flowchart
+raw data => clean => train model => evaluate => good enough? => deploy, else back to train model
+---
+flowchart TD
+    A["Raw data"] --> B["Clean"]
+    B --> C["Train model"]
+    C --> D["Evaluate"]
+    D --> E{"Good enough?"}
+    E -->|"Yes"| F["Deploy"]
+    E -->|"No"| C
+=== flowchart
+Seed → Sprout → Seedling → Flower → Fruit → Seed
+---
+flowchart TD
+    A["Seed"] --> B["Sprout"]
+    B --> C["Seedling"]
+    C --> D["Flower"]
+    D --> E["Fruit"]
+    E --> A
+=== flowchart
+1. Unbox the printer
+2. Remove the orange tape
+3. Insert the ink cartridges
+4. Load paper
+5. Print a test page
+---
+flowchart TD
+    A["Unbox the printer"] --> B["Remove the orange tape"]
+    B --> C["Insert the ink cartridges"]
+    C --> D["Load paper"]
+    D --> E["Print a test page"]
+=== flowchart
+1) Greet the customer
+2) Ask for the booking number
+3) If found, hand over the keys
+4) If not found, call the manager
+---
+flowchart TD
+    A["Greet the customer"] --> B["Ask for the booking number"]
+    B --> C{"Found?"}
+    C -->|"Yes"| D["Hand over the keys"]
+    C -->|"No"| E["Call the manager"]
+=== flowchart
+Step 1: Export the data from the old system.
+Step 2: Convert it to the new format.
+Step 3: Import it into the new system.
+Step 4: Compare the totals. If they differ, go back to step 2.
+Step 5: Switch off the old system.
+---
+flowchart TD
+    A["Export the data from the old system"] --> B["Convert it to the new format"]
+    B --> C["Import it into the new system"]
+    C --> D["Compare the totals"]
+    D --> E{"Totals differ?"}
+    E -->|"Yes"| B
+    E -->|"No"| F["Switch off the old system"]
+=== flowchart
+Opening routine
+- Turn on the lights
+- Start the espresso machine
+- Count the till
+- Put out the sign
+- Unlock the door
+---
+flowchart TD
+    A["Turn on the lights"] --> B["Start the espresso machine"]
+    B --> C["Count the till"]
+    C --> D["Put out the sign"]
+    D --> E["Unlock the door"]
+=== flowchart
+Evacuation steps
+* Stop work
+* Leave by the nearest exit
+* Do not use the lifts
+* Gather at the car park
+* Wait for the roll call
+---
+flowchart TD
+    A["Stop work"] --> B["Leave by the nearest exit"]
+    B --> C["Do not use the lifts"]
+    C --> D["Gather at the car park"]
+    D --> E["Wait for the roll call"]
+=== flowchart
+Our company has four departments under the managing director: Sales, Operations, Finance and HR. Operations is divided into Production and Logistics.
+---
+flowchart TD
+    A["Managing director"] --> B["Sales"]
+    A --> C["Operations"]
+    A --> D["Finance"]
+    A --> E["HR"]
+    C --> F["Production"]
+    C --> G["Logistics"]
+=== flowchart
+Menu structure
+- File
+  - New
+  - Open
+  - Save
+- Edit
+  - Undo
+  - Redo
+- Help
+---
+flowchart TD
+    A["Menu"] --> B["File"]
+    A --> C["Edit"]
+    A --> D["Help"]
+    B --> E["New"]
+    B --> F["Open"]
+    B --> G["Save"]
+    C --> H["Undo"]
+    C --> I["Redo"]
+=== flowchart
+Animals are divided into vertebrates and invertebrates. Vertebrates include mammals, birds and fish. Invertebrates include insects and mollusks.
+---
+flowchart TD
+    A["Animals"] --> B["Vertebrates"]
+    A --> C["Invertebrates"]
+    B --> D["Mammals"]
+    B --> E["Birds"]
+    B --> F["Fish"]
+    C --> G["Insects"]
+    C --> H["Mollusks"]
+=== flowchart
+The school is run by the principal. Two vice principals report to the principal, one for the lower school and one for the upper school. The lower school has grades 1 to 3, and the upper school has grades 4 to 6.
+---
+flowchart TD
+    A["Principal"] --> B["Vice principal, lower school"]
+    A --> C["Vice principal, upper school"]
+    B --> D["Grades 1 to 3"]
+    C --> E["Grades 4 to 6"]
+=== flowchart
+Project folders:
+docs/
+  specs/
+  manuals/
+src/
+  api/
+  web/
+scripts/
+---
+flowchart TD
+    A["Project"] --> B["docs"]
+    A --> C["src"]
+    A --> D["scripts"]
+    B --> E["specs"]
+    B --> F["manuals"]
+    C --> G["api"]
+    C --> H["web"]
+=== flowchart
+The app has three tabs: Home, Search and Profile. Home shows the feed and stories. Profile has settings and saved posts. Settings contains notifications and privacy.
+---
+flowchart TD
+    A["App"] --> B["Home"]
+    A --> C["Search"]
+    A --> D["Profile"]
+    B --> E["Feed"]
+    B --> F["Stories"]
+    D --> G["Settings"]
+    D --> H["Saved posts"]
+    G --> I["Notifications"]
+    G --> J["Privacy"]
+=== flowchart
+The hospital has a medical division and a nursing division. The medical division consists of surgery, internal medicine and radiology. The nursing division consists of the wards and the outpatient clinic.
+---
+flowchart TD
+    A["Hospital"] --> B["Medical division"]
+    A --> C["Nursing division"]
+    B --> D["Surgery"]
+    B --> E["Internal medicine"]
+    B --> F["Radiology"]
+    C --> G["Wards"]
+    C --> H["Outpatient clinic"]
+=== flowchart
+Brief -> Draft -> Client review -> approved? no: Revise -> Client review; yes: Final files
+---
+flowchart TD
+    A["Brief"] --> B["Draft"]
+    B --> C["Client review"]
+    C --> D{"Approved?"}
+    D -->|"No"| E["Revise"]
+    E --> C
+    D -->|"Yes"| F["Final files"]
+=== flowchart
+- Check in at the front desk
+- Fill in the health form
+- Wait to be called
+- See the dentist
+- If a follow-up is needed, book it at the desk
+- Pay
+---
+flowchart TD
+    A["Check in at the front desk"] --> B["Fill in the health form"]
+    B --> C["Wait to be called"]
+    C --> D["See the dentist"]
+    D --> E{"Follow-up needed?"}
+    E -->|"Yes"| F["Book it at the desk"]
+    F --> G["Pay"]
+    E -->|"No"| G
+=== flowchart
+Sensors -> Edge gateway -> Message broker -> Stream processor -> Dashboard
+Stream processor -> Data lake
+---
+flowchart TD
+    A["Sensors"] --> B["Edge gateway"]
+    B --> C["Message broker"]
+    C --> D["Stream processor"]
+    D --> E["Dashboard"]
+    D --> F["Data lake"]

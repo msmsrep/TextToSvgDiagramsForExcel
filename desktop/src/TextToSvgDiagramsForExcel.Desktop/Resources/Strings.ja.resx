@@ -217,4 +217,37 @@ https://go.microsoft.com/fwlink/p/?LinkId=2124703 からインストールし、
   <data name="UnexpectedError" xml:space="preserve">
     <value>予期しないエラーが発生しました: {0}</value>
   </data>
+  <data name="Menu_FromText" xml:space="preserve">
+    <value>文章から(_X)...</value>
+  </data>
+  <data name="FromText_Title" xml:space="preserve">
+    <value>文章から図を作成</value>
+  </data>
+  <data name="FromText_Hint" xml:space="preserve">
+    <value>手順（1 行か 1 文ごと）、矢印（A → B）、字下げした箇条書き、メッセージ（AがBに〇〇する、A → B: メッセージ）を図にします。</value>
+  </data>
+  <data name="FromText_Kind" xml:space="preserve">
+    <value>図の種類</value>
+  </data>
+  <data name="FromText_UseAi" xml:space="preserve">
+    <value>AI で作る（この PC の中で動きます）</value>
+  </data>
+  <data name="FromText_HintAi" xml:space="preserve">
+    <value>図にしたい内容を普通の文章で書いてください。手順と分岐、誰が誰に何を送るか、日付つきの作業などを図にします。この PC の中の小さな AI が作り、外へは何も送りません。</value>
+  </data>
+  <data name="FromText_Generating" xml:space="preserve">
+    <value>AI で作成中...（[キャンセル] で止めます）</value>
+  </data>
+  <data name="AiError" xml:space="preserve">
+    <value>AI で作れませんでした: {0}</value>
+  </data>
+  <data name="AiNoCode" xml:space="preserve">
+    <value>答えに Mermaid のコードがありませんでした。</value>
+  </data>
+  <data name="Button_Create" xml:space="preserve">
+    <value>作成</value>
+  </data>
+  <data name="Button_Cancel" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
 </root>

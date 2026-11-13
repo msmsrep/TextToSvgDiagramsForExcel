@@ -42,6 +42,9 @@ public sealed class MainViewModel : ObservableObject
     private IReadOnlyList<DiagramItem> _items = [];
     private DiagramItem? _pendingLoad;
     private string? _lastPolledId;
+    // The last "From text" input, offered again the next time.
+    private string _lastText = "";
+    private string _lastTextKind = "auto";
 
     public MainViewModel(
         IEngineClient engine,
@@ -80,6 +83,19 @@ public sealed class MainViewModel : ObservableObject
             new("gantt", "Gantt"),
             new("pie", "Pie"),
         ];
+        TextKinds =
+        [
+            new("auto", Strings.Get("TableAuto")),
+            new("flowchart", "Flowchart"),
+            new("sequence", "Sequence"),
+        ];
+        AiTextKinds =
+        [
+            new("auto", Strings.Get("TableAuto")),
+            new("flowchart", "Flowchart"),
+            new("sequence", "Sequence"),
+            new("gantt", "Gantt"),
+        ];
         DiagramOptions = [NoDiagram];
 
         InsertCommand = new RelayCommand(_ => InsertAsync(Format), () => CanInsert);
@@ -89,6 +105,7 @@ public sealed class MainViewModel : ObservableObject
         CopyCommand = new RelayCommand(_ => CopyAsync());
         TemplateCommand = new RelayCommand(id => UseTemplateAsync(id ?? ""));
         FromCellsCommand = new RelayCommand(kind => GenerateFromCellsAsync(kind ?? "auto"));
+        FromTextCommand = new RelayCommand(_ => GenerateFromTextAsync());
         ReplaceCommand = new RelayCommand(_ => _pendingLoad is { } item ? LoadDiagramAsync(item) : Task.CompletedTask);
         KeepCommand = new RelayCommand(HideConfirm);
         RefreshCommand = new RelayCommand(() => RefreshDiagrams());
@@ -121,6 +138,7 @@ public sealed class MainViewModel : ObservableObject
     public RelayCommand CopyCommand { get; }
     public RelayCommand TemplateCommand { get; }
     public RelayCommand FromCellsCommand { get; }
+    public RelayCommand FromTextCommand { get; }
     public RelayCommand ReplaceCommand { get; }
     public RelayCommand KeepCommand { get; }
     public RelayCommand RefreshCommand { get; }
@@ -135,6 +153,15 @@ public sealed class MainViewModel : ObservableObject
     public IReadOnlyList<Option> SaveFormats { get; }
     public IReadOnlyList<Option> Sizes { get; }
     public IReadOnlyList<Option> TableKinds { get; }
+    public IReadOnlyList<Option> TextKinds { get; }
+    /// <summary>The kinds the local model can make, which include Gantt.</summary>
+    public IReadOnlyList<Option> AiTextKinds { get; }
+
+    /// <summary>The local model for "From text", or null when the app has none (design §14).</summary>
+    public ITextModel? TextModel { get; init; }
+
+    /// <summary>"From text" starts with the local model checked; saved between runs.</summary>
+    public bool UseAiForText { get; set; } = true;
 
     private ObservableCollection<Template> _templates = [];
     public ObservableCollection<Template> Templates
@@ -521,6 +548,48 @@ public sealed class MainViewModel : ObservableObject
             code = await _engine.FromTableAsync(_excel.ReadSelection(), kind);
         }
         catch (Exception e) when (e is UserException or ExcelException or EngineException)
+        {
+            ShowError(Strings.Format("GenerateError", e.Message));
+            return;
+        }
+        await StartNewDiagramAsync(code);
+    }
+
+    /// <summary>Asks for text and builds a new diagram from it (design §14).</summary>
+    public async Task GenerateFromTextAsync()
+    {
+        var ai = TextModel is { } model
+            ? new TextAiChoice(model, UseAiForText, AiTextKinds.Where(k => model.Kinds.Contains(k.Value)).ToList())
+            : null;
+        if (_dialogs.AskText(_lastText, _lastTextKind, TextKinds, ai) is not { } request)
+        {
+            return;
+        }
+        _lastText = request.Text;
+        _lastTextKind = request.Kind;
+        if (ai is not null)
+        {
+            UseAiForText = request.UseAi;
+        }
+        if (request.Code is { } code)
+        {
+            // The local model made it in the dialog; the editor shows any error in it.
+            ClearError();
+            await StartNewDiagramAsync(code);
+            return;
+        }
+        await GenerateFromTextAsync(request.Text, request.Kind);
+    }
+
+    public async Task GenerateFromTextAsync(string text, string kind)
+    {
+        ClearError();
+        string code;
+        try
+        {
+            code = await _engine.FromTextAsync(text, kind);
+        }
+        catch (EngineException e)
         {
             ShowError(Strings.Format("GenerateError", e.Message));
             return;

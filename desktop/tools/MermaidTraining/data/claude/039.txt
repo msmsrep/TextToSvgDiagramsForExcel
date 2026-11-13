@@ -1,0 +1,270 @@
+=== sequence
+Browser -> Server: GET /profile
+Server -> Database: SELECT user
+Database -> Server: user row
+Server -> Browser: 200 OK with HTML
+---
+sequenceDiagram
+    participant B as Browser
+    participant S as Server
+    participant D as Database
+    B->>S: GET /profile
+    S->>D: SELECT user
+    D-->>S: User row
+    S-->>B: 200 OK with HTML
+=== sequence
+Customer → Cashier: hand over the basket
+Cashier → Customer: total price
+Customer → Cashier: cash
+Cashier → Customer: change and receipt
+---
+sequenceDiagram
+    participant C as Customer
+    participant K as Cashier
+    C->>K: Hand over the basket
+    K-->>C: Total price
+    C->>K: Cash
+    K-->>C: Change and receipt
+=== sequence
+Pilot -> Tower: request takeoff clearance. Tower -> Pilot: hold short. Tower -> Pilot: cleared for takeoff. Pilot -> Tower: rolling.
+---
+sequenceDiagram
+    participant P as Pilot
+    participant T as Tower
+    P->>T: Request takeoff clearance
+    T-->>P: Hold short
+    T->>P: Cleared for takeoff
+    P-->>T: Rolling
+=== sequence
+Phone => Router: DHCP discover
+Router => Phone: DHCP offer
+Phone => Router: DHCP request
+Router => Phone: DHCP ack
+---
+sequenceDiagram
+    participant P as Phone
+    participant R as Router
+    P->>R: DHCP discover
+    R-->>P: DHCP offer
+    P->>R: DHCP request
+    R-->>P: DHCP ack
+=== sequence
+1. The seller lists an item on the marketplace.
+2. The buyer sends the payment to the marketplace.
+3. The marketplace tells the seller to ship.
+4. The seller ships the item to the buyer.
+5. The buyer confirms receipt to the marketplace.
+6. The marketplace releases the money to the seller.
+---
+sequenceDiagram
+    participant S as Seller
+    participant M as Marketplace
+    participant B as Buyer
+    S->>M: List an item
+    B->>M: Send the payment
+    M->>S: Tell to ship
+    S->>B: Ship the item
+    B->>M: Confirm receipt
+    M->>S: Release the money
+=== sequence
+1) Nurse pages the doctor on call.
+2) Doctor calls the nurse back.
+3) Nurse describes the symptoms.
+4) Doctor orders a blood test from the lab.
+5) Lab sends the results to the doctor.
+---
+sequenceDiagram
+    participant N as Nurse
+    participant D as Doctor
+    participant L as Lab
+    N->>D: Page
+    D-->>N: Call back
+    N->>D: Describe the symptoms
+    D->>L: Order a blood test
+    L-->>D: Results
+=== sequence
+Step 1: the customer sends a signed order form to sales. Step 2: sales forwards it to the credit team. Step 3: the credit team approves and tells sales. Step 4: sales asks the warehouse to ship.
+---
+sequenceDiagram
+    participant C as Customer
+    participant S as Sales
+    participant R as Credit team
+    participant W as Warehouse
+    C->>S: Signed order form
+    S->>R: Forward the form
+    R-->>S: Approve
+    S->>W: Ask to ship
+=== sequence
+- Driver to dispatcher: truck 12 has a flat tire
+- Dispatcher to roadside service: send help to highway 9
+- Roadside service to dispatcher: arriving in 40 minutes
+- Dispatcher to driver: help arrives in 40 minutes
+---
+sequenceDiagram
+    participant D as Driver
+    participant P as Dispatcher
+    participant R as Roadside service
+    D->>P: Truck 12 has a flat tire
+    P->>R: Send help to highway 9
+    R-->>P: Arriving in 40 minutes
+    P-->>D: Help arrives in 40 minutes
+=== sequence
+First the customer gives the tailor the measurements. Next the tailor orders the fabric from the wholesaler, and the wholesaler delivers it. Then the tailor invites the customer for a fitting. Finally the customer pays the tailor.
+---
+sequenceDiagram
+    participant C as Customer
+    participant T as Tailor
+    participant W as Wholesaler
+    C->>T: Measurements
+    T->>W: Order the fabric
+    W-->>T: Deliver the fabric
+    T->>C: Invite for a fitting
+    C->>T: Pay
+=== sequence
+To begin, the applicant hands the form to the clerk. After that the clerk sends it to the inspector. The inspector then visits the applicant and afterwards sends a report to the clerk. At the end the clerk mails the license to the applicant.
+---
+sequenceDiagram
+    participant A as Applicant
+    participant C as Clerk
+    participant I as Inspector
+    A->>C: Hand over the form
+    C->>I: Send the form
+    I->>A: Visit
+    I->>C: Report
+    C->>A: Mail the license
+=== sequence
+Anna messages Ben through the messaging app. The app sends the message to the relay server, the relay server pushes it to Ben's phone, and Ben's phone shows it to Ben. Ben's reply goes back the same way to Anna.
+---
+sequenceDiagram
+    participant A as Anna
+    participant M as Messaging app
+    participant R as Relay server
+    participant P as Ben's phone
+    participant B as Ben
+    A->>M: Message for Ben
+    M->>R: Send the message
+    R->>P: Push the message
+    P->>B: Show the message
+    B->>P: Reply
+    P->>R: Send the reply
+    R->>M: Push the reply
+    M->>A: Show the reply
+=== sequence
+The customer never talks to the factory directly. The customer orders from the dealer, the dealer orders from the importer, and the importer orders from the factory. The factory ships to the importer, the importer delivers to the dealer, and the dealer hands the car to the customer.
+---
+sequenceDiagram
+    participant C as Customer
+    participant D as Dealer
+    participant I as Importer
+    participant F as Factory
+    C->>D: Order
+    D->>I: Order
+    I->>F: Order
+    F-->>I: Ship
+    I-->>D: Deliver
+    D-->>C: Hand over the car
+=== sequence
+The user speaks to the smart speaker. The speaker sends the audio to the voice service, the voice service asks the music service for the song, and the music service returns a stream. The voice service passes the stream to the speaker.
+---
+sequenceDiagram
+    participant U as User
+    participant S as Smart speaker
+    participant V as Voice service
+    participant M as Music service
+    U->>S: Speak
+    S->>V: Audio
+    V->>M: Ask for the song
+    M-->>V: Stream
+    V-->>S: Stream
+=== sequence
+The client talks to the lawyer through the paralegal. The client gives the documents to the paralegal, and the paralegal passes them to the lawyer. The lawyer gives advice to the paralegal, and the paralegal explains it to the client.
+---
+sequenceDiagram
+    participant C as Client
+    participant P as Paralegal
+    participant L as Lawyer
+    C->>P: Documents
+    P->>L: Pass on the documents
+    L-->>P: Advice
+    P-->>C: Explain the advice
+=== sequence
+The tourist asks the guide a question in English. The guide asks the interpreter, the interpreter asks the shopkeeper in Japanese, and the shopkeeper answers. The interpreter translates the answer for the guide, and the guide tells the tourist.
+---
+sequenceDiagram
+    participant T as Tourist
+    participant G as Guide
+    participant I as Interpreter
+    participant S as Shopkeeper
+    T->>G: Question in English
+    G->>I: Ask
+    I->>S: Ask in Japanese
+    S-->>I: Answer
+    I-->>G: Translate the answer
+    G-->>T: Tell the answer
+=== sequence
+The microservice sends a metric to the agent on the same host. The agent batches the metrics and sends them to the metrics server. When an alert rule fires, the metrics server notifies the pager service, and the pager service pages the engineer.
+---
+sequenceDiagram
+    participant M as Microservice
+    participant A as Agent
+    participant S as Metrics server
+    participant P as Pager service
+    participant E as Engineer
+    M->>A: Metric
+    A->>S: Batch of metrics
+    S->>P: Alert
+    P->>E: Page
+=== sequence
+The viewer presses play in the TV app. The TV app asks the streaming service for the film. The streaming service checks the subscription with the billing service, which answers that it is active. The streaming service sends the video to the TV app.
+---
+sequenceDiagram
+    participant V as Viewer
+    participant T as TV app
+    participant S as Streaming service
+    participant B as Billing service
+    V->>T: Press play
+    T->>S: Ask for the film
+    S->>B: Check the subscription
+    B-->>S: Active
+    S-->>T: Video
+=== sequence
+GitHub Actions starts a workflow when Priya opens a pull request on GitHub. The workflow asks SonarQube to scan the code, and SonarQube returns the findings. The workflow posts the findings as a comment on GitHub, and GitHub emails Priya.
+---
+sequenceDiagram
+    participant P as Priya
+    participant G as GitHub
+    participant A as GitHub Actions
+    participant S as SonarQube
+    P->>G: Open a pull request
+    G->>A: Start a workflow
+    A->>S: Scan the code
+    S-->>A: Findings
+    A->>G: Post the findings as a comment
+    G->>P: Email
+=== sequence
+The Slack bot receives "/deploy api" from Omar. The bot calls Jenkins to start the job. Jenkins deploys to Kubernetes, and Kubernetes reports that the pods are ready. Jenkins tells the bot, and the bot posts "api deployed" to Omar.
+---
+sequenceDiagram
+    participant O as Omar
+    participant B as Slack bot
+    participant J as Jenkins
+    participant K as Kubernetes
+    O->>B: /deploy api
+    B->>J: Start the job
+    J->>K: Deploy
+    K-->>J: Pods are ready
+    J-->>B: Done
+    B-->>O: api deployed
+=== sequence
+A user in Excel clicks Refresh. Excel asks Power Query to reload, Power Query calls the SharePoint list, and SharePoint returns the items. Power Query hands the table to Excel.
+---
+sequenceDiagram
+    participant U as User
+    participant E as Excel
+    participant Q as Power Query
+    participant S as SharePoint
+    U->>E: Click Refresh
+    E->>Q: Reload
+    Q->>S: Call the list
+    S-->>Q: Items
+    Q-->>E: Table

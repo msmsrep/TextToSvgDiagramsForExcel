@@ -1,0 +1,187 @@
+=== flowchart
+How we make cheese: the milk is heated, rennet is added, and the curd is cut. The whey is drained off, the curd is pressed into molds, and the cheese is aged for three months.
+---
+flowchart TD
+    A["Heat the milk"] --> B["Add rennet"]
+    B --> C["Cut the curd"]
+    C --> D["Drain off the whey"]
+    D --> E["Press the curd into molds"]
+    E --> F["Age for three months"]
+=== flowchart
+Year-end closing: first the accountants reconcile the bank accounts, then they post the adjusting entries, then the controller reviews the trial balance, and finally the financial statements are issued.
+---
+flowchart TD
+    A["Reconcile the bank accounts"] --> B["Post the adjusting entries"]
+    B --> C["Controller reviews the trial balance"]
+    C --> D["Issue the financial statements"]
+=== flowchart
+A new product idea is written up as a one-page brief. Marketing estimates the demand and engineering estimates the cost, both at the same time. With both estimates in hand, the committee decides whether to fund a prototype.
+---
+flowchart TD
+    A["Write a one-page brief"] --> B["Marketing estimates the demand"]
+    A --> C["Engineering estimates the cost"]
+    B --> D{"Committee funds a prototype?"}
+    C --> D
+    D -->|"Yes"| E["Build a prototype"]
+    D -->|"No"| F["Drop the idea"]
+=== flowchart
+The survey process: draft the questions, test them with five people, fix unclear questions, send the survey to the whole list, and analyze the answers after two weeks.
+---
+flowchart TD
+    A["Draft the questions"] --> B["Test them with five people"]
+    B --> C["Fix unclear questions"]
+    C --> D["Send the survey to the whole list"]
+    D --> E["Analyze the answers after two weeks"]
+=== flowchart
+After the concert is announced, ticket sales open. While tickets sell, the crew builds the stage and the band rehearses. On the day, doors open at six and the show starts at eight.
+---
+flowchart TD
+    A["Announce the concert"] --> B["Open ticket sales"]
+    B --> C["Crew builds the stage"]
+    B --> D["Band rehearses"]
+    C --> E["Doors open at six"]
+    D --> E
+    E --> F["Show starts at eight"]
+=== flowchart
+Every claim form goes through data entry. A clerk types the details, a second clerk verifies them, and the form is scanned into the archive. Forms with errors are returned to the first clerk.
+---
+flowchart TD
+    A["Clerk types the details"] --> B["Second clerk verifies them"]
+    B --> C{"Errors?"}
+    C -->|"Yes"| A
+    C -->|"No"| D["Scan the form into the archive"]
+=== flowchart
+The newsletter goes out every Thursday. On Monday the team collects stories, on Tuesday the writer drafts the text, on Wednesday the designer lays it out, and on Thursday morning it is sent to subscribers.
+---
+flowchart TD
+    A["Collect stories on Monday"] --> B["Writer drafts the text on Tuesday"]
+    B --> C["Designer lays it out on Wednesday"]
+    C --> D["Send to subscribers on Thursday morning"]
+=== flowchart
+When an employee resigns, HR confirms the last working day. IT then disables the accounts while the manager collects the laptop and the badge. Once both are done, payroll issues the final payslip.
+---
+flowchart TD
+    A["Employee resigns"] --> B["HR confirms the last working day"]
+    B --> C["IT disables the accounts"]
+    B --> D["Manager collects the laptop and the badge"]
+    C --> E["Payroll issues the final payslip"]
+    D --> E
+=== flowchart
+Grant applications are screened by the secretary for completeness. Complete applications are scored by two reviewers. If the scores differ by more than ten points, a third reviewer scores it too. The board funds the top ten.
+---
+flowchart TD
+    A["Secretary screens for completeness"] --> B{"Complete?"}
+    B -->|"No"| C["Return the application"]
+    B -->|"Yes"| D["Two reviewers score it"]
+    D --> E{"Scores differ by more than ten points?"}
+    E -->|"Yes"| F["Third reviewer scores it"]
+    F --> G["Board funds the top ten"]
+    E -->|"No"| G
+=== flowchart
+The shop opens at nine. Before opening, the manager counts the cash float and unlocks the doors. During the day staff restock the shelves whenever they are low. At six the manager closes the till and locks up.
+---
+flowchart TD
+    A["Count the cash float"] --> B["Unlock the doors"]
+    B --> C{"Shelves low?"}
+    C -->|"Yes"| D["Restock the shelves"]
+    D --> C
+    C -->|"No"| E["Close the till at six"]
+    E --> F["Lock up"]
+=== flowchart
+Beer is brewed in five stages: mashing, boiling with hops, cooling, fermenting for two weeks, and bottling. If the gravity reading after fermenting is too high, the beer ferments for three more days before bottling.
+---
+flowchart TD
+    A["Mashing"] --> B["Boiling with hops"]
+    B --> C["Cooling"]
+    C --> D["Fermenting for two weeks"]
+    D --> E{"Gravity reading too high?"}
+    E -->|"Yes"| F["Ferment for three more days"]
+    F --> E
+    E -->|"No"| G["Bottling"]
+=== flowchart
+A citizen applies for a building permit. The planning office checks the zoning rules, and the fire department checks the escape routes. If either office objects, the plans must be changed and submitted again. If neither objects, the permit is issued.
+---
+flowchart TD
+    A["Citizen applies for a building permit"] --> B["Planning office checks the zoning rules"]
+    A --> C["Fire department checks the escape routes"]
+    B --> D{"Either office objects?"}
+    C --> D
+    D -->|"Yes"| E["Change the plans"]
+    E --> A
+    D -->|"No"| F["Issue the permit"]
+=== flowchart
+Podcast workflow. The host records the interview. The editor removes background noise and cuts the long pauses. The host approves the edit or asks for changes. The approved episode is uploaded and announced on social media.
+---
+flowchart TD
+    A["Host records the interview"] --> B["Editor removes background noise"]
+    B --> C["Cut the long pauses"]
+    C --> D{"Host approves the edit?"}
+    D -->|"No"| E["Editor makes changes"]
+    E --> D
+    D -->|"Yes"| F["Upload the episode"]
+    F --> G["Announce on social media"]
+=== flowchart
+Month-end stock count: staff count every shelf and enter the numbers. The system compares them with the records. Differences above 2% are counted a second time. Remaining differences are written off by the finance manager.
+---
+flowchart TD
+    A["Count every shelf"] --> B["Enter the numbers"]
+    B --> C["Compare with the records"]
+    C --> D{"Difference above 2%?"}
+    D -->|"Yes"| E["Count a second time"]
+    E --> F["Finance manager writes off the remaining difference"]
+    D -->|"No"| G["Done"]
+=== flowchart
+The clinic sends a reminder two days before each appointment. Patients who confirm keep their slot. Patients who cancel free the slot for the waiting list. Patients who do not respond get a phone call the day before.
+---
+flowchart TD
+    A["Send a reminder two days before"] --> B{"Patient's response?"}
+    B -->|"Confirms"| C["Keep the slot"]
+    B -->|"Cancels"| D["Free the slot for the waiting list"]
+    B -->|"No response"| E["Phone call the day before"]
+=== flowchart
+To run a workshop: book a room, invite the participants, and prepare the slides. On the day, set up the projector and hand out name tags. Afterwards, send the slides and a feedback form.
+---
+flowchart TD
+    A["Book a room"] --> B["Invite the participants"]
+    B --> C["Prepare the slides"]
+    C --> D["Set up the projector"]
+    D --> E["Hand out name tags"]
+    E --> F["Send the slides and a feedback form"]
+=== flowchart
+A supplier is audited once a year. The auditor visits the factory and scores it. A score of 80 or more keeps the supplier on the approved list. A lower score gives the supplier ninety days to improve, followed by a second visit. If the second score is still below 80, the supplier is removed.
+---
+flowchart TD
+    A["Auditor visits the factory"] --> B{"Score 80 or more?"}
+    B -->|"Yes"| C["Keep on the approved list"]
+    B -->|"No"| D["Ninety days to improve"]
+    D --> E["Second visit"]
+    E --> F{"Second score still below 80?"}
+    F -->|"Yes"| G["Remove the supplier"]
+    F -->|"No"| C
+=== flowchart
+The theater sells seats in three steps. Members can buy during the first week. The general public can buy from the second week. Unsold seats are offered at half price on the day of the show.
+---
+flowchart TD
+    A["Members buy during the first week"] --> B["General public buys from the second week"]
+    B --> C{"Seats unsold on the day of the show?"}
+    C -->|"Yes"| D["Offer at half price"]
+=== flowchart
+Our hiring budget process: a team lead requests a new position. The department head approves or rejects it. Approved requests go to finance, which checks the budget. If there is budget, recruiting starts; if not, the request waits until next quarter.
+---
+flowchart TD
+    A["Team lead requests a new position"] --> B{"Department head approves?"}
+    B -->|"No"| C["Request rejected"]
+    B -->|"Yes"| D["Finance checks the budget"]
+    D --> E{"Budget available?"}
+    E -->|"Yes"| F["Start recruiting"]
+    E -->|"No"| G["Wait until next quarter"]
+=== flowchart
+The museum lends a painting to another museum. A conservator inspects the painting and writes a condition report. The painting is packed in a climate crate and shipped with a courier. On arrival it is inspected again, and any damage is reported to the insurer.
+---
+flowchart TD
+    A["Conservator inspects the painting"] --> B["Write a condition report"]
+    B --> C["Pack in a climate crate"]
+    C --> D["Ship with a courier"]
+    D --> E["Inspect again on arrival"]
+    E --> F{"Damage?"}
+    F -->|"Yes"| G["Report to the insurer"]

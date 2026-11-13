@@ -1,0 +1,250 @@
+=== sequence
+The mobile app sends a search query to the API gateway. The gateway forwards it to the search service, which returns a list of results. The gateway passes the results back to the app.
+---
+sequenceDiagram
+    participant M as Mobile app
+    participant G as API gateway
+    participant S as Search service
+    M->>G: Search query
+    G->>S: Forward the query
+    S-->>G: List of results
+    G-->>M: Results
+=== sequence
+The thermostat sends the current temperature to the cloud. The cloud pushes the value to the owner's phone. The owner sets a new target on the phone, the phone sends it to the cloud, and the cloud forwards it to the thermostat.
+---
+sequenceDiagram
+    participant T as Thermostat
+    participant C as Cloud
+    participant P as Owner's phone
+    T->>C: Current temperature
+    C->>P: Push the value
+    P->>C: New target
+    C->>T: Forward the new target
+=== sequence
+The checkout page asks the tax service for the tax on the cart. The tax service asks the address service to validate the address, gets back the region, and returns the tax amount to the checkout page.
+---
+sequenceDiagram
+    participant C as Checkout page
+    participant T as Tax service
+    participant A as Address service
+    C->>T: Ask for the tax on the cart
+    T->>A: Validate the address
+    A-->>T: Region
+    T-->>C: Tax amount
+=== sequence
+A user requests a report from the web app. The web app puts a job on the queue, and the worker picks it up. The worker reads the data from the warehouse, builds the report, and stores it in the file store. The worker notifies the web app, and the web app emails the user a link.
+---
+sequenceDiagram
+    participant U as User
+    participant W as Web app
+    participant Q as Queue
+    participant K as Worker
+    participant D as Warehouse
+    participant F as File store
+    U->>W: Request a report
+    W->>Q: Put a job on the queue
+    Q->>K: Job
+    K->>D: Read the data
+    D-->>K: Data
+    K->>F: Store the report
+    K->>W: Notify
+    W->>U: Email a link
+=== sequence
+The client opens a WebSocket to the chat server. The server asks the presence service to mark the user online. When the client sends a message, the server writes it to the message store and delivers it to the other client.
+---
+sequenceDiagram
+    participant A as Client
+    participant S as Chat server
+    participant P as Presence service
+    participant M as Message store
+    participant B as Other client
+    A->>S: Open a WebSocket
+    S->>P: Mark the user online
+    A->>S: Send a message
+    S->>M: Write the message
+    S->>B: Deliver the message
+=== sequence
+The point-of-sale terminal sends a sale to the store server. The store server updates the inventory system and replies with a receipt number. Overnight, the store server uploads the day's sales to head office.
+---
+sequenceDiagram
+    participant P as Point-of-sale terminal
+    participant S as Store server
+    participant I as Inventory system
+    participant H as Head office
+    P->>S: Sale
+    S->>I: Update the inventory
+    S-->>P: Receipt number
+    S->>H: Upload the day's sales
+=== sequence
+The browser requests a page from the CDN. The CDN does not have it, so it fetches the page from the origin server. The origin returns the page, and the CDN caches it and serves it to the browser.
+---
+sequenceDiagram
+    participant B as Browser
+    participant C as CDN
+    participant O as Origin server
+    B->>C: Request a page
+    C->>O: Fetch the page
+    O-->>C: Page
+    C-->>B: Serve the page
+=== sequence
+The backup agent asks the file server for the list of changed files. The file server returns the list. The agent uploads the files to the backup vault, and the vault confirms. The agent then reports the result to the admin console.
+---
+sequenceDiagram
+    participant A as Backup agent
+    participant F as File server
+    participant V as Backup vault
+    participant C as Admin console
+    A->>F: Ask for the list of changed files
+    F-->>A: List
+    A->>V: Upload the files
+    V-->>A: Confirm
+    A->>C: Report the result
+=== sequence
+The game client sends the player's move to the game server. The server validates it with the rules engine, which answers that the move is legal. The server broadcasts the new board to both players.
+---
+sequenceDiagram
+    participant A as Game client
+    participant S as Game server
+    participant R as Rules engine
+    participant B as Other player
+    A->>S: Player's move
+    S->>R: Validate the move
+    R-->>S: Legal
+    S->>A: New board
+    S->>B: New board
+=== sequence
+The HR system sends a new employee record to the identity provider. The identity provider creates the account and tells the mail server to create a mailbox. The mail server confirms, and the identity provider sends the login details back to the HR system.
+---
+sequenceDiagram
+    participant H as HR system
+    participant I as Identity provider
+    participant M as Mail server
+    H->>I: New employee record
+    I->>M: Create a mailbox
+    M-->>I: Confirm
+    I-->>H: Login details
+=== sequence
+The car's key fob sends an unlock signal to the car. The car challenges the fob with a random number, and the fob answers with a signed response. The car unlocks and sends its status to the owner's app.
+---
+sequenceDiagram
+    participant K as Key fob
+    participant C as Car
+    participant A as Owner's app
+    K->>C: Unlock signal
+    C->>K: Random number
+    K-->>C: Signed response
+    C->>A: Status
+=== sequence
+The reporting tool asks the data API for last month's revenue. The data API queries the replica database, gets the rows, and returns a JSON summary to the reporting tool.
+---
+sequenceDiagram
+    participant R as Reporting tool
+    participant A as Data API
+    participant D as Replica database
+    R->>A: Ask for last month's revenue
+    A->>D: Query
+    D-->>A: Rows
+    A-->>R: JSON summary
+=== sequence
+The e-reader asks the bookstore for the user's library. The bookstore returns the list of books. The e-reader requests a book that is not on the device, the bookstore gets a download link from the license server, and sends the link to the e-reader.
+---
+sequenceDiagram
+    participant E as E-reader
+    participant B as Bookstore
+    participant L as License server
+    E->>B: Ask for the user's library
+    B-->>E: List of books
+    E->>B: Request a book
+    B->>L: Get a download link
+    L-->>B: Download link
+    B-->>E: Link
+=== sequence
+The scheduler tells the ETL job to start. The ETL job extracts orders from the shop database and loads them into the data warehouse. The warehouse confirms the row count, and the ETL job reports success to the scheduler.
+---
+sequenceDiagram
+    participant S as Scheduler
+    participant E as ETL job
+    participant D as Shop database
+    participant W as Data warehouse
+    S->>E: Start
+    E->>D: Extract orders
+    D-->>E: Orders
+    E->>W: Load the orders
+    W-->>E: Row count
+    E-->>S: Success
+=== sequence
+The doorbell camera detects a visitor and sends a clip to the hub. The hub sends a notification to the phone. The owner taps "talk" on the phone, and the phone opens an audio channel to the doorbell camera through the hub.
+---
+sequenceDiagram
+    participant D as Doorbell camera
+    participant H as Hub
+    participant P as Phone
+    D->>H: Clip of a visitor
+    H->>P: Notification
+    P->>H: Open an audio channel
+    H->>D: Audio channel
+=== sequence
+The frontend asks the feature service which features are on for this user. The feature service looks up the user's segment in the profile service and returns the list of features. The frontend then loads the dashboard from the dashboard service.
+---
+sequenceDiagram
+    participant F as Frontend
+    participant S as Feature service
+    participant P as Profile service
+    participant D as Dashboard service
+    F->>S: Which features are on?
+    S->>P: Look up the user's segment
+    P-->>S: Segment
+    S-->>F: List of features
+    F->>D: Load the dashboard
+    D-->>F: Dashboard
+=== sequence
+The ticket machine sends the chosen route to the fare server. The fare server returns the price. The passenger taps a card, the machine sends the payment to the bank, and the bank approves. The machine prints the ticket for the passenger.
+---
+sequenceDiagram
+    participant P as Passenger
+    participant M as Ticket machine
+    participant F as Fare server
+    participant B as Bank
+    M->>F: Chosen route
+    F-->>M: Price
+    P->>M: Tap a card
+    M->>B: Payment
+    B-->>M: Approve
+    M-->>P: Ticket
+=== sequence
+The log shipper sends new log lines to the collector. The collector forwards them to the indexer. When an analyst runs a search in the dashboard, the dashboard queries the indexer and shows the matching lines.
+---
+sequenceDiagram
+    participant L as Log shipper
+    participant C as Collector
+    participant I as Indexer
+    participant A as Analyst
+    participant D as Dashboard
+    L->>C: New log lines
+    C->>I: Forward the lines
+    A->>D: Run a search
+    D->>I: Query
+    I-->>D: Matching lines
+    D-->>A: Show the lines
+=== sequence
+The smartwatch sends the heart rate to the phone over Bluetooth. The phone uploads it to the health cloud. Once a day the health cloud sends a summary to the user's doctor portal.
+---
+sequenceDiagram
+    participant W as Smartwatch
+    participant P as Phone
+    participant C as Health cloud
+    participant D as Doctor portal
+    W->>P: Heart rate
+    P->>C: Upload
+    C->>D: Daily summary
+=== sequence
+The compiler service receives source code from the editor. It asks the package registry for the dependencies, receives them, and sends the compiled program back to the editor along with any warnings.
+---
+sequenceDiagram
+    participant E as Editor
+    participant C as Compiler service
+    participant R as Package registry
+    E->>C: Source code
+    C->>R: Ask for the dependencies
+    R-->>C: Dependencies
+    C-->>E: Compiled program and warnings

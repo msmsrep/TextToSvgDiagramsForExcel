@@ -18,6 +18,8 @@ const EN = {
   tableStartNotDate: "Row {row}: the start must be a date.",
   tableEndInvalid: "Row {row}: the end must be a date or a number of days.",
   tableValueNotNumber: "Row {row}: the value must be a number.",
+  textEmpty: "Enter some text.",
+  textNotMessage: 'Line {line}: write a message as "A -> B: message".',
   // Task pane
   ribbonTemplateMenu: "Diagrams > Template on the ribbon",
   labelDiagram: "Diagram",
@@ -69,6 +71,8 @@ const JA: Record<MessageId, string> = {
   tableStartNotDate: "{row} 行目: 開始は日付にしてください。",
   tableEndInvalid: "{row} 行目: 終了は日付か日数にしてください。",
   tableValueNotNumber: "{row} 行目: 値は数値にしてください。",
+  textEmpty: "文章を入力してください。",
+  textNotMessage: "{line} 行目: 「A → B: メッセージ」か「AがBに〇〇する」の形で書いてください。",
   ribbonTemplateMenu: "リボンの [図] > [テンプレート]",
   labelDiagram: "図",
   diagramSelectLabel: "アクティブ シートの Mermaid の図を選択",

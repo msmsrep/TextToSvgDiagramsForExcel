@@ -1,0 +1,300 @@
+=== sequence
+利用者が駅の券売機で特急券を買う。券売機は座席管理センターに空席を問い合わせ、空いている席を仮押さえする。利用者が支払うと券売機は席を確定させ、特急券を発券する。
+---
+sequenceDiagram
+    participant U as 利用者
+    participant K as 券売機
+    participant C as 座席管理センター
+    U->>K: 特急券を買う
+    K->>C: 空席を問い合わせ
+    C-->>K: 空いている席
+    K->>C: 仮押さえ
+    U->>K: 支払う
+    K->>C: 席を確定
+    K-->>U: 特急券を発券
+=== sequence
+お客様がコールセンターに電話すると、自動音声が用件の番号を聞く。お客様が番号を押すと、自動音声は該当する部署のオペレーターにつなぐ。オペレーターが全員通話中なら、自動音声は折り返しの予約を受け付ける。
+---
+sequenceDiagram
+    participant C as お客様
+    participant V as 自動音声
+    participant O as オペレーター
+    C->>V: 電話
+    V-->>C: 用件の番号を聞く
+    C->>V: 番号を押す
+    alt 空いている
+        V->>O: つなぐ
+    else 全員通話中
+        V-->>C: 折り返しの予約を受け付ける
+    end
+=== sequence
+研究者が共同研究先にデータの提供を依頼する。共同研究先は倫理審査委員会に承認を求め、承認が出たら匿名化したデータを研究者に送る。
+---
+sequenceDiagram
+    participant R as 研究者
+    participant P as 共同研究先
+    participant E as 倫理審査委員会
+    R->>P: データの提供を依頼
+    P->>E: 承認を求める
+    E-->>P: 承認
+    P->>R: 匿名化したデータを送る
+=== sequence
+商品の撮影を外注するとき、EC担当が撮影会社に商品と撮影指示書を送る。撮影会社が撮影して画像をアップロードし、EC担当が確認する。撮り直しが必要なら撮影会社に依頼し、OKなら請求書を受け取る。
+---
+sequenceDiagram
+    participant E as EC担当
+    participant S as 撮影会社
+    E->>S: 商品と撮影指示書を送る
+    S->>E: 画像をアップロード
+    alt 撮り直しが必要
+        E->>S: 撮り直しを依頼
+    else OK
+        S->>E: 請求書
+    end
+=== sequence
+Webフォームから資料請求があると、マーケティングツールはお客様に資料のダウンロードリンクをメールで送る。同時に営業担当にも通知し、営業担当は3日以内にお客様へ電話をかける。
+---
+sequenceDiagram
+    participant C as お客様
+    participant M as マーケティングツール
+    participant S as 営業担当
+    C->>M: 資料請求
+    M->>C: ダウンロードリンクをメール
+    M->>S: 通知
+    S->>C: 3日以内に電話
+=== sequence
+ゲームのプレイヤーがマッチングを開始すると、マッチングサーバーは同じくらいの強さのプレイヤーを探す。4人集まったらゲームサーバーに部屋を作らせ、全員に部屋の接続先を送る。
+---
+sequenceDiagram
+    participant P as プレイヤー
+    participant M as マッチングサーバー
+    participant G as ゲームサーバー
+    P->>M: マッチングを開始
+    M->>G: 部屋を作らせる
+    G-->>M: 部屋の接続先
+    M-->>P: 部屋の接続先を送る
+=== sequence
+銀行アプリで振込をすると、アプリは銀行のサーバーに振込を依頼する。サーバーは利用者のスマホにワンタイムパスワードを送り、利用者がアプリに入力すると振込を実行して受付番号を返す。
+---
+sequenceDiagram
+    participant U as 利用者
+    participant A as 銀行アプリ
+    participant S as 銀行のサーバー
+    U->>A: 振込
+    A->>S: 振込を依頼
+    S->>U: ワンタイムパスワード
+    U->>A: 入力
+    A->>S: ワンタイムパスワード
+    S-->>A: 受付番号
+=== sequence
+救急隊が患者の状態を病院の救急外来に電話で伝え、受け入れを依頼する。救急外来の医師が受け入れを決めると救急隊は搬送を始め、到着したら医師に患者を引き継ぐ。
+---
+sequenceDiagram
+    participant Q as 救急隊
+    participant D as 救急外来の医師
+    Q->>D: 患者の状態を伝えて受け入れを依頼
+    D-->>Q: 受け入れを決める
+    Q->>D: 患者を引き継ぐ
+=== sequence
+社員が福利厚生サイトで保養所を予約する。サイトは保養所に予約を連絡し、保養所は空き部屋を確保して確認書を社員に送る。利用後、保養所は料金を給与天引き用のデータとして人事に送る。
+---
+sequenceDiagram
+    participant E as 社員
+    participant W as 福利厚生サイト
+    participant H as 保養所
+    participant J as 人事
+    E->>W: 保養所を予約
+    W->>H: 予約を連絡
+    H->>E: 確認書
+    H->>J: 給与天引き用のデータ
+=== sequence
+コンビニの店員が発注端末で翌日の弁当を発注する。発注データは本部を通じて弁当工場に送られ、工場は夜中に製造して配送センターに出荷する。配送センターは朝、各店舗に配送する。
+---
+sequenceDiagram
+    participant S as 店員
+    participant T as 発注端末
+    participant H as 本部
+    participant F as 弁当工場
+    participant C as 配送センター
+    S->>T: 弁当を発注
+    T->>H: 発注データ
+    H->>F: 発注データ
+    F->>C: 出荷
+    C->>S: 朝に配送
+=== sequence
+携帯電話の利用者がショップで機種変更を申し込む。ショップの店員は通信会社のシステムで契約を変更し、新しい端末にSIMの設定を書き込む。最後に利用者にデータの移行方法を説明する。
+---
+sequenceDiagram
+    participant U as 利用者
+    participant S as 店員
+    participant K as 通信会社のシステム
+    participant T as 新しい端末
+    U->>S: 機種変更を申し込む
+    S->>K: 契約を変更
+    K-->>S: 変更完了
+    S->>T: SIMの設定を書き込む
+    S->>U: データの移行方法を説明
+=== sequence
+学生がオンラインで履修登録をすると、教務システムは定員を確認する。定員に空きがあれば登録を確定し、満員なら抽選待ちに入れる。抽選の結果は後日学生にメールで知らされる。
+---
+sequenceDiagram
+    participant S as 学生
+    participant K as 教務システム
+    S->>K: 履修登録
+    alt 空きがある
+        K-->>S: 登録を確定
+    else 満員
+        K-->>S: 抽選待ち
+        K->>S: 抽選の結果をメール
+    end
+=== sequence
+コーヒーメーカーの注文画面で客がカフェラテを選ぶ。注文画面は抽出機に指示し、抽出機がエスプレッソを抽出してからミルクを加える。できあがると注文画面に「お取りください」と表示される。
+---
+sequenceDiagram
+    participant C as 客
+    participant P as 注文画面
+    participant M as 抽出機
+    C->>P: カフェラテを選ぶ
+    P->>M: 指示
+    M-->>P: できあがり
+    P-->>C: お取りください
+=== sequence
+ユーザーがパスワードを変更すると、アカウント管理サービスは新しいパスワードを保存し、他の端末のセッションをすべて無効にする。そのあとユーザーのメールアドレスに変更のお知らせを送る。
+---
+sequenceDiagram
+    participant U as ユーザー
+    participant A as アカウント管理サービス
+    participant S as セッション
+    U->>A: パスワードを変更
+    A->>S: 他の端末のセッションを無効
+    A->>U: 変更のお知らせをメール
+=== sequence
+観客がチケットサイトで座席を選ぶと、サイトは座席を10分間確保する。10分以内に支払いが終われば電子チケットを発行し、終わらなければ確保を解除する。
+---
+sequenceDiagram
+    participant C as 観客
+    participant S as チケットサイト
+    C->>S: 座席を選ぶ
+    opt 10分以内に支払い
+        C->>S: 支払い
+        S-->>C: 電子チケットを発行
+    end
+=== sequence
+キッチンのスマートスピーカーに「タイマー3分」と言うと、スピーカーはタイマーを始める。3分たつとスピーカーはアラームを鳴らし、利用者が「止めて」と言うとアラームを止める。
+---
+sequenceDiagram
+    participant U as 利用者
+    participant S as スマートスピーカー
+    U->>S: タイマー3分
+    S-->>U: アラーム
+    U->>S: 止めて
+=== sequence
+鉄道の運行管理センターが大雨で運転見合わせを決めると、各駅と車両の乗務員に指令を出す。各駅は駅の放送と掲示で利用者に知らせ、公式アプリにも運行情報が配信される。
+---
+sequenceDiagram
+    participant C as 運行管理センター
+    participant E as 各駅
+    participant D as 乗務員
+    participant A as 公式アプリ
+    participant U as 利用者
+    C->>E: 運転見合わせの指令
+    C->>D: 運転見合わせの指令
+    E->>U: 放送と掲示
+    C->>A: 運行情報
+    A->>U: 配信
+=== sequence
+自宅の太陽光パネルの発電量を、パワーコンディショナーが1時間ごとにクラウドに送る。クラウドは1日の発電量を集計し、利用者のアプリにグラフで表示する。
+---
+sequenceDiagram
+    participant P as パワーコンディショナー
+    participant C as クラウド
+    participant A as アプリ
+    loop 1時間ごと
+        P->>C: 発電量
+    end
+    C->>A: グラフで表示
+=== sequence
+病院の受付で再来受付機に診察券を入れると、受付機は電子カルテに来院を登録し、受付票を印刷する。診察室の前の表示板には、順番が近づくと受付番号が表示される。
+---
+sequenceDiagram
+    participant P as 患者
+    participant R as 再来受付機
+    participant E as 電子カルテ
+    participant D as 表示板
+    P->>R: 診察券を入れる
+    R->>E: 来院を登録
+    R-->>P: 受付票を印刷
+    E->>D: 受付番号を表示
+=== sequence
+社員が社内ポータルで名刺の追加印刷を頼むと、ポータルは総務に依頼を送る。総務は印刷会社に発注し、印刷会社が名刺を社員の席に直接届ける。
+---
+sequenceDiagram
+    participant E as 社員
+    participant P as 社内ポータル
+    participant S as 総務
+    participant I as 印刷会社
+    E->>P: 名刺の追加印刷を頼む
+    P->>S: 依頼を送る
+    S->>I: 発注
+    I->>E: 名刺を届ける
+=== sequence
+ユーザーがクラウドの監視画面でアラートの条件を設定する。監視サービスは条件を保存し、メトリクスが条件を満たすたびにメールとSMSでユーザーに知らせる。
+---
+sequenceDiagram
+    participant U as ユーザー
+    participant M as 監視サービス
+    U->>M: アラートの条件を設定
+    loop 条件を満たすたび
+        M->>U: メール
+        M->>U: SMS
+    end
+=== sequence
+弁護士事務所に法律相談の予約が入ると、事務員が相談内容を聞いて担当弁護士を決める。弁護士は利益相反がないかシステムで確認し、問題がなければ事務員が相談者に日時を連絡する。
+---
+sequenceDiagram
+    participant C as 相談者
+    participant J as 事務員
+    participant L as 担当弁護士
+    participant S as システム
+    C->>J: 法律相談の予約
+    J->>L: 依頼
+    L->>S: 利益相反を確認
+    S-->>L: 問題なし
+    J->>C: 日時を連絡
+=== sequence
+社員証で複合機にログインすると、複合機は認証サーバーで社員を確認し、その社員の印刷待ちのジョブを一覧に出す。社員が選んだジョブだけが印刷される。
+---
+sequenceDiagram
+    participant E as 社員
+    participant M as 複合機
+    participant A as 認証サーバー
+    E->>M: 社員証でログイン
+    M->>A: 社員を確認
+    A-->>M: 確認結果
+    M-->>E: 印刷待ちのジョブの一覧
+    E->>M: ジョブを選ぶ
+=== sequence
+テレビ局の制作部が出演者の事務所に出演を依頼する。事務所は本人のスケジュールを確認して回答し、出演が決まると制作部が台本を事務所に送る。
+---
+sequenceDiagram
+    participant P as 制作部
+    participant J as 事務所
+    participant T as 出演者
+    P->>J: 出演を依頼
+    J->>T: スケジュールを確認
+    T-->>J: 都合
+    J-->>P: 回答
+    P->>J: 台本を送る
+=== sequence
+スマート照明のアプリで「おやすみ」ボタンを押すと、アプリはハブに命令を送る。ハブはリビングと寝室の照明を消し、玄関だけ常夜灯にする。
+---
+sequenceDiagram
+    participant A as アプリ
+    participant H as ハブ
+    participant L as リビングの照明
+    participant B as 寝室の照明
+    participant G as 玄関の照明
+    A->>H: おやすみ
+    H->>L: 消す
+    H->>B: 消す
+    H->>G: 常夜灯にする

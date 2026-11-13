@@ -1,0 +1,325 @@
+=== sequence
+利用者がネットスーパーのアプリで注文すると、アプリは店舗システムに注文を送る。店舗システムは在庫を引き当ててからアプリに受付完了を返し、アプリが利用者に配達時間を表示する。
+---
+sequenceDiagram
+    participant U as 利用者
+    participant A as アプリ
+    participant S as 店舗システム
+    U->>A: 注文
+    A->>S: 注文を送る
+    S-->>A: 受付完了
+    A-->>U: 配達時間を表示
+=== sequence
+患者がオンライン診療の予約サイトで日時を選ぶ。予約サイトはクリニックの予約台帳に空きを問い合わせ、空いていれば予約を登録する。登録が終わると予約サイトは患者にビデオ通話のURLをメールで送る。
+---
+sequenceDiagram
+    participant P as 患者
+    participant W as 予約サイト
+    participant C as 予約台帳
+    P->>W: 日時を選ぶ
+    W->>C: 空きを問い合わせ
+    C-->>W: 空いている
+    W->>C: 予約を登録
+    C-->>W: 登録完了
+    W-->>P: ビデオ通話のURLをメール
+=== sequence
+担当者が電子契約サービスに契約書をアップロードし、署名を依頼する。電子契約サービスは相手方にメールで通知する。相手方が署名すると、電子契約サービスは担当者に締結完了を知らせる。
+---
+sequenceDiagram
+    participant T as 担当者
+    participant E as 電子契約サービス
+    participant O as 相手方
+    T->>E: 契約書をアップロード
+    T->>E: 署名を依頼
+    E->>O: メールで通知
+    O->>E: 署名
+    E-->>T: 締結完了
+=== sequence
+社員が社内チャットボットに「経費の締め日は？」と質問する。チャットボットは社内規程の検索システムに問い合わせ、見つかった条文をもとに回答を返す。
+---
+sequenceDiagram
+    participant E as 社員
+    participant B as チャットボット
+    participant S as 検索システム
+    E->>B: 経費の締め日は？
+    B->>S: 社内規程を問い合わせ
+    S-->>B: 見つかった条文
+    B-->>E: 回答
+=== sequence
+乗客がICカードを改札機にタッチする。改札機はカードの残高を読み取り、運賃を引いてカードに書き込む。改札機は駅のサーバーに利用記録を送り、ゲートを開ける。
+---
+sequenceDiagram
+    participant P as 乗客
+    participant G as 改札機
+    participant C as ICカード
+    participant S as 駅のサーバー
+    P->>G: ICカードをタッチ
+    G->>C: 残高を読み取る
+    C-->>G: 残高
+    G->>C: 運賃を引いて書き込む
+    G->>S: 利用記録を送る
+    G-->>P: ゲートを開ける
+=== sequence
+お客様がコンビニのレジに払込票を出す。店員がバーコードを読むと、POSレジが収納代行会社に照会し、金額が返ってくる。お客様が支払うと、POSレジは収納代行会社に入金を通知し、店員が領収書を渡す。
+---
+sequenceDiagram
+    participant C as お客様
+    participant S as 店員
+    participant P as POSレジ
+    participant A as 収納代行会社
+    C->>S: 払込票を出す
+    S->>P: バーコードを読む
+    P->>A: 照会
+    A-->>P: 金額
+    C->>S: 支払う
+    P->>A: 入金を通知
+    S-->>C: 領収書を渡す
+=== sequence
+客がスマホのQRコードを店のタブレットに見せる。タブレットは決済事業者に支払いを要求し、決済事業者は客の残高を確認してから決済完了を返す。客のスマホにも支払い完了の通知が届く。
+---
+sequenceDiagram
+    participant C as 客
+    participant T as タブレット
+    participant P as 決済事業者
+    participant S as スマホ
+    C->>T: QRコードを見せる
+    T->>P: 支払いを要求
+    P-->>T: 決済完了
+    P-->>S: 支払い完了の通知
+=== sequence
+不在票を見た人が、宅配会社の再配達サイトで希望日時を入力する。サイトは営業所に配達予定を登録し、営業所はドライバーに配達を割り当てる。サイトは受付完了の画面を表示する。
+---
+sequenceDiagram
+    participant U as 受取人
+    participant W as 再配達サイト
+    participant O as 営業所
+    participant D as ドライバー
+    U->>W: 希望日時を入力
+    W->>O: 配達予定を登録
+    O->>D: 配達を割り当てる
+    W-->>U: 受付完了の画面
+=== sequence
+参加者が招待リンクを開くと、会議アプリは会議サーバーに参加を要求する。主催者が参加を許可すると、会議サーバーは参加者に映像と音声の配信を始める。
+---
+sequenceDiagram
+    participant P as 参加者
+    participant A as 会議アプリ
+    participant S as 会議サーバー
+    participant H as 主催者
+    P->>A: 招待リンクを開く
+    A->>S: 参加を要求
+    S->>H: 参加の許可を求める
+    H-->>S: 許可
+    S-->>P: 映像と音声の配信
+=== sequence
+PCでファイルを保存すると、同期アプリがクラウドストレージにアップロードする。クラウドストレージは同じアカウントのスマホに変更を通知し、スマホはファイルをダウンロードする。
+---
+sequenceDiagram
+    participant PC as PC
+    participant A as 同期アプリ
+    participant C as クラウドストレージ
+    participant S as スマホ
+    PC->>A: ファイルを保存
+    A->>C: アップロード
+    C->>S: 変更を通知
+    S->>C: ダウンロード
+    C-->>S: ファイル
+=== sequence
+視聴者が再生ボタンを押すと、プレーヤーは配信サーバーに動画を要求する。配信サーバーは視聴権限を確かめてからCDNのURLを返し、プレーヤーはCDNから動画を読み込んで再生する。
+---
+sequenceDiagram
+    participant V as 視聴者
+    participant P as プレーヤー
+    participant S as 配信サーバー
+    participant C as CDN
+    V->>P: 再生ボタンを押す
+    P->>S: 動画を要求
+    S-->>P: CDNのURL
+    P->>C: 動画を読み込む
+    C-->>P: 動画データ
+    P-->>V: 再生
+=== sequence
+ユーザー → スマートスピーカー: 「明日の天気は？」
+スマートスピーカー → 音声認識サーバー: 音声データ
+音声認識サーバー → 天気サービス: 明日の天気を問い合わせ
+天気サービス → 音声認識サーバー: 晴れ
+音声認識サーバー → スマートスピーカー: 回答の音声
+スマートスピーカー → ユーザー: 「明日は晴れです」
+---
+sequenceDiagram
+    participant U as ユーザー
+    participant S as スマートスピーカー
+    participant R as 音声認識サーバー
+    participant W as 天気サービス
+    U->>S: 明日の天気は？
+    S->>R: 音声データ
+    R->>W: 明日の天気を問い合わせ
+    W-->>R: 晴れ
+    R-->>S: 回答の音声
+    S-->>U: 明日は晴れです
+=== sequence
+会員がレジで買い物をすると、POSはポイントシステムに購入金額を送る。ポイントシステムは100円につき1ポイントを付与し、付与後の残高をPOSに返す。POSはレシートに残高を印字する。
+---
+sequenceDiagram
+    participant M as 会員
+    participant P as POS
+    participant S as ポイントシステム
+    M->>P: 買い物
+    P->>S: 購入金額を送る
+    S-->>P: 付与後の残高
+    P-->>M: レシートに残高を印字
+=== sequence
+受注システムが在庫システムに引き当てを依頼する。在庫が足りれば在庫システムは引き当て済みを返し、足りなければ欠品を返す。欠品の場合、受注システムは購買システムに発注を依頼する。
+---
+sequenceDiagram
+    participant O as 受注システム
+    participant I as 在庫システム
+    participant P as 購買システム
+    O->>I: 引き当てを依頼
+    alt 在庫が足りる
+        I-->>O: 引き当て済み
+    else 在庫が足りない
+        I-->>O: 欠品
+        O->>P: 発注を依頼
+    end
+=== sequence
+社員が経費精算システムに領収書の写真を送ると、システムはOCRサービスで金額と日付を読み取る。社員が内容を確認して申請すると、システムは上長に承認依頼を送る。
+---
+sequenceDiagram
+    participant E as 社員
+    participant S as 経費精算システム
+    participant O as OCRサービス
+    participant M as 上長
+    E->>S: 領収書の写真を送る
+    S->>O: 読み取りを依頼
+    O-->>S: 金額と日付
+    S-->>E: 読み取り結果
+    E->>S: 申請
+    S->>M: 承認依頼
+=== sequence
+従業員がタイムカードをカードリーダーにかざす。カードリーダーは勤怠サーバーに打刻データを送り、勤怠サーバーは出勤時刻を記録して「おはようございます」と表示させる。
+---
+sequenceDiagram
+    participant E as 従業員
+    participant R as カードリーダー
+    participant S as 勤怠サーバー
+    E->>R: タイムカードをかざす
+    R->>S: 打刻データを送る
+    S-->>R: おはようございますと表示
+=== sequence
+来訪者がゲートで顔をカメラに向けると、ゲートは顔認証サーバーに画像を送る。顔認証サーバーが登録者と一致したと返せばゲートが開き、一致しなければ警備員室に通知する。
+---
+sequenceDiagram
+    participant V as 来訪者
+    participant G as ゲート
+    participant F as 顔認証サーバー
+    participant K as 警備員室
+    V->>G: 顔をカメラに向ける
+    G->>F: 画像を送る
+    alt 一致した
+        F-->>G: 登録者と一致
+        G-->>V: ゲートが開く
+    else 一致しない
+        F-->>G: 一致しない
+        G->>K: 通知
+    end
+=== sequence
+メールサーバーは受け取ったメールを迷惑メールフィルタに渡す。フィルタはスコアを計算して判定結果を返し、メールサーバーは迷惑メールなら迷惑メールフォルダへ、そうでなければ受信トレイに入れる。
+---
+sequenceDiagram
+    participant M as メールサーバー
+    participant F as 迷惑メールフィルタ
+    participant J as 迷惑メールフォルダ
+    participant I as 受信トレイ
+    M->>F: メールを渡す
+    F-->>M: 判定結果
+    alt 迷惑メール
+        M->>J: 入れる
+    else 迷惑メールでない
+        M->>I: 入れる
+    end
+=== sequence
+決済サービスで支払いが完了すると、決済サービスはネットショップのサーバーにWebhookを送る。ショップのサーバーは注文を支払い済みに更新し、決済サービスに200を返す。そのあとお客様に注文確定のメールを送る。
+---
+sequenceDiagram
+    participant P as 決済サービス
+    participant S as ショップのサーバー
+    participant C as お客様
+    P->>S: Webhook
+    S-->>P: 200
+    S->>C: 注文確定のメール
+=== sequence
+Webサーバーは重い処理をジョブキューに入れ、すぐに利用者へ「受け付けました」と返す。ワーカーがジョブキューからジョブを取り出して処理し、終わったら結果をデータベースに書き込む。
+---
+sequenceDiagram
+    participant U as 利用者
+    participant W as Webサーバー
+    participant Q as ジョブキュー
+    participant K as ワーカー
+    participant D as データベース
+    U->>W: 依頼
+    W->>Q: ジョブを入れる
+    W-->>U: 受け付けました
+    K->>Q: ジョブを取り出す
+    Q-->>K: ジョブ
+    K->>D: 結果を書き込む
+=== sequence
+社員が勤怠アプリを開くと、アプリは認証基盤にリダイレクトする。社員が認証基盤でログインすると、認証基盤はIDトークンを発行してアプリに戻す。アプリはトークンを検証して社員の画面を表示する。
+---
+sequenceDiagram
+    participant E as 社員
+    participant A as 勤怠アプリ
+    participant I as 認証基盤
+    E->>A: アプリを開く
+    A-->>E: 認証基盤にリダイレクト
+    E->>I: ログイン
+    I-->>A: IDトークン
+    A-->>E: 社員の画面を表示
+=== sequence
+ショップの画面でカード番号を入力すると、ブラウザは決済代行会社に直接カード番号を送り、トークンを受け取る。ブラウザはそのトークンをショップのサーバーに送り、サーバーはトークンを使って決済代行会社に課金を依頼する。
+---
+sequenceDiagram
+    participant B as ブラウザ
+    participant G as 決済代行会社
+    participant S as ショップのサーバー
+    B->>G: カード番号を送る
+    G-->>B: トークン
+    B->>S: トークンを送る
+    S->>G: 課金を依頼
+    G-->>S: 課金結果
+=== sequence
+ニュースアプリの管理者が速報を登録すると、配信サーバーはプッシュ通知サービスに一斉送信を依頼する。プッシュ通知サービスは登録されている端末に通知を届ける。
+---
+sequenceDiagram
+    participant M as 管理者
+    participant S as 配信サーバー
+    participant P as プッシュ通知サービス
+    participant D as 端末
+    M->>S: 速報を登録
+    S->>P: 一斉送信を依頼
+    P->>D: 通知を届ける
+=== sequence
+各サーバーのログ収集エージェントは、5分ごとにログを集約サーバーへ転送する。集約サーバーはログを検索基盤に取り込み、エラーが含まれていれば運用チームのチャットに知らせる。
+---
+sequenceDiagram
+    participant A as ログ収集エージェント
+    participant S as 集約サーバー
+    participant E as 検索基盤
+    participant C as 運用チームのチャット
+    A->>S: 5分ごとにログを転送
+    S->>E: 取り込む
+    opt エラーが含まれている
+        S->>C: 知らせる
+    end
+=== sequence
+店舗の店長が本部に追加の発注を申請する。本部のバイヤーが予算を確認して承認し、物流センターに出荷を指示する。物流センターは店舗に商品を届け、店長が受領の連絡を本部に入れる。
+---
+sequenceDiagram
+    participant S as 店長
+    participant B as バイヤー
+    participant L as 物流センター
+    S->>B: 追加の発注を申請
+    B-->>S: 承認
+    B->>L: 出荷を指示
+    L->>S: 商品を届ける
+    S->>B: 受領の連絡

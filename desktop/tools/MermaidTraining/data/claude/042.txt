@@ -1,0 +1,228 @@
+=== gantt
+Customer research. Kickoff on 2027-01-11. Discovery interviews: 2 weeks from the kickoff. Synthesis: 1 week after the interviews. Readout on 2027-02-03.
+---
+gantt
+    title Customer research
+    dateFormat YYYY-MM-DD
+    section Research
+    Kickoff :milestone, a1, 2027-01-11, 0d
+    Discovery interviews :a2, 2027-01-11, 14d
+    Synthesis :a3, after a2, 7d
+    Readout :milestone, a4, 2027-02-03, 0d
+=== gantt
+Barn renovation. Roof: 2027-04-05 to 2027-04-16. Windows: 2027-04-12 to 2027-04-21. Electrical: 2027-04-19 to 2027-04-30. Floors: 5 days after electrical.
+---
+gantt
+    title Barn renovation
+    dateFormat YYYY-MM-DD
+    section Renovation
+    Roof :a1, 2027-04-05, 12d
+    Windows :a2, 2027-04-12, 10d
+    Electrical :a3, 2027-04-19, 12d
+    Floors :a4, after a3, 5d
+=== gantt
+Recruiting plan for two roles. Designer: designer job ad for 2 weeks from 2027-05-03, then designer interviews for 1 week. Engineer: engineer job ad for 3 weeks from 2027-05-10, then engineer interviews for 2 weeks.
+---
+gantt
+    title Recruiting plan
+    dateFormat YYYY-MM-DD
+    section Designer
+    Designer job ad :a1, 2027-05-03, 14d
+    Designer interviews :a2, after a1, 7d
+    section Engineer
+    Engineer job ad :b1, 2027-05-10, 21d
+    Engineer interviews :b2, after b1, 14d
+=== gantt
+Trip itinerary, 2027: Rome Sep 4 to 7, Florence Sep 8 to 10, Venice Sep 11 to 13, flight home on Sep 14.
+---
+gantt
+    title Trip itinerary
+    dateFormat YYYY-MM-DD
+    section Trip
+    Rome :a1, 2027-09-04, 4d
+    Florence :a2, 2027-09-08, 3d
+    Venice :a3, 2027-09-11, 3d
+    Flight home :milestone, a4, 2027-09-14, 0d
+=== gantt
+Compliance audit prep. Policy review: 2027-02-08, 5 days. Evidence collection: 2027-02-15, 10 days. Gap fixes: 8 days after evidence collection. Auditor visit: 2027-03-15.
+---
+gantt
+    title Compliance audit prep
+    dateFormat YYYY-MM-DD
+    section Prep
+    Policy review :a1, 2027-02-08, 5d
+    Evidence collection :a2, 2027-02-15, 10d
+    Gap fixes :a3, after a2, 8d
+    section Audit
+    Auditor visit :milestone, a4, 2027-03-15, 0d
+=== gantt
+Restaurant opening. Kitchen equipment install: 2027-06-01, 1 week. Staff hiring: 2027-06-01, 3 weeks. Menu tasting: 3 days after the equipment install. Soft opening: 2027-06-25. Grand opening: 2027-07-02.
+---
+gantt
+    title Restaurant opening
+    dateFormat YYYY-MM-DD
+    section Preparation
+    Kitchen equipment install :a1, 2027-06-01, 7d
+    Staff hiring :a2, 2027-06-01, 21d
+    Menu tasting :a3, after a1, 3d
+    section Opening
+    Soft opening :milestone, a4, 2027-06-25, 0d
+    Grand opening :milestone, a5, 2027-07-02, 0d
+=== gantt
+Winter tire campaign, 2027: prepare flyers from Oct 4 to Oct 8, mail flyers on Oct 11, booking period from Oct 12 to Nov 12, fitting period from Oct 25 to Nov 26.
+---
+gantt
+    title Winter tire campaign
+    dateFormat YYYY-MM-DD
+    section Campaign
+    Prepare flyers :a1, 2027-10-04, 5d
+    Mail flyers :a2, 2027-10-11, 1d
+    Booking period :a3, 2027-10-12, 32d
+    Fitting period :a4, 2027-10-25, 33d
+=== gantt
+Board game project. Rules draft: 2027-08-02, 10 days. Playtesting: 3 weeks after the draft. Artwork: 4 weeks from 2027-08-16. Print files: 5 days after the artwork.
+---
+gantt
+    title Board game project
+    dateFormat YYYY-MM-DD
+    section Game
+    Rules draft :a1, 2027-08-02, 10d
+    Playtesting :a2, after a1, 21d
+    section Art
+    Artwork :b1, 2027-08-16, 28d
+    Print files :b2, after b1, 5d
+=== gantt
+Semester plan. Lectures: 2027-09-06 to 2027-12-10. Midterm week: 2027-10-18 to 2027-10-22. Project work: 2027-11-01 to 2027-12-03. Final exams: 2027-12-13 to 2027-12-17.
+---
+gantt
+    title Semester plan
+    dateFormat YYYY-MM-DD
+    section Semester
+    Lectures :a1, 2027-09-06, 96d
+    Midterm week :a2, 2027-10-18, 5d
+    Project work :a3, 2027-11-01, 33d
+    Final exams :a4, 2027-12-13, 5d
+=== gantt
+Bridge inspection. Close one lane on 2027-03-22. Inspect the deck for 2 days from 2027-03-22, inspect the cables for 3 days after the deck, and write the report for 5 days after the cables. Reopen the lane on 2027-03-27.
+---
+gantt
+    title Bridge inspection
+    dateFormat YYYY-MM-DD
+    section Inspection
+    Close one lane :milestone, a1, 2027-03-22, 0d
+    Inspect the deck :a2, 2027-03-22, 2d
+    Inspect the cables :a3, after a2, 3d
+    Write the report :a4, after a3, 5d
+    Reopen the lane :milestone, a5, 2027-03-27, 0d
+=== gantt
+Podcast season 3: record episodes for 3 weeks from 2027-01-04, edit episodes for 3 weeks from 2027-01-11, and publish weekly for 6 weeks from 2027-02-01.
+---
+gantt
+    title Podcast season 3
+    dateFormat YYYY-MM-DD
+    section Season 3
+    Record episodes :a1, 2027-01-04, 21d
+    Edit episodes :a2, 2027-01-11, 21d
+    Publish weekly :a3, 2027-02-01, 42d
+=== gantt
+Payroll system switch. Parallel run: 2027-04-01 to 2027-04-30. Staff training: 2027-04-12 to 2027-04-16. Cutover: 2027-05-01. Hypercare: 2 weeks from 2027-05-03.
+---
+gantt
+    title Payroll system switch
+    dateFormat YYYY-MM-DD
+    section Switch
+    Parallel run :a1, 2027-04-01, 30d
+    Staff training :a2, 2027-04-12, 5d
+    Cutover :milestone, a3, 2027-05-01, 0d
+    Hypercare :a4, 2027-05-03, 14d
+=== gantt
+Greenhouse build: foundation for 3 days from 2027-03-15, frame for 4 days after the foundation, glazing for 3 days after the frame, and irrigation for 2 days after the frame, at the same time as the glazing.
+---
+gantt
+    title Greenhouse build
+    dateFormat YYYY-MM-DD
+    section Build
+    Foundation :a1, 2027-03-15, 3d
+    Frame :a2, after a1, 4d
+    Glazing :a3, after a2, 3d
+    Irrigation :a4, after a2, 2d
+=== gantt
+Marketing video. Script: 2027-02-01 to 2027-02-05. Storyboard: 4 days after the script. Filming: 2027-02-15 to 2027-02-17. Editing: 6 days after filming. Client approval: 2027-03-01.
+---
+gantt
+    title Marketing video
+    dateFormat YYYY-MM-DD
+    section Video
+    Script :a1, 2027-02-01, 5d
+    Storyboard :a2, after a1, 4d
+    Filming :a3, 2027-02-15, 3d
+    Editing :a4, after a3, 6d
+    Client approval :milestone, a5, 2027-03-01, 0d
+=== gantt
+Inventory system pilot. Pilot in store 1: 2 weeks from 2027-09-06. Pilot in store 2: 2 weeks from 2027-09-13. Evaluate results: 1 week after both pilots. Decision meeting: 2027-10-06.
+---
+gantt
+    title Inventory system pilot
+    dateFormat YYYY-MM-DD
+    section Pilot
+    Pilot in store 1 :a1, 2027-09-06, 14d
+    Pilot in store 2 :a2, 2027-09-13, 14d
+    Evaluate results :a3, after a1 a2, 7d
+    Decision meeting :milestone, a4, 2027-10-06, 0d
+=== gantt
+Scout camp. Booking the site: 2027-05-03, 1 day. Collecting permission forms: 2027-05-10 to 2027-06-04. Buying food: 2027-06-21 to 2027-06-22. Camp: 2027-06-25 to 2027-06-27.
+---
+gantt
+    title Scout camp
+    dateFormat YYYY-MM-DD
+    section Preparation
+    Booking the site :a1, 2027-05-03, 1d
+    Collecting permission forms :a2, 2027-05-10, 26d
+    Buying food :a3, 2027-06-21, 2d
+    section Camp
+    Camp :b1, 2027-06-25, 3d
+=== gantt
+Annual report. Photography: 5 days from 2027-01-18. Copywriting: 10 days from 2027-01-18. Design: 8 days after copywriting. Proofreading: 3 days after design. Print deadline: 2027-02-19.
+---
+gantt
+    title Annual report
+    dateFormat YYYY-MM-DD
+    section Report
+    Photography :a1, 2027-01-18, 5d
+    Copywriting :a2, 2027-01-18, 10d
+    Design :a3, after a2, 8d
+    Proofreading :a4, after a3, 3d
+    Print deadline :milestone, a5, 2027-02-19, 0d
+=== gantt
+Laptop refresh, by office. Berlin: 2027-10-04, 5 days. Paris: 5 days after Berlin. Madrid: 5 days after Paris. Lisbon: 3 days after Madrid.
+---
+gantt
+    title Laptop refresh
+    dateFormat YYYY-MM-DD
+    section Offices
+    Berlin :a1, 2027-10-04, 5d
+    Paris :a2, after a1, 5d
+    Madrid :a3, after a2, 5d
+    Lisbon :a4, after a3, 3d
+=== gantt
+Thesis defense prep, 2027: submit the thesis on May 14, prepare slides from May 17 to May 21, practice talk on May 24, defense on May 28.
+---
+gantt
+    title Thesis defense prep
+    dateFormat YYYY-MM-DD
+    section Prep
+    Submit the thesis :milestone, a1, 2027-05-14, 0d
+    Prepare slides :a2, 2027-05-17, 5d
+    Practice talk :a3, 2027-05-24, 1d
+    Defense :milestone, a4, 2027-05-28, 0d
+=== gantt
+Cloud cost review. Collect billing data: 3 days from 2027-07-05. Tag unowned resources: 5 days after that. Rightsize instances: 2027-07-12, 10 days. Present savings: 2027-07-26.
+---
+gantt
+    title Cloud cost review
+    dateFormat YYYY-MM-DD
+    section Review
+    Collect billing data :a1, 2027-07-05, 3d
+    Tag unowned resources :a2, after a1, 5d
+    Rightsize instances :a3, 2027-07-12, 10d
+    Present savings :milestone, a4, 2027-07-26, 0d

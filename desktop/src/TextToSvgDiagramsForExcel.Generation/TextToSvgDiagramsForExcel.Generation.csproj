@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Text-to-Mermaid with a local language model (ONNX Runtime GenAI, in process).
+       Kept apart from the WPF app so the evaluation tool (desktop/tools) can use it. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>TextToSvgDiagramsForExcel.Generation</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ML.OnnxRuntimeGenAI" Version="0.19.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="TextToSvgDiagramsForExcel.Desktop.Tests" />
+  </ItemGroup>
+
+</Project>

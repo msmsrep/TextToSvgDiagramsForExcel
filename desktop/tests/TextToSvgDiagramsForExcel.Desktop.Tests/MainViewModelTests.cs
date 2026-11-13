@@ -4,6 +4,7 @@ using System.Text;
 using TextToSvgDiagramsForExcel.Desktop.Engine;
 using TextToSvgDiagramsForExcel.Desktop.Excel;
 using TextToSvgDiagramsForExcel.Desktop.Resources;
+using TextToSvgDiagramsForExcel.Desktop.Services;
 using TextToSvgDiagramsForExcel.Desktop.ViewModels;
 
 namespace TextToSvgDiagramsForExcel.Desktop.Tests;
@@ -48,10 +49,12 @@ public class MainViewModelTests
         Strings.Culture = CultureInfo.GetCultureInfo("en-US");
     }
 
-    private async Task<MainViewModel> StartAsync(params DiagramItem[] diagrams)
+    private async Task<MainViewModel> StartAsync(params DiagramItem[] diagrams) => await StartAsync(null, diagrams);
+
+    private async Task<MainViewModel> StartAsync(ITextModel? textModel, params DiagramItem[] diagrams)
     {
         _excel.Diagrams.AddRange(diagrams);
-        var vm = new MainViewModel(_engine, _excel, _dialogs, _delay.Delay);
+        var vm = new MainViewModel(_engine, _excel, _dialogs, _delay.Delay) { TextModel = textModel };
         vm.CodeReplaced += (_, code) => _editor = code;
         await vm.InitializeAsync();
         return vm;
@@ -469,6 +472,96 @@ public class MainViewModelTests
         await vm.GenerateFromCellsAsync("auto");
 
         Assert.Equal("Generate error: Select at least two columns.", vm.ErrorText);
+    }
+
+    [Fact]
+    public async Task GeneratesCodeFromTextAndOffersTheTextAgain()
+    {
+        var vm = await StartAsync(D1);
+        await vm.ChooseDiagramAsync("1");
+        _dialogs.TextAnswer = new TextRequest("A -> B: hi\nB -> A: ok", "sequence");
+
+        await vm.GenerateFromTextAsync();
+
+        Assert.Equal(("", "auto"), (_dialogs.TextAsked!.Value.Text, _dialogs.TextAsked.Value.Kind));
+        Assert.Equal(["auto", "flowchart", "sequence"], _dialogs.TextAsked.Value.Kinds.Select(k => k.Value));
+        Assert.Equal(("A -> B: hi\nB -> A: ok", "sequence"), _engine.LastText);
+        Assert.Equal(_engine.TextCode, _editor);
+        Assert.Equal("", vm.CurrentDiagramId);
+
+        _dialogs.TextAnswer = null;
+        await vm.GenerateFromTextAsync();
+
+        Assert.Equal(("A -> B: hi\nB -> A: ok", "sequence"), (_dialogs.TextAsked.Value.Text, _dialogs.TextAsked.Value.Kind));
+    }
+
+    [Fact]
+    public async Task OffersNoAiWithoutALocalModel()
+    {
+        var vm = await StartAsync();
+        _dialogs.TextAnswer = null;
+
+        await vm.GenerateFromTextAsync();
+
+        Assert.Null(_dialogs.TextAsked!.Value.Ai);
+    }
+
+    [Fact]
+    public async Task UsesTheCodeTheLocalModelMadeInTheDialog()
+    {
+        var model = new FakeTextModel();
+        var vm = await StartAsync(model);
+        _dialogs.TextAnswer = new TextRequest("Plan the trip.", "gantt", UseAi: true, Code: "gantt\n    title Trip");
+
+        await vm.GenerateFromTextAsync();
+
+        var ai = _dialogs.TextAsked!.Value.Ai!;
+        Assert.Same(model, ai.Model);
+        Assert.True(ai.Use);
+        Assert.Equal(["auto", "flowchart", "sequence", "gantt"], ai.Kinds.Select(k => k.Value));
+        Assert.Null(_engine.LastText);
+        Assert.Equal("gantt\n    title Trip", _editor);
+        Assert.Equal("", vm.CurrentDiagramId);
+        Assert.True(vm.UseAiForText);
+    }
+
+    [Fact]
+    public async Task RemembersWhenTheRulesWereChosenOverTheLocalModel()
+    {
+        var vm = await StartAsync(new FakeTextModel());
+        _dialogs.TextAnswer = new TextRequest("A -> B", "flowchart", UseAi: false);
+
+        await vm.GenerateFromTextAsync();
+        await vm.GenerateFromTextAsync();
+
+        Assert.Equal(("A -> B", "flowchart"), _engine.LastText);
+        Assert.False(vm.UseAiForText);
+        Assert.False(_dialogs.TextAsked!.Value.Ai!.Use);
+    }
+
+    [Fact]
+    public async Task LeavesTheCodeAloneWhenTheTextDialogIsCanceled()
+    {
+        var vm = await StartAsync();
+        _editor = null;
+
+        await vm.GenerateFromTextAsync();
+
+        Assert.Null(_engine.LastText);
+        Assert.Null(_editor);
+    }
+
+    [Fact]
+    public async Task ReportsTextErrors()
+    {
+        var vm = await StartAsync();
+        _engine.TextError = new EngineException("text", "Enter some text.");
+        _editor = null;
+
+        await vm.GenerateFromTextAsync("  ", "auto");
+
+        Assert.Equal("Generate error: Enter some text.", vm.ErrorText);
+        Assert.Null(_editor);
     }
 
     [Fact]

@@ -6,9 +6,10 @@ import { extractFlowchart, scaleModel } from "../core/flowchartModel";
 import { serializeSvg, svgSize, svgToRaster } from "../core/image";
 import { getLocale, type Locale, type MessageId, setLocale, t } from "../core/messages";
 import { toOfficeSvg } from "../core/officeSvg";
-import { getFlowchartData, initMermaid, renderMermaid } from "../core/render";
+import { getFlowchartData, initMermaid, parseMermaid, renderMermaid } from "../core/render";
 import { type TableData, type TableKind, tableToMermaid } from "../core/tableToMermaid";
 import { TEMPLATES } from "../core/templates";
+import { type TextKind, textToMermaid } from "../core/textToMermaid";
 import { errorMessage } from "../core/util";
 
 export type EngineRequest = { id: number; method: string; params?: Record<string, unknown> };
@@ -19,6 +20,7 @@ export type EngineErrorCode =
   | "changed"
   | "notFlowchart"
   | "table"
+  | "text"
   | "badRequest"
   | "internal";
 export type EngineError = { code: EngineErrorCode; message: string; line?: number };
@@ -148,6 +150,26 @@ export function createEngine(preview: HTMLElement): Engine {
         return { code: tableToMermaid(params.table as TableData, (params.kind ?? "auto") as TableKind) };
       } catch (e) {
         throw new Failure("table", errorMessage(e));
+      }
+    },
+
+    async fromText(params) {
+      try {
+        return { code: textToMermaid(String(params.text ?? ""), (params.kind ?? "auto") as TextKind) };
+      } catch (e) {
+        throw new Failure("text", errorMessage(e));
+      }
+    },
+
+    // Checks code (such as an AI's answer) without touching the preview.
+    async parse(params) {
+      const source = String(params.code ?? "").replace(/\r\n?/g, "\n");
+      try {
+        return { valid: true, type: await parseMermaid(source.trim()) };
+      } catch (e) {
+        const message = errorMessage(e);
+        const line = errorSourceLine(source, message);
+        return { valid: false, message, ...(line !== undefined && { line }) };
       }
     },
 

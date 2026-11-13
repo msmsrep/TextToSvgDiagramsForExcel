@@ -1,0 +1,306 @@
+=== sequence
+住民が市のアプリで道路の穴を写真付きで通報する。アプリは道路課に通報を送り、道路課は業者に補修を依頼する。補修が終わると道路課はアプリで住民に「対応しました」と返す。
+---
+sequenceDiagram
+    participant R as 住民
+    participant A as 市のアプリ
+    participant D as 道路課
+    participant G as 業者
+    R->>A: 写真付きで通報
+    A->>D: 通報を送る
+    D->>G: 補修を依頼
+    G-->>D: 補修完了
+    D->>A: 対応しました
+    A-->>R: 対応しました
+=== sequence
+お客様が花屋に電話で配達を頼む。花屋は花束を作り、配達スタッフに届け先を伝える。配達スタッフは届け先に花束を渡し、受け取りのサインを花屋に持ち帰る。
+---
+sequenceDiagram
+    participant C as お客様
+    participant F as 花屋
+    participant D as 配達スタッフ
+    participant T as 届け先
+    C->>F: 配達を頼む
+    F->>D: 届け先を伝える
+    D->>T: 花束を渡す
+    T-->>D: 受け取りのサイン
+    D-->>F: サインを持ち帰る
+=== sequence
+ログイン画面でユーザーが「パスキーでログイン」を選ぶ。ブラウザは端末の認証器に署名を求め、ユーザーが指紋で認証すると、ブラウザは署名をサーバーに送る。サーバーは公開鍵で署名を確かめてログインさせる。
+---
+sequenceDiagram
+    participant U as ユーザー
+    participant B as ブラウザ
+    participant K as 認証器
+    participant S as サーバー
+    U->>B: パスキーでログインを選ぶ
+    B->>K: 署名を求める
+    U->>K: 指紋で認証
+    K-->>B: 署名
+    B->>S: 署名を送る
+    S-->>B: ログイン
+=== sequence
+市民が図書館の電子書籍サービスで本を借りる。サービスは貸出数の上限を確かめ、借りられれば2週間の貸出期間を設定する。期間が過ぎるとサービスは自動で返却し、市民にお知らせを送る。
+---
+sequenceDiagram
+    participant C as 市民
+    participant S as 電子書籍サービス
+    C->>S: 本を借りる
+    S-->>C: 2週間の貸出期間を設定
+    S->>C: お知らせを送る
+=== sequence
+ドライブスルーで客がスピーカーに注文を伝える。店員が注文をレジに入力し、キッチンが調理する。客が窓口で支払うと、店員が商品を渡す。
+---
+sequenceDiagram
+    participant C as 客
+    participant S as 店員
+    participant R as レジ
+    participant K as キッチン
+    C->>S: スピーカーで注文を伝える
+    S->>R: 注文を入力
+    R->>K: 注文
+    C->>S: 窓口で支払う
+    S-->>C: 商品を渡す
+=== sequence
+エンジニアがチャットで「本番のエラー率は？」と聞くと、運用ボットは監視サービスに直近1時間のエラー率を問い合わせ、グラフの画像をチャットに貼る。
+---
+sequenceDiagram
+    participant E as エンジニア
+    participant B as 運用ボット
+    participant M as 監視サービス
+    E->>B: 本番のエラー率は？
+    B->>M: 直近1時間のエラー率を問い合わせ
+    M-->>B: エラー率
+    B-->>E: グラフの画像を貼る
+=== sequence
+登山者が山小屋に電話で宿泊を予約する。山小屋は天気が悪化しそうなときは前日に登山者に電話して、計画を見直すよう伝える。
+---
+sequenceDiagram
+    participant H as 登山者
+    participant Y as 山小屋
+    H->>Y: 宿泊を予約
+    Y-->>H: 予約完了
+    opt 天気が悪化しそう
+        Y->>H: 前日に電話して計画を見直すよう伝える
+    end
+=== sequence
+クリーニング店の受付端末で預かりを登録すると、工場のシステムに作業指示が送られる。工場が仕上げて店舗に配送し、店舗の端末がお客様に「仕上がりました」とSMSを送る。
+---
+sequenceDiagram
+    participant T as 受付端末
+    participant F as 工場のシステム
+    participant S as 店舗
+    participant C as お客様
+    T->>F: 作業指示
+    F->>S: 仕上げて配送
+    S->>T: 入荷を登録
+    T->>C: 仕上がりましたとSMS
+=== sequence
+本部の商品部が新商品の情報を店舗システムに登録する。店舗システムは各店のPOSに商品マスタを配信し、POSは翌朝の開店前に新しい商品を読み込む。
+---
+sequenceDiagram
+    participant H as 商品部
+    participant S as 店舗システム
+    participant P as POS
+    H->>S: 新商品の情報を登録
+    S->>P: 商品マスタを配信
+=== sequence
+利用者がフィットネスアプリでワークアウトを終えると、アプリは結果を健康管理アプリに書き込む。健康管理アプリは1週間の目標を達成していれば利用者にバッジを贈る。
+---
+sequenceDiagram
+    participant U as 利用者
+    participant F as フィットネスアプリ
+    participant H as 健康管理アプリ
+    U->>F: ワークアウトを終える
+    F->>H: 結果を書き込む
+    opt 1週間の目標を達成
+        H->>U: バッジを贈る
+    end
+=== sequence
+営業がタブレットで契約書に顧客のサインをもらう。タブレットは契約管理システムに契約書のPDFを送り、システムは顧客に控えをメールで送る。
+---
+sequenceDiagram
+    participant S as 営業
+    participant C as 顧客
+    participant T as タブレット
+    participant K as 契約管理システム
+    S->>C: サインを依頼
+    C->>T: サイン
+    T->>K: 契約書のPDF
+    K->>C: 控えをメール
+=== sequence
+ボランティア団体の代表が市の社会福祉協議会に助成を申請する。協議会は審査会に諮り、審査会の決定を代表に通知する。採択されたら協議会が助成金を振り込む。
+---
+sequenceDiagram
+    participant D as 代表
+    participant K as 社会福祉協議会
+    participant S as 審査会
+    D->>K: 助成を申請
+    K->>S: 諮る
+    S-->>K: 決定
+    K-->>D: 決定を通知
+    opt 採択
+        K->>D: 助成金を振り込む
+    end
+=== sequence
+自動運転の配送ロボットが交差点に近づくと、交差点の信号機に信号の状態を問い合わせる。赤なら止まって待ち、青になった通知を受け取ってから渡る。
+---
+sequenceDiagram
+    participant R as 配送ロボット
+    participant S as 信号機
+    R->>S: 信号の状態を問い合わせ
+    S-->>R: 赤
+    S->>R: 青になった
+=== sequence
+保護者がオンラインで給食費を払うと、決済代行会社は学校の会計システムに入金を知らせる。会計システムは未納者の一覧を更新し、事務担当は未納の家庭に督促状を送る。
+---
+sequenceDiagram
+    participant P as 保護者
+    participant K as 決済代行会社
+    participant S as 会計システム
+    participant J as 事務担当
+    P->>K: 給食費を払う
+    K->>S: 入金を知らせる
+    J->>S: 未納者の一覧を見る
+    J->>P: 未納の家庭に督促状
+=== sequence
+サーバーA → サーバーB: ハートビート
+サーバーB → サーバーA: 応答
+（応答がなくなったら）サーバーA → 管理者: 障害を通知
+---
+sequenceDiagram
+    participant A as サーバーA
+    participant B as サーバーB
+    participant M as 管理者
+    A->>B: ハートビート
+    B-->>A: 応答
+    opt 応答がなくなった
+        A->>M: 障害を通知
+    end
+=== sequence
+中古車の買取：売り手が買取店に査定を依頼する。査定士が車を見て査定額を出し、売り手が納得すれば契約する。買取店は名義変更をして、売り手に代金を振り込む。
+---
+sequenceDiagram
+    participant U as 売り手
+    participant K as 買取店
+    participant S as 査定士
+    U->>K: 査定を依頼
+    K->>S: 車を見る
+    S-->>K: 査定額
+    K-->>U: 査定額を伝える
+    U->>K: 契約
+    K->>U: 代金を振り込む
+=== sequence
+旅行代理店のスタッフが航空会社のシステムで座席を予約し、ホテルの予約システムで部屋を押さえる。両方の確認番号がそろったら、お客様に旅程表を送る。
+---
+sequenceDiagram
+    participant S as スタッフ
+    participant A as 航空会社のシステム
+    participant H as ホテルの予約システム
+    participant C as お客様
+    S->>A: 座席を予約
+    A-->>S: 確認番号
+    S->>H: 部屋を押さえる
+    H-->>S: 確認番号
+    S->>C: 旅程表を送る
+=== sequence
+ポッドキャストの配信者が音声ファイルを配信サービスにアップロードする。配信サービスはRSSを更新し、聴取者のアプリがRSSを読み込んで新しいエピソードを表示する。
+---
+sequenceDiagram
+    participant H as 配信者
+    participant S as 配信サービス
+    participant A as 聴取者のアプリ
+    H->>S: 音声ファイルをアップロード
+    A->>S: RSSを読み込む
+    S-->>A: 新しいエピソード
+=== sequence
+コンテナのオーケストレーターは各ノードに稼働状況を問い合わせる。応答のないノードがあれば、そのノードで動いていたコンテナを別のノードで起動し直す。
+---
+sequenceDiagram
+    participant O as オーケストレーター
+    participant N as ノード
+    participant M as 別のノード
+    O->>N: 稼働状況を問い合わせ
+    alt 応答がない
+        O->>M: コンテナを起動し直す
+        M-->>O: 起動完了
+    else 応答がある
+        N-->>O: 稼働中
+    end
+=== sequence
+患者が薬局のアプリで処方箋の写真を送ると、薬局は事前に薬を準備して「準備ができました」と通知する。患者が来店して処方箋の原本を渡すと、薬剤師が薬を渡す。
+---
+sequenceDiagram
+    participant P as 患者
+    participant A as 薬局のアプリ
+    participant Y as 薬局
+    participant S as 薬剤師
+    P->>A: 処方箋の写真を送る
+    A->>Y: 処方箋の写真
+    Y->>P: 準備ができました
+    P->>S: 処方箋の原本を渡す
+    S-->>P: 薬を渡す
+=== sequence
+ネットの英会話サービスで生徒がレッスンを予約すると、サービスは講師にリクエストを送る。講師が承認すると予約が確定し、レッスンの10分前に生徒と講師の両方にリマインドが届く。
+---
+sequenceDiagram
+    participant S as 生徒
+    participant E as 英会話サービス
+    participant T as 講師
+    S->>E: レッスンを予約
+    E->>T: リクエスト
+    T->>E: 承認
+    E-->>S: 予約が確定
+    E->>S: 10分前にリマインド
+    E->>T: 10分前にリマインド
+=== sequence
+会社の受付タブレットで来訪者が訪問先の社員を選ぶと、タブレットはその社員のチャットに呼び出しを送る。社員が「すぐ行きます」と返すと、タブレットに表示される。
+---
+sequenceDiagram
+    participant V as 来訪者
+    participant T as 受付タブレット
+    participant E as 社員
+    V->>T: 訪問先の社員を選ぶ
+    T->>E: チャットに呼び出し
+    E-->>T: すぐ行きます
+    T-->>V: 表示
+=== sequence
+家計簿アプリがクレジットカード会社から利用明細を自動で取得する。家計簿アプリは明細を費目に分類し、使いすぎの費目があれば利用者に通知する。
+---
+sequenceDiagram
+    participant A as 家計簿アプリ
+    participant C as クレジットカード会社
+    participant U as 利用者
+    A->>C: 利用明細を取得
+    C-->>A: 利用明細
+    opt 使いすぎの費目がある
+        A->>U: 通知
+    end
+=== sequence
+バイヤーが海外のメーカーに商品のサンプルを依頼する。メーカーがサンプルを航空便で送り、バイヤーは品質を確認して本発注を出す。メーカーは船便で商品を出荷し、通関業者が輸入の手続きをする。
+---
+sequenceDiagram
+    participant B as バイヤー
+    participant M as 海外のメーカー
+    participant T as 通関業者
+    B->>M: サンプルを依頼
+    M->>B: 航空便でサンプル
+    B->>M: 本発注
+    M->>T: 船便で出荷
+    T->>B: 輸入の手続き完了
+=== sequence
+スマホでQRコードの電子チケットを見せると、入場ゲートのリーダーがチケットサーバーに照合を求める。有効なら入場済みに変えてゲートを開け、すでに使われたチケットなら「使用済み」と表示する。
+---
+sequenceDiagram
+    participant U as 入場者
+    participant G as 入場ゲートのリーダー
+    participant S as チケットサーバー
+    U->>G: QRコードを見せる
+    G->>S: 照合を求める
+    alt 有効
+        S-->>G: OK
+        G-->>U: ゲートを開ける
+    else 使われたチケット
+        S-->>G: 使用済み
+        G-->>U: 使用済みと表示
+    end

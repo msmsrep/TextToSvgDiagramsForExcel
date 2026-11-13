@@ -27,6 +27,7 @@ public partial class MainWindow : Window
     private readonly DispatcherTimer _closeCheck = new() { Interval = TimeSpan.FromSeconds(1) };
     private readonly DispatcherTimer _selectionPoll = new() { Interval = TimeSpan.FromMilliseconds(500) };
     private MainViewModel? _vm;
+    private LocalTextModel? _textModel;
     private ErrorLineRenderer? _errorLine;
     private bool _settingEditorText;
     private bool _choosingDiagram;
@@ -78,8 +79,12 @@ public partial class MainWindow : Window
             return;
         }
 
+        // The local model for "From text", when the app has one (design §14.5).
+        _textModel = LocalTextModel.Find(LocalTextModel.DefaultFolder, engine.ParseAsync);
         var vm = new MainViewModel(engine, _excel, new DialogService(this))
         {
+            TextModel = _textModel,
+            UseAiForText = _settings.UseAiForText,
             Format = _settings.Format,
             Size = _settings.Size,
             WidthText = _settings.Width,
@@ -395,9 +400,11 @@ public partial class MainWindow : Window
             _settings.Size = _vm.Size;
             _settings.Width = _vm.WidthText;
             _settings.AutoDetectSelection = _vm.AutoDetectSelection;
+            _settings.UseAiForText = _vm.UseAiForText;
         }
         _settingsStore.Save(_settings);
         _excel.Dispose();
+        _textModel?.Dispose();
     }
 
     /// <summary>The engine page failed to load.</summary>

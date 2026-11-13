@@ -217,4 +217,37 @@ Open the download page now?</value>
   <data name="UnexpectedError" xml:space="preserve">
     <value>An unexpected error occurred: {0}</value>
   </data>
+  <data name="Menu_FromText" xml:space="preserve">
+    <value>From _text...</value>
+  </data>
+  <data name="FromText_Title" xml:space="preserve">
+    <value>Diagram from text</value>
+  </data>
+  <data name="FromText_Hint" xml:space="preserve">
+    <value>Write steps (one per line or sentence), arrows (A -&gt; B), an indented list, or messages (A -&gt; B: message).</value>
+  </data>
+  <data name="FromText_Kind" xml:space="preserve">
+    <value>Diagram</value>
+  </data>
+  <data name="FromText_UseAi" xml:space="preserve">
+    <value>Use AI (runs on this PC)</value>
+  </data>
+  <data name="FromText_HintAi" xml:space="preserve">
+    <value>Write what the diagram should show in plain sentences: steps and branches, who sends what to whom, or tasks with dates. A small AI model on this PC makes the diagram; nothing is sent anywhere.</value>
+  </data>
+  <data name="FromText_Generating" xml:space="preserve">
+    <value>Creating with AI... (Cancel stops it)</value>
+  </data>
+  <data name="AiError" xml:space="preserve">
+    <value>AI could not create a diagram: {0}</value>
+  </data>
+  <data name="AiNoCode" xml:space="preserve">
+    <value>The answer had no Mermaid code.</value>
+  </data>
+  <data name="Button_Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="Button_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
 </root>

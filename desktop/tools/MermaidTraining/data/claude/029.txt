@@ -1,0 +1,187 @@
+=== flowchart
+Tickets are sorted by type. Hardware problems go to the field technician, software problems go to the help desk, and account problems go to the security team. Each team closes the ticket when it is done.
+---
+flowchart TD
+    A["Sort the ticket by type"] --> B{"Type?"}
+    B -->|"Hardware"| C["Field technician"]
+    B -->|"Software"| D["Help desk"]
+    B -->|"Account"| E["Security team"]
+    C --> F["Close the ticket"]
+    D --> F
+    E --> F
+=== flowchart
+Shipping depends on the destination. Domestic parcels are sent by road and take two days. Parcels to Europe go by air and take five days. Everything else goes by sea and takes a month.
+---
+flowchart TD
+    A["Parcel"] --> B{"Destination?"}
+    B -->|"Domestic"| C["Send by road, two days"]
+    B -->|"Europe"| D["Send by air, five days"]
+    B -->|"Everything else"| E["Send by sea, a month"]
+=== flowchart
+The exam score decides the grade. 90 or above is an A, 70 to 89 is a B, 50 to 69 is a C, and anything below 50 means the student must retake the exam.
+---
+flowchart TD
+    A["Exam score"] --> B{"Score?"}
+    B -->|"90 or above"| C["A"]
+    B -->|"70 to 89"| D["B"]
+    B -->|"50 to 69"| E["C"]
+    B -->|"Below 50"| F["Retake the exam"]
+=== flowchart
+When a call comes in, the menu asks the caller to press a key. 1 connects to sales, 2 connects to support, and 3 plays the opening hours. Any other key repeats the menu.
+---
+flowchart TD
+    A["Call comes in"] --> B["Menu asks the caller to press a key"]
+    B --> C{"Key?"}
+    C -->|"1"| D["Connect to sales"]
+    C -->|"2"| E["Connect to support"]
+    C -->|"3"| F["Play the opening hours"]
+    C -->|"Other"| B
+=== flowchart
+Waste is sorted at the entrance. Glass goes into the green container, paper into the blue one, and metal into the yellow one. Whatever is left goes to the incinerator.
+---
+flowchart TD
+    A["Sort the waste at the entrance"] --> B{"Material?"}
+    B -->|"Glass"| C["Green container"]
+    B -->|"Paper"| D["Blue container"]
+    B -->|"Metal"| E["Yellow container"]
+    B -->|"Other"| F["Incinerator"]
+=== flowchart
+The triage nurse rates each patient. Red cases go straight to the resuscitation room. Yellow cases are seen within thirty minutes. Green cases wait in the lobby until a doctor is free.
+---
+flowchart TD
+    A["Triage nurse rates the patient"] --> B{"Rating?"}
+    B -->|"Red"| C["Resuscitation room"]
+    B -->|"Yellow"| D["Seen within thirty minutes"]
+    B -->|"Green"| E["Wait in the lobby until a doctor is free"]
+=== flowchart
+The pricing rule: orders of fewer than 10 units pay the list price. Orders of 10 to 99 units get 5% off. Orders of 100 units or more get 12% off and free shipping.
+---
+flowchart TD
+    A["Order"] --> B{"Units?"}
+    B -->|"Fewer than 10"| C["List price"]
+    B -->|"10 to 99"| D["5% off"]
+    B -->|"100 or more"| E["12% off and free shipping"]
+=== flowchart
+A customer complaint is logged and then classified. Product defects are passed to quality control. Late deliveries are passed to logistics. Rude staff complaints go to the store manager. In every case the customer gets a reply within three days.
+---
+flowchart TD
+    A["Log the customer complaint"] --> B{"Class?"}
+    B -->|"Product defect"| C["Quality control"]
+    B -->|"Late delivery"| D["Logistics"]
+    B -->|"Rude staff"| E["Store manager"]
+    C --> F["Reply to the customer within three days"]
+    D --> F
+    E --> F
+=== flowchart
+The app checks the user's plan. Free users see ads and can save three projects. Pro users see no ads and can save fifty projects. Team users also get shared folders.
+---
+flowchart TD
+    A["Check the user's plan"] --> B{"Plan?"}
+    B -->|"Free"| C["Ads and three projects"]
+    B -->|"Pro"| D["No ads and fifty projects"]
+    B -->|"Team"| E["Shared folders as well"]
+=== flowchart
+After the interview, the panel votes. A unanimous yes leads to an offer. A unanimous no leads to a rejection letter. A split vote leads to a second interview with the department head, who makes the final decision.
+---
+flowchart TD
+    A["Panel votes after the interview"] --> B{"Vote?"}
+    B -->|"Unanimous yes"| C["Make an offer"]
+    B -->|"Unanimous no"| D["Send a rejection letter"]
+    B -->|"Split"| E["Second interview with the department head"]
+    E --> F["Department head makes the final decision"]
+=== flowchart
+Parking fees: the first hour is free. From one to four hours the fee is $3 per hour. Longer than four hours costs a flat $15. Drivers with a resident permit never pay.
+---
+flowchart TD
+    A["Car leaves the car park"] --> B{"Resident permit?"}
+    B -->|"Yes"| C["No fee"]
+    B -->|"No"| D{"How long?"}
+    D -->|"Up to one hour"| C
+    D -->|"One to four hours"| E["$3 per hour"]
+    D -->|"Longer than four hours"| F["Flat $15"]
+=== flowchart
+The harvest is graded by size. Large apples are sold fresh to supermarkets. Medium apples go to the juice factory. Small or bruised apples are used for animal feed.
+---
+flowchart TD
+    A["Grade the apples by size"] --> B{"Size?"}
+    B -->|"Large"| C["Sell fresh to supermarkets"]
+    B -->|"Medium"| D["Juice factory"]
+    B -->|"Small or bruised"| E["Animal feed"]
+=== flowchart
+A message arrives on the queue. If its type is "order", the order handler runs. If it is "payment", the payment handler runs. If it is "refund", the refund handler runs. Unknown types are moved to the dead-letter queue.
+---
+flowchart TD
+    A["Message arrives on the queue"] --> B{"Type?"}
+    B -->|"order"| C["Run the order handler"]
+    B -->|"payment"| D["Run the payment handler"]
+    B -->|"refund"| E["Run the refund handler"]
+    B -->|"Unknown"| F["Move to the dead-letter queue"]
+=== flowchart
+Leave rules: sick leave needs a doctor's note after three days. Parental leave needs approval from HR. Unpaid leave needs approval from both the manager and HR. All leave is entered in the calendar.
+---
+flowchart TD
+    A["Leave request"] --> B{"Kind of leave?"}
+    B -->|"Sick leave"| C["Doctor's note after three days"]
+    B -->|"Parental leave"| D["Approval from HR"]
+    B -->|"Unpaid leave"| E["Approval from the manager and HR"]
+    C --> F["Enter in the calendar"]
+    D --> F
+    E --> F
+=== flowchart
+Depending on the wind speed, the crane operator acts differently. Below 30 km/h, work continues. Between 30 and 50 km/h, only light loads are lifted. Above 50 km/h, the crane is shut down.
+---
+flowchart TD
+    A["Check the wind speed"] --> B{"Wind speed?"}
+    B -->|"Below 30 km/h"| C["Continue work"]
+    B -->|"30 to 50 km/h"| D["Lift only light loads"]
+    B -->|"Above 50 km/h"| E["Shut down the crane"]
+=== flowchart
+Tax filing: if you are an employee, upload your wage statement. If you are self-employed, upload your invoices and expenses. If you are retired, upload your pension statement. Then review the summary and submit.
+---
+flowchart TD
+    A["Start the tax filing"] --> B{"Status?"}
+    B -->|"Employee"| C["Upload the wage statement"]
+    B -->|"Self-employed"| D["Upload invoices and expenses"]
+    B -->|"Retired"| E["Upload the pension statement"]
+    C --> F["Review the summary"]
+    D --> F
+    E --> F
+    F --> G["Submit"]
+=== flowchart
+The alarm level decides who is called. Level 1 only writes a log entry. Level 2 sends a text to the technician on duty. Level 3 calls the plant manager and stops the line.
+---
+flowchart TD
+    A["Alarm"] --> B{"Level?"}
+    B -->|"Level 1"| C["Write a log entry"]
+    B -->|"Level 2"| D["Text the technician on duty"]
+    B -->|"Level 3"| E["Call the plant manager"]
+    E --> F["Stop the line"]
+=== flowchart
+Seat upgrade: gold members are upgraded for free. Silver members can upgrade for 5,000 miles. Other passengers can pay $80 at the gate if seats are left.
+---
+flowchart TD
+    A["Seat upgrade request"] --> B{"Membership?"}
+    B -->|"Gold"| C["Upgrade for free"]
+    B -->|"Silver"| D["Upgrade for 5,000 miles"]
+    B -->|"Other"| E{"Seats left?"}
+    E -->|"Yes"| F["Pay $80 at the gate"]
+=== flowchart
+The translation agency routes each job by language. French and Spanish jobs go to the in-house team. German jobs go to a partner agency. All other languages are offered to freelancers. A reviewer checks every finished job.
+---
+flowchart TD
+    A["Translation job"] --> B{"Language?"}
+    B -->|"French or Spanish"| C["In-house team"]
+    B -->|"German"| D["Partner agency"]
+    B -->|"Other"| E["Freelancers"]
+    C --> F["Reviewer checks the job"]
+    D --> F
+    E --> F
+=== flowchart
+What to do with an old laptop: if it still works, donate it to a school. If only the battery is dead, replace the battery and keep using it. If it cannot be fixed, take it to the recycling center.
+---
+flowchart TD
+    A["Old laptop"] --> B{"Condition?"}
+    B -->|"Still works"| C["Donate it to a school"]
+    B -->|"Only the battery is dead"| D["Replace the battery"]
+    D --> E["Keep using it"]
+    B -->|"Cannot be fixed"| F["Take it to the recycling center"]

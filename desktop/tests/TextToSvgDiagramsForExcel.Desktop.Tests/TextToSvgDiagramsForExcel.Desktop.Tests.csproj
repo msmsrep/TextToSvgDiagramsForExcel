@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\TextToSvgDiagramsForExcel.Desktop\TextToSvgDiagramsForExcel.Desktop.csproj" />
+    <ProjectReference Include="..\..\src\TextToSvgDiagramsForExcel.Generation\TextToSvgDiagramsForExcel.Generation.csproj" />
   </ItemGroup>
 
   <ItemGroup>

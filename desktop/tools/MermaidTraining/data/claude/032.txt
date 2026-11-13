@@ -1,0 +1,198 @@
+=== flowchart
+The user uploads a profile picture. The server checks the file size. Files over 5 MB are rejected with a message. Smaller files are resized to 400 pixels and stored, and the profile page is refreshed.
+---
+flowchart TD
+    A["User uploads a profile picture"] --> B{"File over 5 MB?"}
+    B -->|"Yes"| C["Reject with a message"]
+    B -->|"No"| D["Resize to 400 pixels"]
+    D --> E["Store the file"]
+    E --> F["Refresh the profile page"]
+=== flowchart
+The accountant exports the transactions from the bank. The bookkeeping system imports the file and tries to match each line to an invoice. Matched lines are marked as paid. Unmatched lines are listed for the accountant to review by hand.
+---
+flowchart TD
+    A["Accountant exports the transactions from the bank"] --> B["Bookkeeping system imports the file"]
+    B --> C{"Line matches an invoice?"}
+    C -->|"Yes"| D["Mark as paid"]
+    C -->|"No"| E["List for the accountant to review by hand"]
+=== flowchart
+A customer scans a QR code at the table. The ordering system shows the menu. When the customer submits an order, the system checks whether the kitchen is still open. If it is, the order is printed in the kitchen. If it is closed, the customer sees a "kitchen closed" notice.
+---
+flowchart TD
+    A["Customer scans a QR code at the table"] --> B["Ordering system shows the menu"]
+    B --> C["Customer submits an order"]
+    C --> D{"Kitchen still open?"}
+    D -->|"Yes"| E["Print the order in the kitchen"]
+    D -->|"No"| F["Show a 'kitchen closed' notice"]
+=== flowchart
+The scheduler starts the report job at 6 a.m. The job queries the sales database. If the query takes longer than ten minutes, the job is cancelled and the data team gets an email. Otherwise the report is rendered as a PDF and sent to the managers.
+---
+flowchart TD
+    A["Scheduler starts the report job at 6 a.m."] --> B["Query the sales database"]
+    B --> C{"Longer than ten minutes?"}
+    C -->|"Yes"| D["Cancel the job"]
+    D --> E["Email the data team"]
+    C -->|"No"| F["Render the report as a PDF"]
+    F --> G["Send to the managers"]
+=== flowchart
+The teacher enters grades in the school portal. The portal checks that every student has a grade. If some are missing, it highlights them and the teacher fills them in. When the list is complete, the head of year locks the grades and the portal publishes them to parents.
+---
+flowchart TD
+    A["Teacher enters grades in the school portal"] --> B{"Every student has a grade?"}
+    B -->|"No"| C["Highlight the missing grades"]
+    C --> D["Teacher fills them in"]
+    D --> B
+    B -->|"Yes"| E["Head of year locks the grades"]
+    E --> F["Publish to parents"]
+=== flowchart
+The app requests the phone's location. If the user denies permission, the app asks for a postal code instead. With a location or a postal code, the server looks up nearby stores and the app shows them on a map.
+---
+flowchart TD
+    A["App requests the phone's location"] --> B{"User gives permission?"}
+    B -->|"No"| C["Ask for a postal code"]
+    C --> D["Server looks up nearby stores"]
+    B -->|"Yes"| D
+    D --> E["Show the stores on a map"]
+=== flowchart
+The dispatcher receives an emergency call and enters the address. The system suggests the nearest ambulance. If that ambulance is busy, the system suggests the next nearest one. The dispatcher sends the ambulance and stays on the line with the caller.
+---
+flowchart TD
+    A["Dispatcher receives an emergency call"] --> B["Enter the address"]
+    B --> C["System suggests the nearest ambulance"]
+    C --> D{"Ambulance busy?"}
+    D -->|"Yes"| E["Suggest the next nearest one"]
+    E --> D
+    D -->|"No"| F["Send the ambulance"]
+    F --> G["Stay on the line with the caller"]
+=== flowchart
+A sensor sends a reading to the gateway every minute. The gateway drops readings that are out of range. Valid readings are forwarded to the cloud, where they are stored. If the average of the last hour exceeds the limit, the maintenance team is alerted.
+---
+flowchart TD
+    A["Sensor sends a reading to the gateway"] --> B{"Reading out of range?"}
+    B -->|"Yes"| C["Drop the reading"]
+    B -->|"No"| D["Forward to the cloud"]
+    D --> E["Store the reading"]
+    E --> F{"Average of the last hour exceeds the limit?"}
+    F -->|"Yes"| G["Alert the maintenance team"]
+=== flowchart
+The recruiter posts a job on the careers site. Candidates apply through the form. The tracking system scans each CV for the required skills. CVs with the skills go to the recruiter's shortlist. The others get an automatic reply.
+---
+flowchart TD
+    A["Recruiter posts a job on the careers site"] --> B["Candidates apply through the form"]
+    B --> C["Tracking system scans the CV"]
+    C --> D{"Required skills found?"}
+    D -->|"Yes"| E["Add to the recruiter's shortlist"]
+    D -->|"No"| F["Send an automatic reply"]
+=== flowchart
+When a commit is pushed, the linter runs first. If the linter finds errors, the build stops. Otherwise the unit tests run, followed by the integration tests. A failure in either stops the build. When everything passes, the artifact is uploaded to the registry.
+---
+flowchart TD
+    A["Commit is pushed"] --> B["Run the linter"]
+    B --> C{"Linter finds errors?"}
+    C -->|"Yes"| D["Stop the build"]
+    C -->|"No"| E["Run the unit tests"]
+    E --> F{"Unit tests pass?"}
+    F -->|"No"| D
+    F -->|"Yes"| G["Run the integration tests"]
+    G --> H{"Integration tests pass?"}
+    H -->|"No"| D
+    H -->|"Yes"| I["Upload the artifact to the registry"]
+=== flowchart
+The customer service rep opens the CRM and searches for the caller by phone number. If no record exists, the rep creates one. The rep then logs the call, and the CRM schedules a follow-up task for the account manager.
+---
+flowchart TD
+    A["Rep searches the CRM by phone number"] --> B{"Record exists?"}
+    B -->|"No"| C["Create a record"]
+    C --> D["Log the call"]
+    B -->|"Yes"| D
+    D --> E["Schedule a follow-up task for the account manager"]
+=== flowchart
+The warehouse robot receives a pick list from the control system. It drives to the shelf and reads the barcode. If the barcode does not match, it reports an error to the control system and skips the item. If it matches, it picks the item and carries it to the packing station.
+---
+flowchart TD
+    A["Robot receives a pick list"] --> B["Drive to the shelf"]
+    B --> C["Read the barcode"]
+    C --> D{"Barcode matches?"}
+    D -->|"No"| E["Report an error to the control system"]
+    E --> F["Skip the item"]
+    D -->|"Yes"| G["Pick the item"]
+    G --> H["Carry it to the packing station"]
+=== flowchart
+A parent registers a child for summer camp on the website. The system checks the child's age. Children under six cannot be registered. For the others, the system checks whether places are left. If so, the parent pays the deposit and receives a confirmation; if not, the child is added to the waiting list.
+---
+flowchart TD
+    A["Parent registers a child on the website"] --> B{"Child under six?"}
+    B -->|"Yes"| C["Cannot be registered"]
+    B -->|"No"| D{"Places left?"}
+    D -->|"Yes"| E["Parent pays the deposit"]
+    E --> F["Send a confirmation"]
+    D -->|"No"| G["Add to the waiting list"]
+=== flowchart
+The monitoring agent pings each server every thirty seconds. A server that does not answer three times in a row is marked as down. The agent then restarts the service on that server. If the server is still down after the restart, the agent opens a ticket for the operations team.
+---
+flowchart TD
+    A["Ping the server every thirty seconds"] --> B{"No answer three times in a row?"}
+    B -->|"No"| A
+    B -->|"Yes"| C["Mark the server as down"]
+    C --> D["Restart the service"]
+    D --> E{"Still down?"}
+    E -->|"Yes"| F["Open a ticket for the operations team"]
+    E -->|"No"| A
+=== flowchart
+The sales rep creates a quote in the pricing tool. Discounts of up to 10% are approved by the tool itself. Larger discounts are sent to the sales director. Once approved, the tool emails the quote to the customer as a PDF.
+---
+flowchart TD
+    A["Sales rep creates a quote in the pricing tool"] --> B{"Discount up to 10%?"}
+    B -->|"Yes"| C["Tool approves it"]
+    B -->|"No"| D["Sales director approves it"]
+    C --> E["Email the quote to the customer as a PDF"]
+    D --> E
+=== flowchart
+The meter reader enters the reading into the handheld device. The device compares it with last month's reading. If the new reading is lower, the device asks the reader to check again. Accepted readings are uploaded to the billing system at the end of the day, and the billing system creates the invoices.
+---
+flowchart TD
+    A["Meter reader enters the reading"] --> B{"Lower than last month's reading?"}
+    B -->|"Yes"| C["Ask the reader to check again"]
+    C --> A
+    B -->|"No"| D["Upload to the billing system at the end of the day"]
+    D --> E["Billing system creates the invoices"]
+=== flowchart
+An author submits a paper to the journal's website. The editor checks the scope. Out-of-scope papers are returned at once. In-scope papers are sent to two reviewers. The editor reads the reviews and accepts the paper, asks for revisions, or rejects it.
+---
+flowchart TD
+    A["Author submits a paper"] --> B{"In scope?"}
+    B -->|"No"| C["Return the paper at once"]
+    B -->|"Yes"| D["Send to two reviewers"]
+    D --> E{"Editor's decision?"}
+    E -->|"Accept"| F["Accept the paper"]
+    E -->|"Revisions"| G["Ask for revisions"]
+    E -->|"Reject"| H["Reject the paper"]
+=== flowchart
+The traveler puts a passport on the reader at the e-gate. The gate checks the chip and takes a photo. If the face matches the passport, the gate opens. If it does not match, the traveler is sent to the border officer's desk.
+---
+flowchart TD
+    A["Traveler puts a passport on the reader"] --> B["Gate checks the chip"]
+    B --> C["Take a photo"]
+    C --> D{"Face matches the passport?"}
+    D -->|"Yes"| E["Gate opens"]
+    D -->|"No"| F["Send to the border officer's desk"]
+=== flowchart
+The content team writes a help article in the CMS. The article is saved as a draft. A subject expert reviews it for accuracy, and then the localization tool sends it out for translation. When all translations are back, the article is published in every language.
+---
+flowchart TD
+    A["Content team writes a help article"] --> B["Save as a draft"]
+    B --> C["Subject expert reviews it for accuracy"]
+    C --> D["Send out for translation"]
+    D --> E{"All translations back?"}
+    E -->|"Yes"| F["Publish in every language"]
+=== flowchart
+The driver taps a card on the charging station. The station asks the payment backend to authorize the card. If the card is declined, the station shows an error. If it is accepted, charging starts. When the car is unplugged, the backend charges the card and emails a receipt.
+---
+flowchart TD
+    A["Driver taps a card on the charging station"] --> B["Ask the payment backend to authorize the card"]
+    B --> C{"Card accepted?"}
+    C -->|"No"| D["Show an error"]
+    C -->|"Yes"| E["Start charging"]
+    E --> F["Car is unplugged"]
+    F --> G["Charge the card"]
+    G --> H["Email a receipt"]

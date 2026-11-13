@@ -1,0 +1,189 @@
+=== flowchart
+Chop an onion and fry it in oil. Add rice and stir for a minute. Pour in the stock a ladle at a time. Stir in butter and cheese at the end.
+---
+flowchart TD
+    A["Chop an onion"] --> B["Fry it in oil"]
+    B --> C["Add rice and stir for a minute"]
+    C --> D["Pour in the stock a ladle at a time"]
+    D --> E["Stir in butter and cheese"]
+=== flowchart
+Preheat the oven to 180 degrees. Cream the butter and sugar. Beat in two eggs. Fold in the flour. Bake for 25 minutes. Let it cool before icing.
+---
+flowchart TD
+    A["Preheat the oven to 180 degrees"] --> B["Cream the butter and sugar"]
+    B --> C["Beat in two eggs"]
+    C --> D["Fold in the flour"]
+    D --> E["Bake for 25 minutes"]
+    E --> F["Let it cool"]
+    F --> G["Ice the cake"]
+=== flowchart
+Bike chain came off? Shift to the smallest gear. Lift the chain onto the front ring and turn the pedals backwards. If it slips again, take the bike to a shop.
+---
+flowchart TD
+    A["Shift to the smallest gear"] --> B["Lift the chain onto the front ring"]
+    B --> C["Turn the pedals backwards"]
+    C --> D{"Slips again?"}
+    D -->|"Yes"| E["Take the bike to a shop"]
+=== flowchart
+Check the fridge. If there are eggs, make an omelette. If not, look for pasta and cook that. If there is nothing at all, order a pizza.
+---
+flowchart TD
+    A["Check the fridge"] --> B{"Eggs?"}
+    B -->|"Yes"| C["Make an omelette"]
+    B -->|"No"| D{"Pasta?"}
+    D -->|"Yes"| E["Cook the pasta"]
+    D -->|"No"| F["Order a pizza"]
+=== flowchart
+Wet your hands. Lather with soap for twenty seconds. Rinse. Dry with a clean towel. Use the towel to turn off the tap.
+---
+flowchart TD
+    A["Wet your hands"] --> B["Lather with soap for twenty seconds"]
+    B --> C["Rinse"]
+    C --> D["Dry with a clean towel"]
+    D --> E["Turn off the tap with the towel"]
+=== flowchart
+Smoke alarm beeping: press the test button. If the beeping stops, nothing more to do. If it keeps beeping, replace the battery. Still beeping after that? Replace the whole alarm.
+---
+flowchart TD
+    A["Press the test button"] --> B{"Beeping stops?"}
+    B -->|"Yes"| C["Nothing more to do"]
+    B -->|"No"| D["Replace the battery"]
+    D --> E{"Still beeping?"}
+    E -->|"Yes"| F["Replace the whole alarm"]
+    E -->|"No"| C
+=== flowchart
+Pack the tent and sleeping bags. Check the forecast. Rain coming? Pack the tarp too. Load the car, fill the water bottles and leave before noon.
+---
+flowchart TD
+    A["Pack the tent and sleeping bags"] --> B["Check the forecast"]
+    B --> C{"Rain coming?"}
+    C -->|"Yes"| D["Pack the tarp"]
+    D --> E["Load the car"]
+    C -->|"No"| E
+    E --> F["Fill the water bottles"]
+    F --> G["Leave before noon"]
+=== flowchart
+Sand the wood. Wipe off the dust. Apply a coat of primer and let it dry overnight. Paint two coats, waiting four hours between them.
+---
+flowchart TD
+    A["Sand the wood"] --> B["Wipe off the dust"]
+    B --> C["Apply a coat of primer"]
+    C --> D["Let it dry overnight"]
+    D --> E["Paint the first coat"]
+    E --> F["Wait four hours"]
+    F --> G["Paint the second coat"]
+=== flowchart
+Phone won't charge. Try another cable. Works now? Throw the old cable away. Still nothing? Clean the charging port with a toothpick. If that fails too, book a repair.
+---
+flowchart TD
+    A["Try another cable"] --> B{"Works now?"}
+    B -->|"Yes"| C["Throw the old cable away"]
+    B -->|"No"| D["Clean the charging port with a toothpick"]
+    D --> E{"Works?"}
+    E -->|"No"| F["Book a repair"]
+=== flowchart
+Feed the cat at seven. Clean the litter box. If the water bowl is less than half full, refill it. Leave the window open a crack if it's warm outside.
+---
+flowchart TD
+    A["Feed the cat at seven"] --> B["Clean the litter box"]
+    B --> C{"Water bowl less than half full?"}
+    C -->|"Yes"| D["Refill it"]
+    D --> E{"Warm outside?"}
+    C -->|"No"| E
+    E -->|"Yes"| F["Leave the window open a crack"]
+=== flowchart
+Soak the beans overnight. Drain and rinse. Cover with fresh water, bring to a boil and simmer for an hour. Taste one. If it is still hard, simmer for fifteen more minutes.
+---
+flowchart TD
+    A["Soak the beans overnight"] --> B["Drain and rinse"]
+    B --> C["Cover with fresh water"]
+    C --> D["Bring to a boil"]
+    D --> E["Simmer for an hour"]
+    E --> F["Taste one"]
+    F --> G{"Still hard?"}
+    G -->|"Yes"| H["Simmer for fifteen more minutes"]
+    H --> F
+=== flowchart
+Lost your keys? Check your coat pockets first. Not there, look in the car. Not there either, call the last place you visited. If nobody has them, call a locksmith.
+---
+flowchart TD
+    A["Check your coat pockets"] --> B{"Found?"}
+    B -->|"No"| C["Look in the car"]
+    C --> D{"Found?"}
+    D -->|"No"| E["Call the last place you visited"]
+    E --> F{"Somebody has them?"}
+    F -->|"No"| G["Call a locksmith"]
+=== flowchart
+Measure the wall. Mark the stud positions. Drill pilot holes. Screw the bracket to the studs. Hang the shelf and check it with a level.
+---
+flowchart TD
+    A["Measure the wall"] --> B["Mark the stud positions"]
+    B --> C["Drill pilot holes"]
+    C --> D["Screw the bracket to the studs"]
+    D --> E["Hang the shelf"]
+    E --> F["Check it with a level"]
+=== flowchart
+Before bed: lock the front door, turn off the lights downstairs, set the alarm for 6:30, and plug in the phone. If tomorrow is a holiday, skip the alarm.
+---
+flowchart TD
+    A["Lock the front door"] --> B["Turn off the lights downstairs"]
+    B --> C{"Tomorrow is a holiday?"}
+    C -->|"No"| D["Set the alarm for 6:30"]
+    D --> E["Plug in the phone"]
+    C -->|"Yes"| E
+=== flowchart
+Rinse the rice until the water runs clear. Add water up to the first knuckle. Bring to a boil, cover, and turn the heat down low. Leave it alone for 15 minutes, then fluff with a fork.
+---
+flowchart TD
+    A["Rinse the rice until the water runs clear"] --> B["Add water up to the first knuckle"]
+    B --> C["Bring to a boil"]
+    C --> D["Cover and turn the heat down low"]
+    D --> E["Leave it alone for 15 minutes"]
+    E --> F["Fluff with a fork"]
+=== flowchart
+Car won't start. Do the lights come on? If not, the battery is dead, so jump-start it. If they do, check the fuel gauge. Empty tank: get fuel. Otherwise call a mechanic.
+---
+flowchart TD
+    A["Car won't start"] --> B{"Lights come on?"}
+    B -->|"No"| C["Jump-start the battery"]
+    B -->|"Yes"| D{"Tank empty?"}
+    D -->|"Yes"| E["Get fuel"]
+    D -->|"No"| F["Call a mechanic"]
+=== flowchart
+Pick ripe tomatoes. Wash and quarter them. Cook them down for an hour with garlic. Blend, pour into clean jars and seal while hot.
+---
+flowchart TD
+    A["Pick ripe tomatoes"] --> B["Wash and quarter them"]
+    B --> C["Cook them down for an hour with garlic"]
+    C --> D["Blend"]
+    D --> E["Pour into clean jars"]
+    E --> F["Seal while hot"]
+=== flowchart
+Stretch for five minutes. Do three sets of squats. Rest one minute between sets. Finish with a plank. Feeling dizzy at any point? Stop and drink some water.
+---
+flowchart TD
+    A["Stretch for five minutes"] --> B["Do a set of squats"]
+    B --> C{"Feeling dizzy?"}
+    C -->|"Yes"| D["Stop and drink some water"]
+    C -->|"No"| E{"Three sets done?"}
+    E -->|"No"| F["Rest one minute"]
+    F --> B
+    E -->|"Yes"| G["Finish with a plank"]
+=== flowchart
+Write the shopping list. Check which items are already in the cupboard and cross them off. Go to the market. Whatever the market doesn't have, get at the supermarket on the way home.
+---
+flowchart TD
+    A["Write the shopping list"] --> B["Cross off items already in the cupboard"]
+    B --> C["Go to the market"]
+    C --> D{"Market has everything?"}
+    D -->|"No"| E["Get the rest at the supermarket on the way home"]
+=== flowchart
+Unplug the kettle. Fill it halfway with water and add two spoons of vinegar. Boil, then leave for an hour. Pour it out and rinse three times.
+---
+flowchart TD
+    A["Unplug the kettle"] --> B["Fill it halfway with water"]
+    B --> C["Add two spoons of vinegar"]
+    C --> D["Boil"]
+    D --> E["Leave for an hour"]
+    E --> F["Pour it out"]
+    F --> G["Rinse three times"]
