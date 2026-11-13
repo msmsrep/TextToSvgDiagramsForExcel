@@ -1,0 +1,1350 @@
+=== flow-expense
+flowchart TD
+    A["領収書を添えて精算を申請"] --> B{"上長が承認？"}
+    B -->|"はい"| C["経理が内容をチェック"]
+    C --> D["月末に振り込む"]
+    B -->|"いいえ"| E["社員に差し戻す"]
+=== flow-login
+flowchart TD
+    A["IDとパスワードを入力"] --> B{"正しい？"}
+    B -->|"はい"| C["トップページを表示"]
+    B -->|"いいえ"| D["エラーを表示"]
+    D --> E{"5回続けて失敗？"}
+    E -->|"はい"| F["アカウントをロック"]
+    E -->|"いいえ"| A
+=== flow-order
+flowchart TD
+    A["注文を受け付ける"] --> B{"在庫がある？"}
+    B -->|"はい"| C["出荷"]
+    B -->|"いいえ"| D["仕入先に発注"]
+    D --> E["入荷を待つ"]
+    E --> C
+    C --> F["請求書を送る"]
+=== flow-inquiry
+flowchart TD
+    A["問い合わせを受ける"] --> B{"FAQで解決できる？"}
+    B -->|"はい"| C["FAQを案内"]
+    C --> D["終了"]
+    B -->|"いいえ"| E["担当部署に転送"]
+    E --> F["担当者が回答"]
+=== flow-hiring
+flowchart TD
+    A["書類選考"] -->|"合格"| B["一次面接"]
+    B -->|"合格"| C["二次面接"]
+    C -->|"合格"| D["最終面接"]
+    D -->|"合格"| E["内定"]
+    A -->|"不合格"| F["不採用通知を送る"]
+    B -->|"不合格"| F
+    C -->|"不合格"| F
+    D -->|"不合格"| F
+=== flow-backup
+flowchart TD
+    A["毎晩0時にバックアップを開始"] --> B["データベースをダンプ"]
+    B --> C["圧縮"]
+    C --> D["クラウドストレージにアップロード"]
+    D --> E{"失敗した？"}
+    E -->|"はい"| F["管理者にメールで通知"]
+    E -->|"いいえ"| G["完了"]
+=== flow-org
+flowchart TD
+    A["社長"] --> B["営業本部"]
+    A --> C["技術本部"]
+    B --> D["国内営業部"]
+    B --> E["海外営業部"]
+    C --> F["開発部"]
+    C --> G["品質保証部"]
+=== flow-coffee
+flowchart TD
+    A["お湯を沸かす"] --> B["豆を挽く"]
+    B --> C["フィルターに粉を入れる"]
+    C --> D["お湯を少し注いで30秒蒸らす"]
+    D --> E["残りのお湯を3回に分けて注ぐ"]
+=== flow-incident
+flowchart TD
+    A["障害を検知"] --> B["影響範囲を調べる"]
+    B --> C{"重大な障害？"}
+    C -->|"はい"| D["関係者に連絡"]
+    D --> E["緊急対応チームを招集"]
+    C -->|"いいえ"| F["通常のチケットとして登録"]
+    E --> G["復旧"]
+    F --> G
+    G --> H["原因を分析"]
+    H --> I["報告書を書く"]
+=== flow-review
+flowchart TD
+    A["プルリクエストを作る"] --> B{"CIが通る？"}
+    B -->|"いいえ"| C["修正する"]
+    C --> B
+    B -->|"はい"| D["レビュアーがレビュー"]
+    D --> E{"修正依頼がある？"}
+    E -->|"はい"| F["開発者が直す"]
+    F --> D
+    E -->|"いいえ"| G["マージ"]
+=== flow-bullets
+flowchart TD
+    A["受付で入館証を受け取る"] --> B["総務で書類を提出する"]
+    B --> C["情報システム部でPCを受け取る"]
+    C --> D["配属先に挨拶する"]
+=== seq-shop
+sequenceDiagram
+    participant C as お客様
+    participant E as ECサイト
+    participant P as 決済サービス
+    participant W as 倉庫
+    C->>E: 注文
+    E->>P: 支払いを依頼
+    P-->>E: 結果
+    E->>W: 出荷を指示
+    E->>C: 確認メールを送る
+=== seq-api
+sequenceDiagram
+    participant B as ブラウザ
+    participant W as Webサーバー
+    participant A as APIサーバー
+    participant D as データベース
+    B->>W: ページを要求
+    W->>A: データを問い合わせる
+    A->>D: 検索
+    D-->>A: 結果
+    A-->>W: 結果
+    W-->>B: HTML
+=== seq-restaurant
+sequenceDiagram
+    participant C as 客
+    participant S as 店員
+    participant K as 厨房
+    C->>S: 料理を注文
+    S->>K: 注文を伝える
+    K-->>S: 料理を渡す
+    S-->>C: 料理を運ぶ
+    C->>S: 会計
+=== seq-approval
+sequenceDiagram
+    participant T as 担当者
+    participant S as ワークフローシステム
+    participant K as 課長
+    participant B as 部長
+    T->>S: 稟議を申請
+    S->>K: 承認依頼を通知
+    K->>S: 承認
+    S->>B: 通知
+    B->>S: 承認
+    S->>T: 完了を知らせる
+=== seq-otp
+sequenceDiagram
+    participant U as ユーザー
+    participant A as アプリ
+    participant S as 認証サーバー
+    U->>A: ログイン
+    A->>S: ワンタイムパスワードの送信を頼む
+    S->>U: SMSを送る
+    U->>A: コードを入力
+    A->>S: コードを確認
+    S-->>A: 確認結果
+    A-->>U: ログイン完了
+=== seq-support
+sequenceDiagram
+    participant C as 顧客
+    participant M as サポート窓口
+    participant T as 技術担当
+    C->>M: 電話する
+    M->>T: エスカレーション
+    T-->>M: 回答
+    M-->>C: 折り返し連絡
+=== gantt-web
+gantt
+    title Webサイトのリニューアル
+    dateFormat YYYY-MM-DD
+    section 計画
+    要件定義 :a1, 2026-12-01, 5d
+    デザイン :a2, after a1, 10d
+    実装 :a3, after a2, 15d
+    テスト :a4, after a3, 5d
+=== gantt-event
+gantt
+    title イベント準備
+    dateFormat YYYY-MM-DD
+    section 準備
+    会場手配 :a1, 2027-01-06, 5d
+    告知 :a2, 2027-01-11, 14d
+    当日の運営準備 :a3, 2027-01-25, 3d
+=== gantt-move
+gantt
+    title 引っ越しの予定
+    dateFormat YYYY-MM-DD
+    section 準備
+    物件探し :a1, 2027-02-01, 10d
+    契約 :a2, 2027-02-15, 1d
+    荷造り :a3, after a2, 7d
+    section 引っ越し
+    引っ越し作業 :a4, 2027-03-01, 1d
+=== flow-library
+flowchart TD
+    A["カウンターで利用者カードを見せる"] --> B{"カードの期限が切れている？"}
+    B -->|"はい"| C["更新手続きをする"]
+    C --> D{"貸出冊数が上限に達している？"}
+    B -->|"いいえ"| D
+    D -->|"いいえ"| E["本を借りる"]
+    D -->|"はい"| F["返却する"]
+    F --> E
+=== flow-password-reset
+flowchart TD
+    A["「パスワードを忘れた」を押す"] --> B["登録済みのメールアドレスを入力"]
+    B --> C["再設定用のリンクが届く"]
+    C --> D{"リンクが24時間以内？"}
+    D -->|"はい"| E["新しいパスワードを設定"]
+    D -->|"いいえ"| F["もう一度申請する"]
+=== flow-return
+flowchart TD
+    A["返品の連絡を受ける"] --> B{"購入から30日以内？"}
+    B -->|"はい"| C["返送用の伝票を送る"]
+    B -->|"いいえ"| D["返品をお断りする"]
+    C --> E["商品が届いたら状態を確認"]
+    E --> F["返金する"]
+=== flow-arrow
+flowchart TD
+    A["受注"] --> B["在庫引当"]
+    B --> C["ピッキング"]
+    C --> D["梱包"]
+    D --> E["出荷"]
+    E --> F["配達完了"]
+=== flow-school
+flowchart TD
+    A["校長"] --> B["教頭"]
+    B --> C["教務主任"]
+    B --> D["生徒指導主任"]
+    C --> E["各学年の主任"]
+=== flow-deploy
+flowchart TD
+    A["mainブランチにマージ"] --> B["ビルドが走る"]
+    B --> C{"テストが成功？"}
+    C -->|"いいえ"| D["Slackに通知して止める"]
+    C -->|"はい"| E["ステージング環境にデプロイ"]
+    E --> F{"スモークテストが通る？"}
+    F -->|"はい"| G["本番環境にデプロイ"]
+    F -->|"いいえ"| H["ロールバック"]
+=== flow-patient
+flowchart TD
+    A["患者が受付"] --> B["看護師が問診票をもとにトリアージ"]
+    B --> C{"緊急度が高い？"}
+    C -->|"はい"| D["すぐに処置室へ"]
+    C -->|"いいえ"| E["待合室で順番を待つ"]
+    E --> F["診察を受ける"]
+    F --> G{"検査が必要？"}
+    G -->|"はい"| H["検査を受ける"]
+    H --> I["会計"]
+    G -->|"いいえ"| I
+    I --> J["帰宅"]
+=== flow-recycle
+flowchart TD
+    A["ごみを分別する"] --> B["燃えるごみ"]
+    A --> C["資源ごみ"]
+    A --> D["ペットボトル"]
+    B --> E["火曜と金曜に出す"]
+    C --> F["水曜に出す"]
+    D --> G["キャップとラベルを外して洗う"]
+    G --> C
+=== flow-loan
+flowchart TD
+    A["申込書と本人確認書類を受け付ける"] --> B["信用情報を照会"]
+    B --> C{"問題がある？"}
+    C -->|"はい"| D["否決"]
+    C -->|"いいえ"| E["年収と返済比率を確認"]
+    E --> F{"基準を満たす？"}
+    F -->|"はい"| G["承認"]
+    F -->|"いいえ"| H["減額を提案"]
+=== flow-meeting-room
+flowchart TD
+    A["予約したい日時の空きを調べる"] --> B{"空いている？"}
+    B -->|"はい"| C["予約する"]
+    B -->|"いいえ"| D["別の会議室を探す"]
+    D --> E{"どこか空いている？"}
+    E -->|"はい"| C
+    E -->|"いいえ"| F["日時を変える"]
+    F --> A
+=== flow-product-tree
+flowchart TD
+    A["製品カテゴリ"] --> B["家電"]
+    A --> C["家具"]
+    A --> D["日用品"]
+    B --> E["キッチン家電"]
+    B --> F["生活家電"]
+    C --> G["収納"]
+    C --> H["ベッド"]
+=== flow-cooking-rice
+flowchart TD
+    A["米をはかる"] --> B["研ぐ"]
+    B --> C{"水が透明になった？"}
+    C -->|"いいえ"| B
+    C -->|"はい"| D["釜に入れて目盛りまで水を入れる"]
+    D --> E["30分浸す"]
+    E --> F["炊飯ボタンを押す"]
+    F --> G["10分蒸らす"]
+    G --> H["ほぐす"]
+=== flow-bug-triage
+flowchart TD
+    A["バグ報告が来る"] --> B{"再現する？"}
+    B -->|"いいえ"| C["報告者に詳しい情報を求める"]
+    B -->|"はい"| D["重要度を決める"]
+    D --> E{"重要度が高い？"}
+    E -->|"はい"| F["今のスプリントで直す"]
+    E -->|"いいえ"| G["バックログに入れる"]
+=== flow-visitor
+flowchart TD
+    A["受付で名前と訪問先を確認"] --> B{"事前登録がある？"}
+    B -->|"はい"| C["入館証を渡す"]
+    B -->|"いいえ"| D["担当者に電話で確認"]
+    D --> E{"了承が得られた？"}
+    E -->|"はい"| C
+    E -->|"いいえ"| F["お帰りいただく"]
+=== flow-ticket-vending
+flowchart TD
+    A["お金を入れる"] --> B["行き先のボタンを押す"]
+    B --> C{"お金が足りる？"}
+    C -->|"いいえ"| D["追加で入れるよう表示"]
+    D --> A
+    C -->|"はい"| E["切符とおつりが出る"]
+=== flow-company-depts
+flowchart TD
+    A["取締役会"] --> B["代表取締役"]
+    B --> C["管理部"]
+    B --> D["営業部"]
+    B --> E["製造部"]
+    E --> F["第一工場"]
+    E --> G["第二工場"]
+=== flow-contract
+flowchart TD
+    A["営業が契約書の案を作る"] --> B["法務がチェック"]
+    B --> C{"修正が必要？"}
+    C -->|"はい"| D["営業に戻す"]
+    D --> A
+    C -->|"いいえ"| E["相手方に送る"]
+    E --> F["相手方が押印して返送"]
+    F --> G["締結完了"]
+=== flow-wash
+flowchart TD
+    A["色物と白物に分ける"] --> B["洗濯機に入れる"]
+    B --> C["洗剤を入れる"]
+    C --> D["標準コースで回す"]
+    D --> E{"雨の日？"}
+    E -->|"いいえ"| F["干す"]
+    E -->|"はい"| G["乾燥機を使う"]
+=== flow-data-pipeline
+flowchart TD
+    A["各店舗のPOSデータを毎時収集"] --> B["形式をそろえる"]
+    B --> C["データレイクに保存"]
+    C --> D{"欠損がある？"}
+    D -->|"はい"| E["別のテーブルに隔離"]
+    E --> F["担当者が確認"]
+    D -->|"いいえ"| G["集計"]
+    G --> H["売上ダッシュボードに反映"]
+=== flow-entrance-exam
+flowchart TD
+    A["出願書類を提出"] --> B["受験票が届く"]
+    B --> C["筆記試験を受ける"]
+    C --> D{"筆記試験に合格？"}
+    D -->|"はい"| E["面接"]
+    D -->|"いいえ"| F["不合格"]
+    E --> G{"面接に合格？"}
+    G -->|"はい"| H["入学手続き"]
+    G -->|"いいえ"| F
+    H --> I{"期限までに入学金を払う？"}
+    I -->|"はい"| J["入学"]
+    I -->|"いいえ"| K["合格取り消し"]
+=== flow-thermostat
+flowchart TD
+    A["室温を測る"] --> B{"設定温度と比べる"}
+    B -->|"2度以上高い"| C["冷房を強める"]
+    B -->|"設定温度に近い"| D["弱運転にする"]
+    B -->|"設定温度より低い"| E["止める"]
+    C --> F["5分待つ"]
+    D --> F
+    E --> F
+    F --> A
+=== flow-claim
+flowchart TD
+    A["保険金の請求を受ける"] --> B{"書類がそろっている？"}
+    B -->|"いいえ"| C["契約者に追加書類を依頼"]
+    C --> B
+    B -->|"はい"| D["調査担当が事故状況を調べる"]
+    D --> E{"支払い対象？"}
+    E -->|"はい"| F["保険金を支払う"]
+    E -->|"いいえ"| G["理由を添えて通知"]
+=== flow-onboarding-it
+flowchart TD
+    A["人事がアカウント発行を依頼"] --> B["情報システム部がメールとチャットのアカウントを作る"]
+    B --> C["PCをセットアップ"]
+    C --> D["初日に本人へ渡す"]
+    D --> E["初回ログインでパスワードを変える"]
+=== flow-plant
+flowchart TD
+    A["土の表面を触る"] --> B{"乾いている？"}
+    B -->|"はい"| C["鉢の底から水が出るまでたっぷり与える"]
+    C --> D["受け皿の水を捨てる"]
+    B -->|"いいえ"| E["水やりはしない"]
+=== flow-escalation
+flowchart TD
+    A["ヘルプデスクが一次対応"] --> B{"30分で解決？"}
+    B -->|"いいえ"| C["二次対応のエンジニアに引き継ぐ"]
+    C --> D{"解決した？"}
+    D -->|"いいえ"| E["開発チームにエスカレーション"]
+    B -->|"はい"| F["お客様に連絡"]
+    D -->|"はい"| F
+    E --> F
+    F --> G["チケットを閉じる"]
+=== flow-vote
+flowchart TD
+    A["入場券を受付に渡す"] --> B["名簿と照合して本人確認"]
+    B --> C["投票用紙を受け取る"]
+    C --> D["記載台で候補者の名前を書く"]
+    D --> E["投票箱に入れる"]
+=== flow-english-terms
+flowchart TD
+    A["フォームを送信"] --> B{"バリデーションがOK？"}
+    B -->|"いいえ"| C["エラーメッセージを返す"]
+    B -->|"はい"| D["DBに保存"]
+    D --> E["確認メールを送る"]
+    E --> F["完了画面を表示"]
+=== flow-file-tree
+flowchart TD
+    A["プロジェクト"] --> B["src"]
+    A --> C["docs"]
+    A --> D["tests"]
+    B --> E["components"]
+    B --> F["pages"]
+=== flow-procurement
+flowchart TD
+    A["部署が購入依頼を出す"] --> B{"金額が10万円未満？"}
+    B -->|"はい"| C["課長決裁"]
+    B -->|"いいえ"| D["部長決裁"]
+    C --> E["購買部が見積もりを取る"]
+    D --> E
+    E --> F["発注"]
+    F --> G["検収"]
+    G --> H["支払う"]
+=== flow-camera-repair
+flowchart TD
+    A["修理品を受け取る"] --> B["症状を確認"]
+    B --> C{"保証期間内？"}
+    C -->|"はい"| D["無償で修理"]
+    C -->|"いいえ"| E["見積もりを出す"]
+    E --> F{"お客様の了承が得られた？"}
+    F -->|"はい"| G["修理する"]
+    F -->|"いいえ"| H["そのまま返却"]
+=== flow-traffic-light
+flowchart TD
+    A["青"] --> B["黄色"]
+    B --> C["赤"]
+    C --> A
+    D["歩行者用ボタンが押される"] --> E["次の青の時間が短くなる"]
+=== flow-recruit-short
+flowchart TD
+    A["応募"] --> B["書類選考"]
+    B --> C["面接"]
+    C --> D["内定"]
+=== flow-inventory-check
+flowchart TD
+    A["倉庫の在庫を数える"] --> B["システムの数と比べる"]
+    B --> C{"差がある？"}
+    C -->|"いいえ"| D["終わり"]
+    C -->|"はい"| E["数え直す"]
+    E --> F{"合う？"}
+    F -->|"はい"| D
+    F -->|"いいえ"| G["原因を調べる"]
+    G --> H["在庫を修正"]
+    H --> I["上長に報告"]
+=== flow-subscription
+flowchart TD
+    A["毎月1日に料金を請求"] --> B{"カード決済が成功？"}
+    B -->|"はい"| C["商品を発送"]
+    B -->|"いいえ"| D{"3回失敗？"}
+    D -->|"いいえ"| E["3日後に再決済"]
+    E --> B
+    D -->|"はい"| F["購読を停止"]
+    F --> G["メールで知らせる"]
+=== flow-fire-drill
+flowchart TD
+    A["火災報知器が鳴る"] --> B["周りに知らせる"]
+    B --> C{"初期消火ができそう？"}
+    C -->|"はい"| D["消火器を使う"]
+    C -->|"いいえ"| E["非常階段で避難"]
+    E --> F["集合場所で点呼をとる"]
+=== flow-ml
+flowchart TD
+    A["データ収集"] --> B["前処理"]
+    B --> C["学習"]
+    C --> D["評価"]
+    D --> E{"精度が目標に届く？"}
+    E -->|"いいえ"| F["前処理か学習の設定を見直す"]
+    F --> B
+    E -->|"はい"| G["モデルを本番に配置"]
+=== flow-leave
+flowchart TD
+    A["勤怠システムから有給休暇を申請"] --> B{"上長が承認？"}
+    B -->|"はい"| C["人事に連携"]
+    C --> D["残日数から差し引く"]
+    B -->|"いいえ"| E["理由がコメントで返る"]
+=== flow-delivery-absent
+flowchart TD
+    A["インターホンを押す"] --> B{"在宅？"}
+    B -->|"はい"| C["手渡しする"]
+    B -->|"いいえ"| D{"宅配ボックスが空いている？"}
+    D -->|"はい"| E["宅配ボックスに入れる"]
+    D -->|"いいえ"| F["不在票を入れて持ち帰る"]
+=== flow-book-pub
+flowchart TD
+    A["著者が原稿を書き上げる"] --> B["編集者が読んで直しを入れる"]
+    B --> C["著者が原稿を直す"]
+    C --> D["校正者が確認"]
+    D --> E["印刷所に入稿"]
+    E --> F["見本ができる"]
+    F --> G["最終確認"]
+    G --> H["発売"]
+=== seq-atm
+sequenceDiagram
+    participant U as 利用者
+    participant A as ATM
+    participant S as 銀行のサーバー
+    U->>A: カードを入れて暗証番号を入力
+    A->>S: 照会
+    S-->>A: 残高
+    U->>A: 金額を指定
+    A->>S: 引き出しを依頼
+    S-->>A: 承認
+    A-->>U: 現金を出す
+=== seq-taxi
+sequenceDiagram
+    participant P as 乗客
+    participant A as 配車アプリ
+    participant C as 配車センター
+    participant D as ドライバー
+    P->>A: タクシーを呼ぶ
+    A->>C: 配車を依頼
+    C->>D: 通知
+    D-->>C: 受ける
+    A->>P: 到着予定時刻を知らせる
+=== seq-oauth
+sequenceDiagram
+    participant U as ユーザー
+    participant W as Webアプリ
+    participant A as 認可サーバー
+    participant P as API
+    U->>W: 「Googleでログイン」を押す
+    W->>A: ユーザーを転送
+    U->>A: 同意
+    A-->>W: 認可コード
+    W->>A: 認可コードをアクセストークンに交換
+    A-->>W: アクセストークン
+    W->>P: プロフィールを取得
+    P-->>W: プロフィール
+=== seq-hospital
+sequenceDiagram
+    participant D as 医師
+    participant E as 電子カルテ
+    participant L as 検査技師
+    participant P as 患者
+    D->>E: 検査をオーダー
+    E->>L: 依頼を送る
+    L->>E: 結果を登録
+    E->>D: 結果を通知
+    D->>P: 説明
+=== seq-delivery
+sequenceDiagram
+    participant C as お客様
+    participant A as アプリ
+    participant S as 店舗
+    participant D as 配達員
+    C->>A: 注文
+    A->>S: 注文を送る
+    A->>D: 配達を手配
+    D->>S: 料理を受け取る
+    D->>C: 料理を届ける
+=== seq-arrow-msg
+sequenceDiagram
+    participant C as クライアント
+    participant S as サーバー
+    C->>S: 接続要求
+    S-->>C: 接続許可
+    C->>S: データ送信
+    S-->>C: 受信確認
+=== seq-cache
+sequenceDiagram
+    participant A as アプリ
+    participant C as キャッシュ
+    participant D as データベース
+    A->>C: データを問い合わせる
+    opt キャッシュにない
+        A->>D: データを読み込む
+        D-->>A: 結果
+        A->>C: 結果を書き込む
+    end
+=== seq-invoice
+sequenceDiagram
+    participant V as 取引先
+    participant K as 経理担当
+    participant S as 会計システム
+    participant B as 部長
+    participant G as 銀行
+    V->>K: 請求書をメールで送る
+    K->>S: 登録
+    S->>B: 承認を依頼
+    B-->>S: 承認
+    S->>G: 振込データを送る
+    G->>V: 振り込む
+=== seq-iot
+sequenceDiagram
+    participant T as 温度センサー
+    participant G as ゲートウェイ
+    participant C as クラウド
+    participant A as 管理者
+    loop 1分ごと
+        T->>G: 測定値を送る
+        G->>C: 転送
+    end
+    opt 値が上限を超える
+        C->>A: 警告を送る
+    end
+=== seq-reservation
+sequenceDiagram
+    participant G as 宿泊客
+    participant S as 予約サイト
+    participant H as ホテルのシステム
+    G->>S: 部屋を予約
+    S->>H: 空室を確認
+    S->>H: 予約を確定
+    H-->>S: 確認番号
+    S->>G: 確認番号をメール
+=== seq-chat
+sequenceDiagram
+    participant A as Aさん
+    participant S as チャットサーバー
+    participant B as Bさん
+    A->>S: メッセージを送る
+    S->>B: プッシュ通知
+    B->>S: 既読
+    S->>A: 既読を伝える
+=== seq-print
+sequenceDiagram
+    participant E as 社員
+    participant P as プリントサーバー
+    participant M as 複合機
+    E->>P: 印刷を指示
+    P->>M: データを送る
+    M-->>P: 完了
+=== seq-parent-school
+sequenceDiagram
+    participant P as 保護者
+    participant O as 事務室
+    participant T as 担任
+    participant C as クラス
+    P->>O: 欠席の連絡
+    O->>T: 伝える
+    T->>C: 欠席者を知らせる
+    T->>P: 電話で配布物の受け取り方を伝える
+=== seq-ci
+sequenceDiagram
+    participant D as 開発者
+    participant G as GitHub
+    participant C as CIサーバー
+    D->>G: プッシュ
+    G->>C: Webhookを送る
+    C-->>G: テスト結果
+    G->>D: メールで結果を知らせる
+=== seq-pharmacy
+sequenceDiagram
+    participant P as 患者
+    participant Y as 薬剤師
+    participant D as 医師
+    P->>Y: 処方箋を渡す
+    opt 疑問がある
+        Y->>D: 問い合わせる
+        D-->>Y: 回答
+    end
+    Y->>P: 薬を渡して飲み方を説明
+=== seq-ecu
+sequenceDiagram
+    participant D as ドライバー
+    participant S as ブレーキセンサー
+    participant E as ECU
+    participant L as ブレーキランプ
+    participant A as ABSユニット
+    D->>S: ブレーキを踏む
+    S->>E: 信号を送る
+    E->>L: 点灯を指示
+    E->>A: 制動を指示
+=== seq-recruit
+sequenceDiagram
+    participant A as 応募者
+    participant S as 求人サイト
+    participant R as 採用担当
+    participant I as 面接官
+    A->>S: 応募
+    S->>R: 通知
+    R->>A: 面接の日程候補を送る
+    A-->>R: 日程を選んで返信
+    R->>I: 日程を共有
+=== seq-bullets
+sequenceDiagram
+    participant M as 店長
+    participant P as アルバイト
+    participant H as 本部
+    M->>P: シフト希望を聞く
+    P-->>M: 希望を出す
+    M->>H: シフト表を提出
+    H-->>M: 承認
+=== seq-smart-lock
+sequenceDiagram
+    participant U as 住人
+    participant A as スマホアプリ
+    participant C as クラウド
+    participant L as スマートロック
+    U->>A: 解錠ボタンを押す
+    A->>C: 解錠を要求
+    C->>L: 解錠命令を送る
+    L-->>C: 解錠を報告
+    A-->>U: 完了を表示
+=== seq-email
+sequenceDiagram
+    participant S as 送信者のメールソフト
+    participant M as 送信サーバー
+    participant R as 宛先のメールサーバー
+    participant C as 受信者のメールソフト
+    S->>M: メールを渡す
+    M->>R: 転送
+    C->>R: メールを取得
+=== seq-quote
+sequenceDiagram
+    participant C as 顧客
+    participant S as 営業担当
+    participant T as 技術部
+    C->>S: 見積依頼
+    S->>T: 工数を確認
+    T-->>S: 工数を回答
+    S->>C: 見積書を提出
+    C->>S: 発注書を送る
+=== seq-vending-iot
+sequenceDiagram
+    participant V as 自動販売機
+    participant S as 管理システム
+    participant W as 補充担当者
+    V->>S: 売り切れを通知
+    S->>W: 補充指示
+    W->>V: 補充する
+    V->>S: 在庫数を送る
+=== seq-game
+sequenceDiagram
+    participant P as プレイヤー
+    participant A as ゲームアプリ
+    participant S as ゲームサーバー
+    participant D as データベース
+    P->>A: ガチャを引く
+    A->>S: 抽選を依頼
+    S->>D: 結果を記録
+    S-->>A: 結果
+    A-->>P: 演出を流して結果を表示
+=== seq-payment-refund
+sequenceDiagram
+    participant C as お客様
+    participant O as オペレーター
+    participant S as 注文管理システム
+    participant P as 決済代行会社
+    C->>O: 返金を依頼
+    O->>S: 注文を確認
+    O->>P: 返金を指示
+    P-->>O: 返金処理の完了を通知
+    O-->>C: 完了を伝える
+=== gantt-system
+gantt
+    title 基幹システム更新プロジェクト
+    dateFormat YYYY-MM-DD
+    section 設計
+    要件定義 :a1, 2027-04-01, 10d
+    基本設計 :a2, after a1, 15d
+    詳細設計 :a3, after a2, 10d
+    section 開発
+    開発 :a4, after a3, 30d
+    総合テスト :a5, after a4, 10d
+=== gantt-wedding
+gantt
+    title 結婚式の準備
+    dateFormat YYYY-MM-DD
+    section 準備
+    式場見学 :a1, 2027-03-01, 14d
+    ドレス選び :a2, after a1, 21d
+    招待状の発送 :a3, 2027-04-01, 7d
+    料理の試食会 :a4, 2027-04-15, 1d
+=== gantt-study
+gantt
+    title 資格試験の勉強計画
+    dateFormat YYYY-MM-DD
+    section 勉強
+    参考書の通読 :a1, 2027-01-10, 20d
+    問題集 :a2, after a1, 30d
+    模擬試験 :a3, after a2, 7d
+=== gantt-construction
+gantt
+    title 住宅の建築工程
+    dateFormat YYYY-MM-DD
+    section 工事
+    基礎工事 :a1, 2027-05-10, 14d
+    躯体工事 :a2, after a1, 21d
+    屋根工事 :a3, after a2, 7d
+    内装工事 :a4, after a3, 30d
+    外構工事 :a5, after a3, 20d
+=== gantt-app-release
+gantt
+    title アプリのリリース計画
+    dateFormat YYYY-MM-DD
+    section 開発
+    設計 :a1, 2027-02-01, 12d
+    開発 :a2, 2027-02-15, 40d
+    section リリース
+    ベータテスト :a3, 2027-03-29, 14d
+    ストア申請 :a4, after a3, 5d
+=== gantt-school-festival
+gantt
+    title 文化祭の準備
+    dateFormat YYYY-MM-DD
+    section 準備
+    出し物決め :a1, 2026-09-01, 7d
+    衣装作り :a2, after a1, 14d
+    大道具作り :a3, after a1, 14d
+    リハーサル :a4, 2026-10-01, 3d
+    section 本番
+    本番 :milestone, a5, 2026-10-10, 0d
+=== gantt-marketing
+gantt
+    title 新商品のマーケティング計画
+    dateFormat YYYY-MM-DD
+    section 準備
+    市場調査 :a1, 2027-06-01, 15d
+    広告制作 :a2, after a1, 20d
+    section 販促
+    SNSキャンペーン :a3, 2027-07-15, 30d
+    店頭プロモーション :a4, 2027-08-01, 14d
+=== gantt-two-teams
+gantt
+    title チーム別の作業予定
+    dateFormat YYYY-MM-DD
+    section フロントエンドチーム
+    画面設計 :a1, 2027-01-05, 5d
+    画面実装 :a2, after a1, 10d
+    section バックエンドチーム
+    API設計 :b1, 2027-01-05, 3d
+    API実装 :b2, after b1, 12d
+    section テスト
+    結合テスト :c1, after a2 b2, 5d
+=== gantt-trip
+gantt
+    title 旅行の計画
+    dateFormat YYYY-MM-DD
+    section 準備
+    行き先決め :a1, 2027-07-01, 3d
+    航空券とホテルの予約 :a2, after a1, 2d
+    持ち物の準備 :a3, after a2, 3d
+    section 旅行
+    旅行 :a4, 2027-07-20, 5d
+=== gantt-migration
+gantt
+    title サーバー移行作業
+    dateFormat YYYY-MM-DD
+    section 準備
+    現行環境の調査 :a1, 2027-09-01, 5d
+    新環境の構築 :a2, after a1, 10d
+    データ移行リハーサル :a3, after a2, 3d
+    section 移行
+    本番移行 :a4, 2027-09-25, 1d
+=== gantt-garden
+gantt
+    title 家庭菜園の作業予定
+    dateFormat YYYY-MM-DD
+    section 作業
+    土づくり :a1, 2027-03-20, 7d
+    種まき :a2, 2027-04-01, 3d
+    水やりと手入れ :a3, after a2, 60d
+    収穫 :a4, 2027-06-10, 14d
+=== gantt-recruit
+gantt
+    title 新卒採用のスケジュール
+    dateFormat YYYY-MM-DD
+    section 募集
+    会社説明会 :a1, 2027-03-01, 30d
+    エントリーシート受付 :a2, 2027-03-15, 17d
+    section 選考
+    面接 :a3, 2027-04-05, 21d
+    内定通知 :milestone, a4, 2027-05-01, 0d
+=== gantt-paper
+gantt
+    title 卒業論文の計画
+    dateFormat YYYY-MM-DD
+    section 研究
+    テーマ決定 :a1, 2026-10-01, 14d
+    先行研究の調査 :a2, after a1, 21d
+    実験 :a3, after a2, 28d
+    section 執筆
+    執筆 :a4, after a3, 21d
+    提出前の推敲 :a5, after a4, 7d
+=== gantt-renovation
+gantt
+    title オフィス改装の予定
+    dateFormat YYYY-MM-DD
+    section 工事
+    旧什器の撤去 :a1, 2027-08-02, 3d
+    床と壁の工事 :a2, after a1, 10d
+    照明とネットワーク工事 :a3, after a2, 5d
+    新しい家具の搬入 :a4, after a3, 2d
+=== gantt-product-dev
+gantt
+    title 新製品の開発日程
+    dateFormat YYYY-MM-DD
+    section 開発
+    企画 :a1, 2027-01-04, 10d
+    試作 :a2, after a1, 20d
+    量産準備 :a3, after a2, 15d
+    section 発売
+    発売 :milestone, a4, 2027-04-01, 0d
+=== gantt-training
+gantt
+    title 新人研修のカリキュラム
+    dateFormat YYYY-MM-DD
+    section 研修
+    ビジネスマナー研修 :a1, 2027-04-01, 3d
+    PC研修 :a2, after a1, 2d
+    部署ローテーション :a3, after a2, 21d
+    配属面談 :a4, after a3, 1d
+=== gantt-annual
+gantt
+    title 年間の決算スケジュール
+    dateFormat YYYY-MM-DD
+    section 決算
+    棚卸し :a1, 2027-04-01, 3d
+    決算整理 :a2, after a1, 10d
+    監査対応 :a3, 2027-04-20, 15d
+    決算発表 :milestone, a4, 2027-05-15, 0d
+=== flow-log-rotate
+flowchart TD
+    A["毎週日曜の深夜に開始"] --> B{"空き容量が20%を切っている？"}
+    B -->|"はい"| C["90日より古いログを削除"]
+    C --> D["ログを圧縮"]
+    B -->|"いいえ"| D
+    D --> E["保管用サーバーへ移す"]
+    E --> F["結果を運用チームのチャットに投稿"]
+=== flow-signup
+flowchart TD
+    A["メールアドレスを入力"] --> B["確認コードが届く"]
+    B --> C{"コードが合っている？"}
+    C -->|"はい"| D["プロフィール入力に進む"]
+    C -->|"いいえ"| E["再入力する"]
+    E --> C
+    B --> F["10分たつとコードは無効"]
+    F --> G["再送する"]
+=== flow-stock-alert
+flowchart TD
+    A["毎朝、商品の在庫数を調べる"] --> B{"発注点を下回った商品がある？"}
+    B -->|"はい"| C["発注リストに追加"]
+    C --> D["購買担当にメールする"]
+    B -->|"いいえ"| E["何もしない"]
+=== flow-attendance
+flowchart TD
+    A["社員証をカードリーダーにかざす"] --> B{"登録済みのカード？"}
+    B -->|"はい"| C["打刻を記録"]
+    C --> D["ゲートを開ける"]
+    B -->|"いいえ"| E["警告音を鳴らす"]
+    E --> F["守衛室に通知"]
+=== flow-invoice-check
+flowchart TD
+    A["請求書が届く"] --> B["経理が発注書と金額を照らし合わせる"]
+    B --> C{"一致する？"}
+    C -->|"はい"| D["支払い予定に登録"]
+    C -->|"いいえ"| E["購買部に問い合わせる"]
+    E --> F["取引先に訂正した請求書を出し直してもらう"]
+=== flow-support-bot
+flowchart TD
+    A["チャットボットが質問を受け取る"] --> B{"よくある質問に当てはまる？"}
+    B -->|"はい"| C["回答を表示"]
+    B -->|"いいえ"| D{"営業時間外？"}
+    D -->|"いいえ"| E["オペレーターにつなぐ"]
+    D -->|"はい"| F["問い合わせフォームを案内"]
+=== flow-etl-night
+flowchart TD
+    A["売上ファイルを取り込む"] --> B["重複した行を取り除く"]
+    B --> C{"件数が前日の半分以下？"}
+    C -->|"はい"| D["処理を止める"]
+    D --> E["担当者に電話で知らせる"]
+    C -->|"いいえ"| F["集計テーブルを更新"]
+=== flow-door
+flowchart TD
+    A["センサーで人を検知"] --> B["開く"]
+    B --> C{"3秒間だれも通らない？"}
+    C -->|"はい"| D["閉まる"]
+    C -->|"いいえ"| B
+    D --> E{"閉まる途中で人を検知？"}
+    E -->|"はい"| B
+=== flow-elevator
+flowchart TD
+    A["待機"] --> B["呼び出しボタンが押される"]
+    B --> C["移動を始める"]
+    C --> D["目的の階に着いてドアを開ける"]
+    D --> E["5秒後にドアを閉める"]
+    E --> F{"ほかに呼び出しがある？"}
+    F -->|"はい"| C
+    F -->|"いいえ"| A
+=== flow-order-states
+flowchart TD
+    A["受付"] --> B["支払い待ち"]
+    B --> C["発送準備"]
+    C --> D["発送済み"]
+    D --> E["配達完了"]
+    B -->|"7日たつ"| F["キャンセル"]
+=== flow-arrow-branch
+flowchart TD
+    A["見積依頼"] --> B["見積作成"]
+    B --> C{"上長チェック"}
+    C -->|"OK"| D["送付"]
+    C -->|"NG"| E["作り直し"]
+=== flow-arrow-morning
+flowchart TD
+    A["起床"] --> B["洗顔"]
+    B --> C["朝食"]
+    C --> D["歯みがき"]
+    D --> E["出発"]
+=== flow-ringi-steps
+flowchart TD
+    A["起案者が稟議書を作る"] --> B["課長が内容を確認する"]
+    B --> C{"100万円を超える？"}
+    C -->|"はい"| D["役員会にかける"]
+    D --> E{"承認された？"}
+    C -->|"いいえ"| E
+    E -->|"はい"| F["総務が保管する"]
+    E -->|"いいえ"| G["起案者に戻す"]
+=== flow-pc-setup
+flowchart TD
+    A["電源を入れる"] --> B["社内Wi-Fiにつなぐ"]
+    B --> C["会社のアカウントでサインイン"]
+    C --> D["更新プログラムをすべて入れる"]
+    D --> E["ウイルス対策ソフトが動いているか確かめる"]
+=== flow-curry
+flowchart TD
+    A["玉ねぎを薄く切る"] --> B["飴色になるまで炒める"]
+    B --> C["肉と野菜を加えて炒める"]
+    C --> D["水を入れて20分煮る"]
+    D --> E["火を止めてルーを溶かす"]
+    E --> F["弱火で10分煮込む"]
+=== flow-server-alert
+flowchart TD
+    A["CPU使用率を1分ごとに調べる"] --> B{"90%を超える状態が5分続いた？"}
+    B -->|"いいえ"| A
+    B -->|"はい"| C["アラートを出す"]
+    C --> D{"当番のエンジニアが15分以内に反応？"}
+    D -->|"いいえ"| E["マネージャーに電話をかける"]
+=== flow-refund-policy
+flowchart TD
+    A["返金の申請を受ける"] --> B["購入日を確認"]
+    B --> C{"14日以内？"}
+    C -->|"いいえ"| D["返金しない"]
+    C -->|"はい"| E{"未使用？"}
+    E -->|"はい"| F["全額を返金"]
+    E -->|"いいえ"| G["半額を返金"]
+=== flow-wifi-trouble
+flowchart TD
+    A["ルーターのランプを見る"] --> B{"ランプが消えている？"}
+    B -->|"はい"| C["電源を入れ直す"]
+    B -->|"いいえ"| D{"端末の機内モードがオン？"}
+    D -->|"はい"| E["オフにする"]
+    C --> F{"直った？"}
+    E --> F
+    D -->|"いいえ"| F
+    F -->|"いいえ"| G["プロバイダーに連絡"]
+=== flow-school-absence
+flowchart TD
+    A["保護者が朝8時までに連絡アプリで届け出る"] --> B{"届け出がないまま登校していない？"}
+    B -->|"はい"| C["担任が家庭に電話する"]
+    C --> D{"電話がつながる？"}
+    D -->|"いいえ"| E["教頭に報告"]
+    D -->|"はい"| F["欠席の理由を確認"]
+=== flow-merge-bot
+flowchart TD
+    A["プルリクエストにラベルが付く"] --> B["テストを走らせる"]
+    B --> C{"全部通った？"}
+    C -->|"はい"| D["自動でマージ"]
+    C -->|"いいえ"| E["コメントで知らせる"]
+    E --> F["ラベルを外す"]
+=== flow-warehouse-in
+flowchart TD
+    A["検品担当が数と傷を確かめる"] --> B{"検品の結果"}
+    B -->|"問題なし"| C["棚に入れる"]
+    C --> D["在庫システムに登録"]
+    B -->|"数が合わない"| E["仕入先に連絡"]
+    B -->|"傷がある"| F["返品の箱に分ける"]
+=== flow-db-migration
+flowchart TD
+    A["旧サーバーを読み取り専用にする"] --> B["データを書き出す"]
+    B --> C["新サーバーに読み込む"]
+    C --> D{"件数が合う？"}
+    D -->|"はい"| E["アプリの接続先を切り替える"]
+    D -->|"いいえ"| F["旧サーバーに戻す"]
+=== flow-hotel-checkin
+flowchart TD
+    A["フロントで予約名を伝える"] --> B{"予約が見つかる？"}
+    B -->|"はい"| C["本人確認をする"]
+    C --> D["ルームキーを渡す"]
+    B -->|"いいえ"| E{"空室がある？"}
+    E -->|"はい"| F["その場で受け付ける"]
+    E -->|"いいえ"| G["近くのホテルを紹介"]
+=== flow-mail-filter
+flowchart TD
+    A["受信したメールの送信元を調べる"] --> B{"ブロックリストにある？"}
+    B -->|"はい"| C["破棄"]
+    B -->|"いいえ"| D["添付ファイルをウイルススキャン"]
+    D --> E{"感染している？"}
+    E -->|"はい"| F["隔離"]
+    F --> G["管理者に知らせる"]
+    E -->|"いいえ"| H["受信トレイに届ける"]
+=== flow-org-hospital
+flowchart TD
+    A["院長"] --> B["診療部"]
+    A --> C["看護部"]
+    A --> D["事務部"]
+    B --> E["内科"]
+    B --> F["外科"]
+    D --> G["医事課"]
+    D --> H["総務課"]
+=== flow-sitemap
+flowchart TD
+    A["トップ"] --> B["製品"]
+    A --> C["会社情報"]
+    A --> D["お問い合わせ"]
+    B --> E["製品A"]
+    B --> F["製品B"]
+=== flow-exam-grading
+flowchart TD
+    A["答案を回収"] --> B["採点者が点をつける"]
+    B --> C{"60点以上？"}
+    C -->|"はい"| D["合格として名簿に記録"]
+    C -->|"いいえ"| E["追試"]
+    E --> F{"追試で60点以上？"}
+    F -->|"はい"| D
+    F -->|"いいえ"| G["補習を受ける"]
+=== flow-parking
+flowchart TD
+    A["カメラがナンバーを読み取る"] --> B{"満車？"}
+    B -->|"はい"| C["「満車」と表示して入れない"]
+    B -->|"いいえ"| D{"定期契約の車？"}
+    D -->|"はい"| E["バーを上げる"]
+    D -->|"いいえ"| F["駐車券を発行"]
+    F --> E
+=== flow-release-approval
+flowchart TD
+    A["品質保証チームがチェックリストを確認"] --> B{"重大なバグが残っている？"}
+    B -->|"はい"| C["リリースを延期"]
+    C --> D["開発チームが直す"]
+    B -->|"いいえ"| E["プロダクトマネージャーが最終承認"]
+    E --> F["公開"]
+=== flow-lost-item
+flowchart TD
+    A["落とし物を駅の窓口に届ける"] --> B["駅員が品物の特徴を台帳に書く"]
+    B --> C{"3日以内に持ち主が現れる？"}
+    C -->|"はい"| D["本人確認をして返す"]
+    C -->|"いいえ"| E["警察に引き渡す"]
+=== flow-memoize
+flowchart TD
+    A["引数をキーにして結果を調べる"] --> B{"保存済み？"}
+    B -->|"はい"| C["保存済みの結果を返す"]
+    B -->|"いいえ"| D["計算する"]
+    D --> E["結果を保存"]
+    E --> F["結果を返す"]
+=== flow-ticket-status
+flowchart TD
+    A["新規"] -->|"担当者が決まる"| B["対応中"]
+    B -->|"お客様の返事を待つ"| C["保留"]
+    B -->|"解決"| D["完了"]
+    D -->|"7日以内に再度連絡"| B
+=== seq-coffee-order
+sequenceDiagram
+    participant C as 客
+    participant S as 店員
+    participant B as バリスタ
+    C->>S: コーヒーを注文
+    C->>S: 代金を払う
+    S->>B: 注文を伝える
+    B->>C: 名前を呼んで手渡す
+=== seq-library-loan
+sequenceDiagram
+    participant U as 利用者
+    participant A as 図書館のアプリ
+    participant S as 蔵書システム
+    participant B as 分館
+    U->>A: 本を取り寄せる
+    A->>S: 予約を送る
+    S->>B: 搬送を依頼
+    B-->>S: 発送を知らせる
+    A->>U: 受け取りの案内を送る
+=== seq-password-check
+sequenceDiagram
+    participant U as ユーザー
+    participant S as サイト
+    participant A as 認証サービス
+    U->>S: パスワードを送る
+    S->>A: 照合を頼む
+    alt 正しい
+        A-->>S: OK
+        S-->>U: マイページを表示
+    else 誤り
+        A-->>S: NG
+        S-->>U: エラーを表示
+    end
+=== seq-numbered
+sequenceDiagram
+    participant E as 営業
+    participant S as 受注システム
+    participant F as 工場
+    E->>S: 注文を入力
+    S->>F: 生産指示を送る
+    F-->>S: 納期を返す
+    S-->>E: 納期を知らせる
+=== seq-dns
+sequenceDiagram
+    participant B as ブラウザ
+    participant O as OS
+    participant D as DNSサーバー
+    participant W as Webサーバー
+    B->>O: ドメイン名の解決を頼む
+    O->>D: 問い合わせる
+    D-->>O: IPアドレス
+    O-->>B: IPアドレスを渡す
+    B->>W: 接続
+=== seq-leave-request
+sequenceDiagram
+    participant E as 社員
+    participant S as 勤怠システム
+    participant M as 上長
+    participant H as 人事システム
+    E->>S: 休暇を申請
+    S->>M: 承認依頼のメール
+    M->>S: 承認
+    S->>E: 結果を通知
+    S->>H: 休暇日数を送る
+=== seq-kitchen-display
+sequenceDiagram
+    participant H as ホール係
+    participant S as 注文システム
+    participant K as 調理担当
+    H->>S: 注文を送信
+    S->>K: 厨房のモニターに表示
+    K->>S: 完成ボタンを押す
+    S->>H: 配膳を知らせる
+=== seq-bank-transfer
+sequenceDiagram
+    participant P as 振込人
+    participant N as ネットバンキング
+    participant A as 振込人の銀行
+    participant B as 受取人の銀行
+    participant R as 受取人
+    P->>N: 振込を依頼
+    N->>A: 送金を指示
+    A->>B: 全銀システムを通じて送金
+    B->>R: 入金を通知
+=== seq-arrow-payment
+sequenceDiagram
+    participant A as アプリ
+    participant P as 決済API
+    participant C as カード会社
+    A->>P: 支払いリクエスト
+    P->>C: オーソリ要求
+    C-->>P: 承認
+    P-->>A: 支払い完了
+=== seq-teacher-parent
+sequenceDiagram
+    participant T as 担任
+    participant P as 保護者
+    participant K as 教務主任
+    T->>P: 面談の候補日をメールで送る
+    P-->>T: 希望日を返信
+    T->>K: 教室の空きを問い合わせる
+    K-->>T: 空いている教室
+    T->>P: 日時と場所を知らせる
+=== seq-video-call
+sequenceDiagram
+    participant A as Aさん
+    participant V as ビデオ会議アプリ
+    participant S as サーバー
+    participant B as Bさん
+    A->>V: 会議を始める
+    V->>S: 部屋の作成を頼む
+    S-->>V: 招待URL
+    A->>B: URLを送る
+    B->>S: 参加
+    S->>A: 参加を知らせる
+=== seq-insurance
+sequenceDiagram
+    participant C as 契約者
+    participant I as 保険会社
+    participant R as 修理工場
+    C->>I: 事故を連絡
+    I->>R: 見積もりを依頼
+    R-->>I: 見積書
+    I->>C: 支払額を伝える
+=== seq-push
+sequenceDiagram
+    participant S as サーバー
+    participant N as 通知サービス
+    participant U as ユーザー
+    participant A as アプリ
+    S->>N: プッシュ通知を依頼
+    N->>U: 通知を届ける
+    U->>A: 通知をタップ
+    A->>S: 最新のデータを取得
+=== seq-moving
+sequenceDiagram
+    participant C as 依頼者
+    participant M as 引っ越し業者
+    participant K as 管理会社
+    C->>M: 見積もりを頼む
+    M-->>C: 見積額を伝える
+    C->>M: 契約
+    M->>K: エレベーターの使用を申し込む
+    K-->>M: 許可
+=== seq-sso
+sequenceDiagram
+    participant E as 社員
+    participant A as 経費アプリ
+    participant I as 認証基盤
+    E->>A: 開く
+    A->>I: ログイン状態を確認
+    opt 未ログイン
+        I->>E: ログイン画面を出す
+        E->>I: IDとパスワードを入力
+    end
+    I-->>A: 本人情報
+=== seq-order-supplier
+sequenceDiagram
+    participant S as 店舗
+    participant H as 発注システム
+    participant V as 仕入先
+    S->>H: 商品を発注
+    H->>V: 注文書を送る
+    V-->>H: 納品日を回答
+    H->>S: 納品日を知らせる
+    V->>S: 商品を届ける
+=== seq-robot
+sequenceDiagram
+    participant W as 作業者
+    participant R as ロボット
+    participant S as 倉庫管理システム
+    W->>R: 部品の搬送を指示
+    R->>S: 部品の場所を問い合わせる
+    S-->>R: 棚の場所
+    R->>W: 部品を運ぶ
+=== seq-translate
+sequenceDiagram
+    participant U as ユーザー
+    participant A as 翻訳アプリ
+    participant E as 翻訳エンジン
+    participant V as 音声合成サービス
+    U->>A: 文章を入力
+    A->>E: 文章を送る
+    E-->>A: 訳文
+    A-->>U: 訳文を表示
+    U->>A: 読み上げボタンを押す
+    A->>V: 音声合成を頼む
+    A-->>U: 音声を再生

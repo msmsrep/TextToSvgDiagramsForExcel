@@ -3,7 +3,10 @@
 // Talks over stdin/stdout, one JSON value per line (no server, no network):
 //   "graph TD\n A-->B"               → {"valid":true,"type":"flowchart-v2"} or {"valid":false,"message":"..."}
 //   {"fromText":"...","kind":"auto"} → {"code":"..."} or {"error":"..."} (the rule-based textToMermaid.ts)
+//   {"compare":{"reference":"...","code":"..."}} → {"score":0.8,"precision":...,"recall":...} or {"error":"..."}
+//     (how well the code's content matches a reference diagram; see mermaid-graph.mjs)
 import { createInterface } from "node:readline";
+import { compare, extract } from "./mermaid-graph.mjs";
 import { fileURLToPath } from "node:url";
 import { JSDOM } from "jsdom";
 
@@ -33,6 +36,16 @@ async function handle(request) {
   if (typeof request === "object" && request !== null && "fromText" in request) {
     try {
       return { code: (await loadTextToMermaid())(String(request.fromText), request.kind ?? "auto") };
+    } catch (e) {
+      return { error: e instanceof Error ? e.message : String(e) };
+    }
+  }
+  if (typeof request === "object" && request !== null && "compare" in request) {
+    try {
+      // One after the other: some diagram types keep what they parsed in one shared place.
+      const reference = extract(await mermaid.mermaidAPI.getDiagramFromText(String(request.compare.reference)));
+      const got = extract(await mermaid.mermaidAPI.getDiagramFromText(String(request.compare.code)));
+      return compare(reference, got);
     } catch (e) {
       return { error: e instanceof Error ? e.message : String(e) };
     }
