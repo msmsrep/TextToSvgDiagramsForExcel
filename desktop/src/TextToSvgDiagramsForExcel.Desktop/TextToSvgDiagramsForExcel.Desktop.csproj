@@ -41,7 +41,7 @@
        reaches users (in the package or not) is not decided, so Release and the Store
        package leave it out unless IncludeTextModel is set to true. -->
   <PropertyGroup>
-    <TextModelFolder Condition="'$(TextModelFolder)' == ''">$(MSBuildThisFileDirectory)..\..\models\mermaid-0.8b-jaen2-16\</TextModelFolder>
+    <TextModelFolder Condition="'$(TextModelFolder)' == ''">$(MSBuildThisFileDirectory)..\..\models\mermaid-0.8b-jaen2\</TextModelFolder>
     <IncludeTextModel Condition="'$(IncludeTextModel)' == '' And '$(Configuration)' == 'Debug'">true</IncludeTextModel>
   </PropertyGroup>
   <ItemGroup Condition="'$(IncludeTextModel)' == 'true' And Exists('$(TextModelFolder)genai_config.json')">

@@ -12,10 +12,10 @@
 dotnet run --project desktop/tools/TextToMermaidEval
 
 # ローカルモデルも測る（作り直しは最大 2 回）
-dotnet run --project desktop/tools/TextToMermaidEval -c Release -- --model desktop/models/mermaid-0.8b-jaen2-16 --repairs 2
+dotnet run --project desktop/tools/TextToMermaidEval -c Release -- --model desktop/models/mermaid-0.8b-jaen2 --repairs 2
 ```
 
-使うモデルは、この用途に学習させた `mermaid-0.8b-jaen2-16`（作り方は `desktop/tools/MermaidTraining/README.md`）。フォルダに `text-to-mermaid.json` があれば、指示や例を付けずに文章だけを送る。
+使うモデルは、この用途に学習させた `mermaid-0.8b-jaen2`（作り方は `desktop/tools/MermaidTraining/README.md`）。フォルダに `text-to-mermaid.json` があれば、指示や例を付けずに文章だけを送る。
 
 ## 指標
 
