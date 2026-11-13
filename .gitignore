@@ -12,3 +12,4 @@
 /desktop/package/cert
 /desktop/models
 __pycache__/
+.claude/
